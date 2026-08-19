@@ -1,0 +1,42 @@
+### ============================================
+
+### FINACE API
+
+### Testes de Autenticação
+
+### ============================================
+
+@baseUrl = http://localhost:8089
+
+### ============================================
+
+### REGISTER - Criar usuário
+
+### ============================================
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+"nome": "Osmar Gomes",
+"email": "osmar@finace.com",
+"senha": "12345678",
+"cpf": "12345678901",
+"telefone": "75999999999"
+}
+
+### ============================================
+
+### LOGIN - Autenticar usuário
+
+### ============================================
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+"email": "osmar@finace.com",
+"senha": "12345678"
+}
+
+
