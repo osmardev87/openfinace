@@ -1,12 +1,26 @@
 package tech.gomesdev87.finace.conta;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import tech.gomesdev87.finace.conta.enums.FormaPagamento;
+import tech.gomesdev87.finace.conta.enums.TipoMovimento;
 
 @Entity
 @Table(name = "contas")
@@ -39,7 +53,7 @@ public class Conta {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false, length = 20)
-    private TipoMovimento tipo = TipoMovimento.ENTRADA;
+    private TipoMovimento tipo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "forma_pagamento", length = 20)
@@ -61,13 +75,5 @@ public class Conta {
         updatedAt = LocalDateTime.now();
     }
 
-    // =================== ENUMS INTERNOS ===================
-
-    public enum TipoMovimento {
-        ENTRADA, SAIDA
-    }
-
-    public enum FormaPagamento {
-        PIX, BOLETO, DEPOSITO, DINHEIRO, OUTROS
-    }
+    
 }

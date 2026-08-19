@@ -1,14 +1,14 @@
 package tech.gomesdev87.finace.auth;
 
 
+import java.time.Duration;
+
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import tech.gomesdev87.finace.user.User;
 import tech.gomesdev87.finace.user.UserRepository;
-import tech.gomesdev87.finace.user.UserService;
-
-import java.time.Duration;
 
 @Service
 public class AuthService {

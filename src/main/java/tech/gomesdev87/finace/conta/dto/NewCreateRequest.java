@@ -1,10 +1,11 @@
 package tech.gomesdev87.finace.conta.dto;
 
-import tech.gomesdev87.finace.conta.Conta;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
+
+import tech.gomesdev87.finace.conta.enums.FormaPagamento;
+import tech.gomesdev87.finace.conta.enums.TipoMovimento;
 
 public record NewCreateRequest(
         UUID userId,
@@ -12,8 +13,8 @@ public record NewCreateRequest(
         BigDecimal valor,
         LocalDate data,
         LocalDate dataVencimento,
-        Conta.TipoMovimento tipoMovimento,
-        Conta.FormaPagamento formaPagamento
+        TipoMovimento tipoMovimento,
+       FormaPagamento formaPagamento
 ) {
 }
 
