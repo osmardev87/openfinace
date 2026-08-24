@@ -21,8 +21,8 @@ public class OpenApiConfig {
                 // ✅ TROCA o localhost pela URL CORRETA!
                 .servers(List.of(
                         new Server()
-                                .url("https://cuddly-couscous-q7rv4vpx4jpj296r-8089.app.github.dev")
-                                .description("Servidor GitHub Codespaces")
+                                .url("http://localhost:8089")
+                                .description("Servidor Local")
                 ));
     }
 }

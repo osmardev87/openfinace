@@ -1,8 +1,9 @@
 package tech.gomesdev87.finace.exception;
 
-import jakarta.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,19 @@ public class GlobalExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
 
         return ResponseEntity.badRequest().body(body);
+    }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> badCredentials(BadCredentialsException ex) {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("status", HttpStatus.UNAUTHORIZED.value());
+        body.put("error", "Credenciais inválidas");
+        body.put("message", ex.getMessage());
+        body.put("timestamp", LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 
     @ExceptionHandler(IOException.class)

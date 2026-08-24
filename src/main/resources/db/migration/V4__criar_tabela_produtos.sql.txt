@@ -1,8 +1,9 @@
 -- =============================================
 -- Flyway Migration: V4
--- Tabela de Produtos / Estoque
+-- Tabela de Produtos / Estoque e Notas Fiscais
 -- =============================================
 
+-- Tabela de Produtos / Estoque
 CREATE TABLE IF NOT EXISTS produtos (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     nome VARCHAR(150) NOT NULL,
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS produtos (
     updated_at TIMESTAMP
 );
 
+-- Tabela de Entrada da Nota Fiscal
 CREATE TABLE IF NOT EXISTS entrada_nota (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     chave_acesso VARCHAR(44) UNIQUE,  -- ✅ 44 dígitos

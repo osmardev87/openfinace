@@ -16,9 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -48,30 +48,26 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers("/recupera/**").permitAll()
-                        .requestMatchers("/doc", "/doc/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll() // ✅ LIBERA DOC
+                        .requestMatchers("/doc", "/doc/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll() // ✅ OpenAPI/Swagger
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> {})
-                        .bearerTokenResolver(request -> {
-                            String authHeader = request.getHeader("Authorization");
-                            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                                return authHeader.substring(7);
-                            }
-                            return null;
-                        })
-                )
+                // O oauth2ResourceServer padrão já resolve tokens Bearer do header Authorization automaticamente
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        // Em produção, substitua "*" pelos domínios permitidos específicos
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Authorization")); // Importante para expor o header do JWT
+        configuration.setAllowCredentials(true); // Permite credenciais se usar origin patterns
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -79,21 +75,15 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        validarTamanhoChave(); // ✅ Valida tamanho mínimo
-        SecretKey secretKey = new SecretKeySpec(
-                secret.getBytes(StandardCharsets.UTF_8),
-                "HmacSHA256"
-        );
+        validarTamanhoChave();
+        SecretKey secretKey = obterSecretKey();
         return NimbusJwtDecoder.withSecretKey(secretKey).build();
     }
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        validarTamanhoChave(); // ✅ Valida tamanho mínimo
-        SecretKey secretKey = new SecretKeySpec(
-                secret.getBytes(StandardCharsets.UTF_8),
-                "HmacSHA256"
-        );
+        validarTamanhoChave();
+        SecretKey secretKey = obterSecretKey();
         JWK jwk = new OctetSequenceKey.Builder(secretKey)
                 .keyID("conectafinace-secret-key")
                 .algorithm(JWSAlgorithm.HS256)
@@ -108,13 +98,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // ✅ Validação de segurança: HS256 exige mínimo 32 caracteres
+    private SecretKey obterSecretKey() {
+        return new SecretKeySpec(
+                secret.getBytes(StandardCharsets.UTF_8),
+                "HmacSHA256"
+        );
+    }
+
+    // ✅ Validação de segurança: HS256 exige mínimo de 32 bytes (256 bits)
     private void validarTamanhoChave() {
         int tamanhoMinimo = 32;
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < tamanhoMinimo) {
             throw new IllegalArgumentException(
                     "ERRO DE CONFIGURAÇÃO: A propriedade jwt.secret precisa ter pelo menos " +
-                            tamanhoMinimo + " caracteres! Atual: " + (secret != null ? secret.length() + " chars" : "null")
+                            tamanhoMinimo + " bytes/caracteres! Atual: " + (secret != null ? secret.length() + " chars" : "null")
             );
         }
     }
