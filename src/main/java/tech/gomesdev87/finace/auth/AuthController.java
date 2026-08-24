@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tech.gomesdev87.finace.auth.dto.LoginRequest;
+import tech.gomesdev87.finace.auth.dto.LoginResponse;
 import tech.gomesdev87.finace.user.UserService;
 import tech.gomesdev87.finace.user.dto.CreateUserRequest;
 import tech.gomesdev87.finace.user.dto.UserResponse;
@@ -25,8 +26,8 @@ public class AuthController {
 
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authService.login(loginRequest.email(), loginRequest.senha()));
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest.email(), loginRequest.senha()));
     }
 
     @PostMapping("register")

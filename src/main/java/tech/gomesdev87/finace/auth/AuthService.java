@@ -7,8 +7,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import tech.gomesdev87.finace.auth.dto.LoginResponse;
 import tech.gomesdev87.finace.user.User;
 import tech.gomesdev87.finace.user.UserRepository;
+import tech.gomesdev87.finace.user.dto.UserResponse;
 
 @Service
 public class AuthService {
@@ -21,7 +23,7 @@ public class AuthService {
         this.bCrypt = bCrypt;
     }
 
-    public String login(String email, String password){
+    public LoginResponse login(String email, String password){
         User user = repo.findByEmail(email).orElseThrow( () ->
                 new BadCredentialsException("E-mail e senha invalidos")
         );
@@ -32,6 +34,6 @@ public class AuthService {
 
         long expiresIn = Duration.ofDays(30).getSeconds(); // 30 dias
 
-        return this.token.gerarToken(user, expiresIn);
+        return new LoginResponse(this.token.gerarToken(user, expiresIn), UserResponse.fromEntity(user));
     }
 }

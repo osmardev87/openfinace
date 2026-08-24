@@ -20,11 +20,11 @@ public class UserService {
     public UserResponse create(CreateUserRequest request) {
 
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("E-mail já cadastrado");
+            throw new IllegalArgumentException("E-mail já cadastrado");
         }
 
         if (userRepository.existsByCpf(request.cpf())) {
-            throw new RuntimeException("CPF já cadastrado");
+            throw new IllegalArgumentException("CPF já cadastrado");
         }
 
         User user = request.toEntity();

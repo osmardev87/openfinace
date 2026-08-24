@@ -18,10 +18,10 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-"nome": "Osmar Gomes",
-"email": "osmar@finace.com",
+"nome": "Jose Maria",
+"email": "jmario@mail.com",
 "senha": "12345678",
-"cpf": "12345678901",
+"cpf": "12345678908",
 "telefone": "75999999999"
 }
 
@@ -35,7 +35,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-"email": "osmar@finace.com",
+"email": "osmar1@mail.com",
 "senha": "12345678"
 }
 

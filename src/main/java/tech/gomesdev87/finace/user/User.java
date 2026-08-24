@@ -1,4 +1,5 @@
 package tech.gomesdev87.finace.user;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,13 +40,20 @@ public class User {
     @Column(nullable = false)
     private Boolean ativo;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Role role;
+
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDateTime.now();
 
-        if (ativo == null) ativo = true;
+        if (role == null)
+            role = Role.CLIENTE;
+
+        if (ativo == null)
+            ativo = true;
 
     }
 
-    
 }
