@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tech.gomesdev87</groupId>
-	<artifactId>finace</artifactId>
+	<artifactId>shop-info</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>finace</name>
+	<name>shop-info</name>
 	<description />
 	<url />
 	<licenses>
