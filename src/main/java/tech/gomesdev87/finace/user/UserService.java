@@ -27,6 +27,15 @@ public class UserService {
             throw new IllegalArgumentException("CPF já cadastrado");
         }
 
+        if (userRepository.existsByCnpj(request.cnpj())) {
+            throw new IllegalArgumentException("CNPJ já cadastrado");
+        }
+
+        if ((request.role() == Role.ADMIN || request.role() == Role.VENDEDOR)
+                && (request.senha() == null || request.senha().isBlank())) {
+            throw new IllegalArgumentException("Senha é obrigatória para Administradores e Vendedores");
+        }
+
         User user = request.toEntity();
 
         user.setSenha(this.passwordEncoder.encode(user.getSenha()));
