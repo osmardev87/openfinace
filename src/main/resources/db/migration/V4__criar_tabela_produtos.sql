@@ -37,15 +37,3 @@ CREATE TABLE IF NOT EXISTS entrada_nota (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
--- Tabela dos itens da nota
-CREATE TABLE IF NOT EXISTS entrada_item (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    entrada_nota_id UUID NOT NULL REFERENCES entrada_nota(id) ON DELETE CASCADE,
-    produto_id UUID REFERENCES produtos(id), -- ← vincula ao seu produto
-    descricao_item VARCHAR(200) NOT NULL,
-    quantidade INTEGER NOT NULL CHECK (quantidade > 0),
-    valor_unitario DECIMAL(12,2) NOT NULL,
-    valor_total DECIMAL(12,2) NOT NULL,
-    codigo_fornecedor VARCHAR(50) -- SKU do fornecedor para casar
-);

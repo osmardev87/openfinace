@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<profiles version="12">
+    <profile kind="CodeFormatterProfile" name="CustomJavaProfile" version="12">
+        <!-- Não junta linhas que o desenvolvedor quebrou manualmente -->
+        <setting id="org.eclipse.jdt.core.formatter.join_wrapped_lines" value="false"/>
+        <!-- Força quebra de linha para chamadas encadeadas (Builder / Stream) -->
+        <setting id="org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation" value="80"/>
+        <!-- Comprimento máximo da linha -->
+        <setting id="org.eclipse.jdt.core.formatter.line_split" value="120"/>
+    </profile>
+</profiles>
