@@ -1,5 +1,6 @@
 package tech.gomesdev87.finace.produto;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -38,5 +39,9 @@ public class ProdutoService {
         // 3. Salva a entidade no banco de dados
         return produtoRepository.save(novoProduto);
 
+    }
+
+    public List<Produto> listProdutos(UUID userId) {
+        return this.produtoRepository.findByUserId(userId);
     }
 }

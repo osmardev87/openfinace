@@ -1,0 +1,38 @@
+### ================================
+### 🔐 1. FAZER LOGIN — Obter Token
+### ================================
+POST http://localhost:8089/auth/login
+Content-Type: application/json
+
+{
+  "email": "osmar@mail.com",
+  "senha": "12345678"
+}
+
+### ⚠️ Copie o token da resposta acima e cole na linha abaixo:
+ @token = eyJraWQiOiJjb25lY3RhZmluYWNlLXNlY3JldC1rZXkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmaW5hY2UiLCJzdWIiOiI5M2JmYjJlYy0yYjE1LTRlMDAtYTJjNy1iZmE0N2ZhMmJiZDIiLCJleHAiOjE3OTAyNTUyMDUsImlhdCI6MTc4NzY2MzIwNSwiZW1haWwiOiJvc21hckBtYWlsLmNvbSJ9.PRcbmvjZecgAE6fTQYZgvD3pQkDft9OV-6uQ2JSeJEo
+
+
+### ================================
+### 📦 3. CRIAR PRODUTO
+### ================================
+POST http://localhost:8089/produto/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "nome": "Procesador Core I5 3470",
+  "descricao": "Procesador intel core I5 3470",
+  "quantidade": 3,
+  "quantidadeMinima": 2,
+  "valorCusto": 170.00,
+  "valorVenda": 230.99
+}
+
+### ================================
+### 📦 Lista de produtos
+### ================================
+
+GET  http://localhost:8089/produto/
+Content-Type: application/json
+Authorization: Bearer {{token}}
