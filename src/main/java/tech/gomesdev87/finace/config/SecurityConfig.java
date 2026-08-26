@@ -1,11 +1,11 @@
 package tech.gomesdev87.finace.config;
 
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.OctetSequenceKey;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,21 +16,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 
-@Configuration
-@EnableWebSecurity
+@Configuration @EnableWebSecurity
 public class SecurityConfig {
 
     @Value("${jwt.secret}")
@@ -43,18 +44,27 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers("/recupera/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/register")
+                        .permitAll()
+                        .requestMatchers("/recupera/**")
+                        .permitAll()
                         .requestMatchers("/doc", "/doc/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**",
                                 "/swagger-ui.html")
                         .permitAll() // ✅ OpenAPI/Swagger
-                        .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers("/error").permitAll()
-                        // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do Frontend!
-                        .requestMatchers("/", "/index.html", "/login.html", "/estilo.css", "/*.js").permitAll()
-                        .anyRequest().authenticated())
-                // O oauth2ResourceServer padrão já resolve tokens Bearer do header
+                        .requestMatchers("/uploads/**")
+                        .permitAll()
+                        .requestMatchers("/error")
+                        .permitAll()
+                        // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do
+                        // Frontend!
+                        .requestMatchers("/", "/index.html", "/login.html", "/*.css", "/*.js")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                // O oauth2ResourceServer padrão já resolve tokens Bearer do
+                // header
                 // Authorization automaticamente
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
@@ -67,8 +77,12 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("Authorization")); // Importante para expor o header do JWT
-        configuration.setAllowCredentials(true); // Permite credenciais se usar origin patterns
+        configuration.setExposedHeaders(List.of("Authorization")); // Importante
+                                                                   // para expor
+                                                                   // o header
+                                                                   // do JWT
+        configuration.setAllowCredentials(true); // Permite credenciais se usar
+                                                 // origin patterns
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
