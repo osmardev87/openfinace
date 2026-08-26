@@ -32,13 +32,6 @@ public class ProdutoController {
         this.token = token;
     }
 
-    private UUID id(Authentication auth){
-         JwtUserData userIdStr = this.token.getToken(auth);
-
-        UUID userId = UUID.fromString(userIdStr.userId());
-
-        return userId;
-    }
 
     @PostMapping("/")
     public ResponseEntity<Produto> create(
@@ -47,12 +40,12 @@ public class ProdutoController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(this.produtoService.cadastrarProduto(prod, this.id(auth)));
+                .body(this.produtoService.cadastrarProduto(prod, this.token.getUserId(auth)));
     }
 
     @GetMapping("/")
     public ResponseEntity<List<Produto>> list(Authentication auth) {
         return ResponseEntity.ok(
-            this.produtoService.listProdutos(this.id(auth)));
+            this.produtoService.listProdutos(this.token.getUserId(auth)));
     }
 }

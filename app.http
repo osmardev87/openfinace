@@ -5,12 +5,48 @@ POST http://localhost:8089/auth/login
 Content-Type: application/json
 
 {
-  "email": "osmar@mail.com",
-  "senha": "12345678"
+  "email": "osmar.dev@gmail.com",
+  "senha": "Osmar4547*"
 }
 
+### ================================
+### 👤 CRIAR USUÁRIO — Completo
+### ROLE ( VENDEDOR, ADMIN )
+### ================================
+POST http://localhost:8089/auth/register
+Content-Type: application/json
+
+{
+  "nome": "José Osmar",
+  "email": "osmar.dev@gmail.com",
+  "senha": "Osmar4547*",
+  "cpf": "12345678909",
+  "cnpj": "12345678901234",
+  "telefone": "87999998888",
+  "role": "ADMIN"
+}
+
+### ================================
+### 👤 CRIAR USUÁRIO — Cliente (sem senha/cpf/cnpj opcionais)
+### ROLE (CLIENTE, FORNECEDOR)
+### ================================
+POST http://localhost:8089/auth/register
+Content-Type: application/json
+
+{
+  "nome": "João Cliente",
+  "email": "joao@email.com",
+  "telefone": "87988887777",
+  "cpf": "12345678909",
+  "cnpj": "",
+  "role": "ADMIN"
+}
+
+
+
+
 ### ⚠️ Copie o token da resposta acima e cole na linha abaixo:
- @token = eyJraWQiOiJjb25lY3RhZmluYWNlLXNlY3JldC1rZXkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmaW5hY2UiLCJzdWIiOiI5M2JmYjJlYy0yYjE1LTRlMDAtYTJjNy1iZmE0N2ZhMmJiZDIiLCJleHAiOjE3OTAyNTUyMDUsImlhdCI6MTc4NzY2MzIwNSwiZW1haWwiOiJvc21hckBtYWlsLmNvbSJ9.PRcbmvjZecgAE6fTQYZgvD3pQkDft9OV-6uQ2JSeJEo
+ @token = eyJraWQiOiJjb25lY3RhZmluYWNlLXNlY3JldC1rZXkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmaW5hY2UiLCJzdWIiOiJlMTQyNDI5Yy1kZWIyLTQ3NTYtYmQxYy02YjkxODViZmQ0ZjEiLCJleHAiOjE3OTAzNDY1NTIsImlhdCI6MTc4Nzc1NDU1MiwiZW1haWwiOiJvc21hci5kZXZAZ21haWwuY29tIn0.AWN7qQLRQZIo_OEpuvVoshTSh9wAXTkpcyzr79n_5yQ
 
 
 ### ================================
@@ -36,3 +72,75 @@ Authorization: Bearer {{token}}
 GET  http://localhost:8089/produto/
 Content-Type: application/json
 Authorization: Bearer {{token}}
+
+### ================================
+### 💰 Transações
+### ================================
+
+
+### ================================
+### 💰 1. CRIAR RECEITA (Venda / Entrada)
+### ================================
+POST http://localhost:8089/transacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Venda de Produtos em Dinheiro",
+  "categoria": "VENDA",
+  "valor": 230.99,
+  "tipo": "RECEITA",
+  "status": "PAGO",
+  "formaPagamento": "DINHEIRO",
+  "dataVencimento": "2026-08-26"
+}
+
+### ================================
+### 💸 2. CRIAR DESPESA (Compra / Saída)
+### ================================
+POST http://localhost:8089/transacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Compra de Mercadorias — Fornecedor X",
+  "categoria": "ESTOQUE",
+  "valor": 1500.00,
+  "tipo": "DESPESA",
+  "formaPagamento": "PIX",
+  "dataVencimento": "2026-09-05"
+}
+
+### ================================
+### ⏳ 3. TRANSAÇÃO PENDENTE (sem informar status)
+### ================================
+POST http://localhost:8089/transacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Pagamento de Conta de Luz",
+  "valor": 189.50,
+  "tipo": "DESPESA",
+  "formaPagamento": "BOLETO",
+  "dataVencimento": "2026-09-10"
+}
+
+### ================================
+### ✅ 4. TRANSAÇÃO COMPLETA (com tudo)
+### ================================
+POST http://localhost:8089/transacoes
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "descricao": "Serviço de Manutenção",
+  "categoria": "SERVICO",
+  "valor": 350.00,
+  "tipo": "RECEITA",
+  "status": "PAGO",
+  "formaPagamento": "CARTAO_CREDITO",
+  "dataVencimento": "2026-08-26",
+  "parceiroId": "93bfb2ec-2b15-4e00-a2c7-bfa47fa2bbd2",
+  "entradaNotaId": "123e4567-e89b-12d3-a456-426614174000"
+}

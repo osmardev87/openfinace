@@ -9,16 +9,17 @@ import tech.gomesdev87.finace.auth.dto.JwtUserData;
 import tech.gomesdev87.finace.user.User;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Component
-public  class Token {
+public class Token {
     private final JwtEncoder jwtEncoder;
 
     private Token(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public  String gerarToken(User user, Long expiresIn) {
+    public String gerarToken(User user, Long expiresIn) {
 
         var now = Instant.now();
         JwtClaimsSet clains = JwtClaimsSet.builder()
@@ -33,7 +34,6 @@ public  class Token {
                 .keyId("conectafinace-secret-key")
                 .build();
 
-
         return jwtEncoder.encode(JwtEncoderParameters.from(header, clains)).getTokenValue();
     }
 
@@ -43,7 +43,13 @@ public  class Token {
         String userId = jwt.getSubject();
         String email = jwt.getClaimAsString("email");
 
-
         return new JwtUserData(userId, email);
     }
+
+    // ✅ Método ÚNICO — extrai e converte o ID do usuário logado
+    public UUID getUserId(Authentication auth) {
+        JwtUserData dadosUsuario = this.getToken(auth);
+        return UUID.fromString(dadosUsuario.userId());
+    }
+
 }
