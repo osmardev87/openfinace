@@ -41,19 +41,21 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers("/recupera/**").permitAll()
-                        .requestMatchers("/doc", "/doc/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll() // ✅ OpenAPI/Swagger
+                        .requestMatchers("/doc", "/doc/**", "/swagger-ui/**", "/v3/api-docs/**", "/api-docs/**",
+                                "/swagger-ui.html")
+                        .permitAll() // ✅ OpenAPI/Swagger
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .anyRequest().authenticated()
-                )
-                // O oauth2ResourceServer padrão já resolve tokens Bearer do header Authorization automaticamente
+                        // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do Frontend!
+                        .requestMatchers("/", "/index.html", "/login.html", "/estilo.css", "/*.js").permitAll()
+                        .anyRequest().authenticated())
+                // O oauth2ResourceServer padrão já resolve tokens Bearer do header
+                // Authorization automaticamente
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .build();
     }
@@ -67,7 +69,7 @@ public class SecurityConfig {
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization")); // Importante para expor o header do JWT
         configuration.setAllowCredentials(true); // Permite credenciais se usar origin patterns
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -101,8 +103,7 @@ public class SecurityConfig {
     private SecretKey obterSecretKey() {
         return new SecretKeySpec(
                 secret.getBytes(StandardCharsets.UTF_8),
-                "HmacSHA256"
-        );
+                "HmacSHA256");
     }
 
     // ✅ Validação de segurança: HS256 exige mínimo de 32 bytes (256 bits)
@@ -111,8 +112,8 @@ public class SecurityConfig {
         if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < tamanhoMinimo) {
             throw new IllegalArgumentException(
                     "ERRO DE CONFIGURAÇÃO: A propriedade jwt.secret precisa ter pelo menos " +
-                            tamanhoMinimo + " bytes/caracteres! Atual: " + (secret != null ? secret.length() + " chars" : "null")
-            );
+                            tamanhoMinimo + " bytes/caracteres! Atual: "
+                            + (secret != null ? secret.length() + " chars" : "null"));
         }
     }
 }
