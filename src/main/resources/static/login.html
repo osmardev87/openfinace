@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Login | Finace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', Roboto, sans-serif;
+        }
+
+        :root {
+            --primaria: #1e293b;
+            --secundaria: #3b82f6;
+            --secundaria-escura: #2563eb;
+            --sucesso: #10b981;
+            --perigo: #ef4444;
+            --claro: #f8fafc;
+            --cinza-200: #e2e8f0;
+            --cinza-300: #cbd5e1;
+            --cinza-500: #64748b;
+            --cinza-700: #334155;
+            --fundo: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --sombra-forte: 0 12px 40px rgba(0,0,0,0.25);
+            --raio-borda: 18px;
+            --raio-sm: 10px;
+        }
+
+        body {
+            background: var(--fundo);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .logo {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo p {
+            opacity: 0.7;
+            margin-top: 0.3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--raio-borda);
+            padding: 2.5rem;
+            box-shadow: var(--sombra-forte);
+        }
+
+        .troca-form {
+            display: flex;
+            background: var(--claro);
+            border-radius: var(--raio-sm);
+            padding: 0.35rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-form {
+            flex: 1;
+            padding: 0.85rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--cinza-500);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-form.ativo {
+            background: white;
+            color: var(--secundaria);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .painel-form {
+            display: none;
+            animation: entrar 0.35s ease;
+        }
+
+        .painel-form.visivel {
+            display: block;
+        }
+
+        @keyframes entrar {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-size: 1.35rem;
+            color: var(--primaria);
+            margin-bottom: 1.6rem;
+            text-align: center;
+        }
+
+        .grupo {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--cinza-700);
+            font-size: 0.9rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.95rem 1.1rem;
+            border: 2px solid var(--cinza-200);
+            border-radius: var(--raio-sm);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: var(--claro);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secundaria);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
+        }
+
+        input.invalido {
+            border-color: var(--perigo);
+            background: #fef2f2;
+        }
+
+        .linha-dupla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-principal {
+            width: 100%;
+            padding: 1.05rem;
+            border: none;
+            border-radius: var(--raio-sm);
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59,130,246,0.35);
+        }
+
+        .btn-principal:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .mensagem {
+            margin-top: 1.2rem;
+            padding: 1rem;
+            border-radius: var(--raio-sm);
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .msg-sucesso {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .msg-erro {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .opcional::after {
+            content: " (opcional)";
+            font-size: 0.75rem;
+            color: var(--cinza-500);
+            font-weight: normal;
+        }
+
+        @media (max-width: 480px) {
+            .linha-dupla { grid-template-columns: 1fr; }
+            .card { padding: 1.8rem 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo">
+        <h1>📊 Finace</h1>
+        <p>Sistema de Gestão Financeira</p>
+    </div>
+
+    <div class="card">
+        <!-- Botões para trocar entre Login e Cadastro -->
+        <div class="troca-form">
+            <button class="btn-form ativo" data-alvo="login">🔐 Entrar</button>
+            <button class="btn-form" data-alvo="cadastro">👤 Cadastrar</button>
+        </div>
+
+        <!-- ===== FORMULÁRIO DE LOGIN ===== -->
+        <div id="login" class="painel-form visivel">
+            <h2>Entrar na sua conta</h2>
+            <form id="formLogin">
+                <div class="grupo">
+                    <label for="emailLogin">E-mail</label>
+                    <input type="email" id="emailLogin" required placeholder="seu@email.com">
+                </div>
+                <div class="grupo">
+                    <label for="senhaLogin">Senha</label>
+                    <input type="password" id="senhaLogin" required placeholder="Sua senha">
+                </div>
+                <button type="submit" class="btn-principal" id="btnLogin">Entrar</button>
+                <div class="mensagem msg-sucesso" id="msgLoginOk"></div>
+                <div class="mensagem msg-erro" id="msgLoginErro"></div>
+            </form>
+        </div>
+
+        <!-- ===== FORMULÁRIO DE CADASTRO ===== -->
+        <div id="cadastro" class="painel-form">
+            <h2>Criar nova conta</h2>
+            <form id="formCadastro">
+                <div class="grupo">
+                    <label for="nomeCad">Nome Completo</label>
+                    <input type="text" id="nomeCad" required placeholder="Seu nome completo">
+                </div>
+                <div class="grupo">
+                    <label for="emailCad">E-mail</label>
+                    <input type="email" id="emailCad" required placeholder="seu@email.com">
+                </div>
+                <div class="grupo">
+                    <label for="senhaCad">Senha</label>
+                    <input type="password" id="senhaCad" required placeholder="Mínimo 6 caracteres">
+                </div>
+                <div class="linha-dupla">
+                    <div class="grupo">
+                        <label for="cpfCad" class="opcional">CPF</label>
+                        <input type="text" id="cpfCad" placeholder="000.000.000-00">
+                    </div>
+                    <div class="grupo">
+                        <label for="cnpjCad" class="opcional">CNPJ</label>
+                        <input type="text" id="cnpjCad" placeholder="00.000.000/0000-00">
+                    </div>
+                </div>
+                <div class="linha-dupla">
+                    <div class="grupo">
+                        <label for="telefoneCad" class="opcional">Telefone</label>
+                        <input type="text" id="telefoneCad" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="grupo">
+                        <label for="roleCad">Função</label>
+                        <select id="roleCad">
+                            <option value="ADMIN">🔑 Administrador</option>
+                            <option value="VENDEDOR">💼 Vendedor</option>
+                            <option value="CLIENTE">👤 Cliente</option>
+                            <option value="FORNECEDOR">🏪 Fornecedor</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-principal" id="btnCadastro">Criar Conta</button>
+                <div class="mensagem msg-sucesso" id="msgCadOk"></div>
+                <div class="mensagem msg-erro" id="msgCadErro"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// ✅ URL do Backend
+const API_AUTH = 'http://localhost:8089/auth';
+
+// Se já estiver logado → vai direto ao Dashboard
+if (localStorage.getItem('token')) {
+    window.location.href = '/dashboard.html';
+}
+
+// Troca entre Login e Cadastro
+document.querySelectorAll('.btn-form').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-form').forEach(b => b.classList.remove('ativo'));
+        btn.classList.add('ativo');
+
+        const alvo = btn.dataset.alvo;
+        document.querySelectorAll('.painel-form').forEach(p => p.classList.remove('visivel'));
+        document.getElementById(alvo).classList.add('visivel');
+
+        limparMensagens();
+    });
+});
+
+function limparMensagens() {
+    document.querySelectorAll('.mensagem').forEach(m => m.style.display = 'none');
+    document.querySelectorAll('input').forEach(i => i.classList.remove('invalido'));
+}
+
+// ========== LOGIN ==========
+document.getElementById('formLogin').addEventListener('submit', async e => {
+    e.preventDefault();
+    limparMensagens();
+    const btn = document.getElementById('btnLogin');
+
+    const dados = {
+        email: document.getElementById('emailLogin').value.trim(),
+        senha: document.getElementById('senhaLogin').value
+    };
+
+    if (!dados.email || !dados.senha) {
+        document.getElementById('msgLoginErro').textContent = '⚠️ Preencha e-mail e senha!';
+        document.getElementById('msgLoginErro').style.display = 'block';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+
+    try {
+        const res = await fetch(`${API_AUTH}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+
+        const resposta = await res.json();
+
+        if (res.ok && resposta.token) {
+            // ✅ Salva TOKEN e DADOS do USUÁRIO exatos do LoginResponse
+            localStorage.setItem('token', resposta.token);
+            localStorage.setItem('id', resposta.user.id);
+            localStorage.setItem('nome', resposta.user.nome);
+            localStorage.setItem('email', resposta.user.email);
+            localStorage.setItem('cpf', resposta.user.cpf || '');
+            localStorage.setItem('cnpj', resposta.user.cnpj || '');
+            localStorage.setItem('telefone', resposta.user.telefone || '');
+            localStorage.setItem('role', resposta.user.role);
+
+            document.getElementById('msgLoginOk').textContent = '✅ Login realizado com sucesso!';
+            document.getElementById('msgLoginOk').style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1000);
+        } else {
+            document.getElementById('msgLoginErro').textContent = '❌ ' + (resposta.message || 'E-mail ou senha inválidos');
+            document.getElementById('msgLoginErro').style.display = 'block';
+        }
+    } catch (erro) {
+        document.getElementById('msgLoginErro').textContent = '❌ Erro de conexão com o servidor';
+        document.getElementById('msgLoginErro').style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+    }
+});
+
+// ========== CADASTRO ==========
+document.getElementById('formCadastro').addEventListener('submit', async e => {
+    e.preventDefault();
+    limparMensagens();
+    const btn = document.getElementById('btnCadastro');
+
+    const senha = document.getElementById('senhaCad').value;
+    if (senha.length < 6) {
+        document.getElementById('msgCadErro').textContent = '⚠️ Senha deve ter pelo menos 6 caracteres';
+        document.getElementById('msgCadErro').style.display = 'block';
+        document.getElementById('senhaCad').classList.add('invalido');
+        return;
+    }
+
+    const dados = {
+        nome: document.getElementById('nomeCad').value.trim(),
+        email: document.getElementById('emailCad').value.trim(),
+        senha: senha,
+        cpf: document.getElementById('cpfCad').value.trim() || null,
+        cnpj: document.getElementById('cnpjCad').value.trim() || null,
+        telefone: document.getElementById('telefoneCad').value.trim() || null,
+        role: document.getElementById('roleCad').value
+    };
+
+    if (!dados.nome || !dados.email) {
+        document.getElementById('msgCadErro').textContent = '⚠️ Nome e e-mail são obrigatórios!';
+        document.getElementById('msgCadErro').style.display = 'block';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Cadastrando...';
+
+    try {
+        const res = await fetch(`${API_AUTH}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+
+        const resposta = await res.json();
+
+        if (res.status === 201 || res.ok) {
+            document.getElementById('msgCadOk').textContent = '✅ Conta criada! Faça login para entrar.';
+            document.getElementById('msgCadOk').style.display = 'block';
+            e.target.reset();
+
+            // Muda para aba de login após 1.5s
+            setTimeout(() => {
+                document.querySelector('[data-alvo="login"]').click();
+            }, 1500);
+        } else {
+            document.getElementById('msgCadErro').textContent = '❌ ' + (resposta.message || 'Não foi possível cadastrar');
+            document.getElementById('msgCadErro').style.display = 'block';
+        }
+    } catch {
+        document.getElementById('msgCadErro').textContent = '❌ Erro de conexão com o servidor';
+        document.getElementById('msgCadErro').style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Criar Conta';
+    }
+});
+</script>
+</body>
+</html>

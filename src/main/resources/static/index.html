@@ -1,12 +1,527 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>test</title>
+    <title>Dashboard | Finace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Inter', Roboto, sans-serif;
+        }
+
+        :root {
+            --primaria: #1e293b;
+            --secundaria: #3b82f6;
+            --secundaria-escura: #2563eb;
+            --sucesso: #10b981;
+            --sucesso-escura: #059669;
+            --perigo: #ef4444;
+            --perigo-escura: #dc2626;
+            --alerta: #f59e0b;
+            --claro: #f8fafc;
+            --cinza-100: #f1f5f9;
+            --cinza-200: #e2e8f0;
+            --cinza-300: #cbd5e1;
+            --cinza-500: #64748b;
+            --cinza-700: #334155;
+            --texto: #1e293b;
+            --receita: #10b981;
+            --despesa: #ef4444;
+            --pendente: #f59e0b;
+            --pago: #10b981;
+            --cancelado: #94a3b8;
+            --fundo: #f0f4f8;
+            --sombra-suave: 0 2px 8px rgba(0,0,0,0.04);
+            --sombra-media: 0 4px 16px rgba(0,0,0,0.08);
+            --sombra-forte: 0 8px 32px rgba(0,0,0,0.12);
+            --raio-borda: 14px;
+            --raio-borda-sm: 8px;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+            color: var(--texto);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1.4rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--sombra-media);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .usuario-info { display: flex; align-items: center; gap: 1.2rem; }
+        .usuario-info span { font-weight: 500; opacity: 0.95; }
+
+        .btn-sair {
+            background: rgba(239,68,68,0.15);
+            color: #fecaca;
+            border: 1px solid rgba(239,68,68,0.25);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--raio-borda-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+        }
+        .btn-sair:hover { background: var(--perigo); color: white; transform: translateY(-1px); }
+
+        main { max-width: 1280px; margin: 2.5rem auto; padding: 0 1.5rem; }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.8rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: var(--raio-borda);
+            box-shadow: var(--sombra-suave);
+            border: 1px solid rgba(226,232,240,0.8);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; opacity: 0.8;
+        }
+        .card:nth-child(1)::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .card:nth-child(2)::before { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .card:nth-child(3)::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .card:nth-child(4)::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--sombra-forte); }
+        .card h3 { font-size: 0.95rem; color: var(--cinza-700); margin-bottom: 0.8rem; opacity: 0.8; }
+        .card .valor { font-size: 2rem; font-weight: 800; }
+        .card.saldo-positivo .valor { color: var(--sucesso); }
+        .card.saldo-negativo .valor { color: var(--perigo); }
+
+        .abas {
+            display: flex; gap: 0.4rem; margin-bottom: 2rem;
+            background: white; padding: 0.4rem; border-radius: var(--raio-borda);
+            box-shadow: var(--sombra-suave); border: 1px solid var(--cinza-200); flex-wrap: wrap;
+        }
+        .aba {
+            padding: 1rem 1.6rem; cursor: pointer; font-weight: 600; border-radius: 10px;
+            transition: all 0.25s ease; font-size: 0.95rem; color: var(--cinza-500);
+        }
+        .aba.ativa {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .aba:hover:not(.ativa) { background: var(--cinza-100); color: var(--primaria); }
+
+        .painel { display: none; animation: aparece 0.4s ease; }
+        .painel.visivel { display: block; }
+        @keyframes aparece { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+        .form-card {
+            background: white; padding: 2.2rem; border-radius: var(--raio-borda);
+            box-shadow: var(--sombra-suave); border: 1px solid var(--cinza-200); margin-bottom: 2rem;
+        }
+        h2 { color: var(--primaria); margin-bottom: 1.8rem; padding-bottom: 0.8rem; border-bottom: 2px solid var(--cinza-100); font-size: 1.25rem; }
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.4rem; }
+        .form-grupo { display: flex; flex-direction: column; }
+        label { margin-bottom: 0.5rem; font-weight: 600; color: var(--cinza-700); font-size: 0.9rem; }
+        input, select, textarea {
+            padding: 0.95rem 1.1rem; border: 2px solid var(--cinza-200);
+            border-radius: var(--raio-borda-sm); font-size: 0.95rem;
+            transition: all 0.2s ease; background: var(--claro);
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none; border-color: var(--secundaria); background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
+        }
+        input.invalido, select.invalido { border-color: var(--perigo); background: #fef2f2; }
+        .erro-texto { font-size: 0.8rem; color: var(--perigo); margin-top: 0.35rem; display: none; }
+
+        .btn {
+            padding: 1rem 2rem; border: none; border-radius: var(--raio-borda-sm);
+            font-size: 0.98rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease;
+        }
+        .btn-sucesso { background: linear-gradient(135deg, #10b981, #059669); color: white; margin-top: 1.5rem; }
+        .btn-sucesso:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(16,185,129,0.35); }
+        .btn-perigo { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+        .btn-perigo:hover { transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .mensagem {
+            margin-top: 1.3rem; padding: 1.1rem; border-radius: var(--raio-borda-sm);
+            display: none; text-align: center; font-weight: 600;
+        }
+        .msg-sucesso { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+        .msg-erro { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .tabela-container {
+            background: white; padding: 2rem; border-radius: var(--raio-borda);
+            box-shadow: var(--sombra-suave); border: 1px solid var(--cinza-200); overflow-x: auto;
+        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 0.5rem; }
+        th, td { padding: 1.1rem; text-align: left; border-bottom: 1px solid var(--cinza-100); }
+        th { background: linear-gradient(to bottom, #f8fafc, #f1f5f9); color: var(--cinza-700); font-weight: 700; font-size: 0.9rem; }
+        tr:hover td { background: #f8fafc; }
+
+        .tipo-receita { color: var(--receita); font-weight: 700; }
+        .tipo-despesa { color: var(--despesa); font-weight: 700; }
+        .status-pendente { color: var(--pendente); font-weight: 600; background: #fffbeb; padding: 3px 8px; border-radius: 20px; font-size: 0.85rem; }
+        .status-pago { color: var(--pago); font-weight: 600; background: #f0fdf4; padding: 3px 8px; border-radius: 20px; font-size: 0.85rem; }
+        .status-cancelado { color: var(--cancelado); font-weight: 600; background: #f1f5f9; padding: 3px 8px; border-radius: 20px; font-size: 0.85rem; }
+        .sem-dados { text-align: center; padding: 3.5rem !important; color: var(--cinza-500); }
+        .acoes { white-space: nowrap; }
+        .opcional::after { content: " (opcional)"; font-size: 0.75rem; color: var(--cinza-500); font-weight: normal; }
+        .filtros-barra { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .cards { grid-template-columns: 1fr; }
+            th, td { padding: 0.8rem 0.5rem; font-size: 0.85rem; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Lorem ipsum dolor sit amet consectetur.</h1>
-    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Enim voluptas dolore quas. Molestiae, expedita fugiat. Sunt vero non exercitationem accusamus consequatur consequuntur odit provident suscipit! Ratione cum molestiae alias! Culpa.</p>
+
+<header>
+    <h1>📊 Finace | Painel de Gestão</h1>
+    <div class="usuario-info">
+        <span id="nomeUsuario">Carregando...</span>
+        <button class="btn-sair" onclick="sair()">Sair</button>
+    </div>
+</header>
+
+<main>
+    <!-- Cards de Resumo -->
+    <section class="cards">
+        <div class="card"><h3>📈 Total Receitas</h3><div class="valor" id="totalReceitas">R$ 0,00</div></div>
+        <div class="card"><h3>📉 Total Despesas</h3><div class="valor" id="totalDespesas">R$ 0,00</div></div>
+        <div class="card saldo-positivo" id="cardSaldo"><h3>💰 Saldo Atual</h3><div class="valor" id="saldoAtual">R$ 0,00</div></div>
+        <div class="card"><h3>⏳ A Pagar / Receber</h3><div class="valor" id="valorPendente">R$ 0,00</div></div>
+    </section>
+
+    <!-- Abas -->
+    <section class="abas">
+        <div class="aba ativa" data-painel="lancamento">💰 Lançamento</div>
+        <div class="aba" data-painel="transacoes">📋 Transações</div>
+        <div class="aba" data-painel="produtos">📦 Produtos</div>
+    </section>
+
+    <!-- ABA 1: Lançamento -->
+    <section id="lancamento" class="painel visivel">
+        <div class="form-card">
+            <h2>💰 Lançamento de Transação Financeira</h2>
+            <form id="formTransacao">
+                <div class="grid-form">
+                    <div class="form-grupo" style="grid-column:1/-1;">
+                        <label for="descricao">Descrição *</label>
+                        <input type="text" id="descricao" required placeholder="Ex: Venda de produtos...">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="categoria" class="opcional">Categoria</label>
+                        <input type="text" id="categoria" placeholder="Ex: VENDA, ESTOQUE, SERVICO">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="valor">Valor (R$) *</label>
+                        <input type="number" id="valor" step="0.01" required placeholder="0,00">
+                    </div>
+                    <div class="form-grupo">
+                        <label for="tipo">Tipo *</label>
+                        <select id="tipo" required>
+                            <option value="" disabled selected>Selecione...</option>
+                            <option value="RECEITA">✅ Receita (Entrada)</option>
+                            <option value="DESPESA">❌ Despesa (Saída)</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="status" class="opcional">Status</label>
+                        <select id="status">
+                            <option value="PENDENTE" selected>⏳ Pendente</option>
+                            <option value="PAGO">✅ Pago / Recebido</option>
+                            <option value="CANCELADO">❌ Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="formaPagamento" class="opcional">Forma de Pagamento</label>
+                        <select id="formaPagamento">
+                            <option value="" selected>Não informada</option>
+                            <option value="DINHEIRO">💵 Dinheiro</option>
+                            <option value="PIX">🔄 PIX</option>
+                            <option value="CARTAO_CREDITO">💳 Cartão de Crédito</option>
+                            <option value="CARTAO_DEBITO">💳 Cartão de Débito</option>
+                            <option value="BOLETO">📄 Boleto</option>
+                            <option value="TRANSFERENCIA">🏦 Transferência</option>
+                        </select>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="dataVencimento">Data de Vencimento *</label>
+                        <input type="date" id="dataVencimento" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-sucesso" id="btnLancar">✅ Lançar Transação</button>
+                <div class="mensagem msg-sucesso" id="msgSucesso"></div>
+                <div class="mensagem msg-erro" id="msgErro"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- ABA 2: Transações -->
+    <section id="transacoes" class="painel">
+        <div class="tabela-container">
+            <h2>📋 Histórico de Transações</h2>
+            <div class="filtros-barra">
+                <input type="text" id="buscaTransacao" placeholder="🔍 Buscar...">
+                <select id="filtroTipo">
+                    <option value="">Todos os tipos</option>
+                    <option value="RECEITA">Receitas</option>
+                    <option value="DESPESA">Despesas</option>
+                </select>
+            </div>
+            <table><thead><tr><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Tipo</th><th>Status</th><th>Vencimento</th></tr></thead>
+                <tbody id="corpoTabelaTransacoes"><tr><td colspan="6" class="sem-dados">Carregando...</td></tr></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- ABA 3: Produtos -->
+    <section id="produtos" class="painel">
+        <div class="form-card">
+            <h2>📦 Cadastrar Produto</h2>
+            <form id="formProduto">
+                <div class="grid-form">
+                    <div class="form-grupo" style="grid-column:1/-1;">
+                        <label for="nomeProd">Nome *</label>
+                        <input type="text" id="nomeProd" required>
+                    </div>
+                    <div class="form-grupo" style="grid-column:1/-1;">
+                        <label for="descProd" class="opcional">Descrição</label>
+                        <textarea id="descProd" rows="2"></textarea>
+                    </div>
+                    <div class="form-grupo"><label for="qtd">Quantidade *</label><input type="number" id="qtd" min="0" required value="0"></div>
+                    <div class="form-grupo"><label for="qtdMin">Mínima *</label><input type="number" id="qtdMin" min="0" required value="2"></div>
+                    <div class="form-grupo"><label for="custo">Valor Custo *</label><input type="number" id="custo" step="0.01" required value="0"></div>
+                    <div class="form-grupo"><label for="venda">Valor Venda *</label><input type="number" id="venda" step="0.01" required value="0"></div>
+                </div>
+                <button type="submit" class="btn btn-sucesso">✅ Cadastrar Produto</button>
+                <div class="mensagem msg-sucesso" id="msgProdSucesso"></div>
+                <div class="mensagem msg-erro" id="msgProdErro"></div>
+            </form>
+        </div>
+        <div class="tabela-container" style="margin-top:2rem;">
+            <h2>📦 Produtos Cadastrados</h2>
+            <table><thead><tr><th>Nome</th><th>Estoque</th><th>Vl. Venda</th></tr></thead>
+                <tbody id="corpoProdutos"><tr><td colspan="3" class="sem-dados">Carregando...</td></tr></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<script>
+// ✅ URLs CORRIGIDAS conforme arquivo de testes
+const API_BASE = 'http://localhost:8089';
+const API_TRANSACOES = API_BASE + '/transacoes';
+const API_PRODUTOS = API_BASE + '/produto/';
+
+let token = localStorage.getItem('token');
+let listaTransacoes = [];
+let listaProdutos = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    const nome = localStorage.getItem('nome');
+    document.getElementById('nomeUsuario').textContent = nome || 'Usuário';
+    
+    if (!token) {
+        alert('Sessão expirada! Faça login.');
+        window.location.href = '/login.html';
+        return;
+    }
+    document.getElementById('dataVencimento').valueAsDate = new Date();
+    carregarTransacoes();
+    carregarProdutos();
+});
+
+// Troca de abas
+document.querySelectorAll('.aba').forEach(aba => {
+    aba.addEventListener('click', () => {
+        document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+        aba.classList.add('ativa');
+        document.querySelectorAll('.painel').forEach(p => p.classList.remove('visivel'));
+        document.getElementById(aba.dataset.painel).classList.add('visivel');
+        if (aba.dataset.painel === 'transacoes') carregarTransacoes();
+        if (aba.dataset.painel === 'produtos') carregarProdutos();
+    });
+});
+
+function sair() { localStorage.clear(); window.location.href = '/login.html'; }
+function limparMensagens() { document.querySelectorAll('.mensagem').forEach(m => m.style.display = 'none'); }
+function formatarMoeda(v) { return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function formatarData(d) { return d ? new Date(d+'T00:00:00').toLocaleDateString('pt-BR') : '—'; }
+function fmtStatus(s) { return {PENDENTE:'⏳ Pendente',PAGO:'✅ Pago',CANCELADO:'❌ Cancelado'}[s]||s; }
+
+// ========== LANÇAR TRANSAÇÃO ==========
+document.getElementById('formTransacao').addEventListener('submit', async e => {
+    e.preventDefault(); limparMensagens();
+    const btn = document.getElementById('btnLancar');
+
+    const dados = {
+        descricao: document.getElementById('descricao').value.trim(),
+        categoria: document.getElementById('categoria').value.trim()||null,
+        valor: parseFloat(document.getElementById('valor').value),
+        tipo: document.getElementById('tipo').value,
+        status: document.getElementById('status').value,
+        formaPagamento: document.getElementById('formaPagamento').value||null,
+        dataVencimento: document.getElementById('dataVencimento').value
+    };
+
+    if (!dados.descricao || !dados.valor || !dados.tipo || !dados.dataVencimento) {
+        alert('Preencha todos os campos obrigatórios!'); return;
+    }
+
+    btn.disabled = true; btn.textContent = 'Enviando...';
+    try {
+        const res = await fetch(API_TRANSACOES, {
+            method: 'POST',
+            headers: { 'Content-Type':'application/json', 'Authorization':'Bearer '+token },
+            body: JSON.stringify(dados)
+        });
+        if (res.status===201 || res.ok) {
+            document.getElementById('msgSucesso').textContent = '✅ Transação lançada!';
+            document.getElementById('msgSucesso').style.display='block';
+            e.target.reset();
+            document.getElementById('dataVencimento').valueAsDate = new Date();
+            carregarTransacoes();
+        } else {
+            const erro = await res.json().catch(()=>({message:'Erro desconhecido'}));
+            document.getElementById('msgErro').textContent = '❌ '+(erro.message||'Verifique os dados');
+            document.getElementById('msgErro').style.display='block';
+        }
+    } catch {
+        document.getElementById('msgErro').textContent = '❌ Erro de conexão';
+        document.getElementById('msgErro').style.display='block';
+    } finally { btn.disabled=false; btn.textContent='✅ Lançar Transação'; }
+});
+
+// ========== CARREGAR TRANSAÇÕES ==========
+async function carregarTransacoes() {
+    try {
+        const res = await fetch(API_TRANSACOES+"/", { headers: {'Authorization':'Bearer '+token} });
+        if (!res.ok) throw new Error();
+        listaTransacoes = await res.json();
+        renderTransacoes(listaTransacoes);
+        atualizarCards(listaTransacoes);
+    } catch {
+        document.getElementById('corpoTabelaTransacoes').innerHTML = '<tr><td colspan="6" class="sem-dados">❌ Erro ao carregar</td></tr>';
+    }
+}
+
+function renderTransacoes(lista) {
+    const b = document.getElementById('corpoTabelaTransacoes');
+    if (!lista.length) { b.innerHTML='<tr><td colspan="6" class="sem-dados">Nenhuma transação</td></tr>'; return; }
+    b.innerHTML = lista.map(t=>{
+        const corTipo = t.tipo==='RECEITA'?'tipo-receita':'tipo-despesa';
+        const corSts = {PENDENTE:'status-pendente',PAGO:'status-pago',CANCELADO:'status-cancelado'}[t.status]||'';
+        return `<tr>
+            <td><strong>${t.descricao}</strong></td>
+            <td>${t.categoria||'—'}</td>
+            <td>${formatarMoeda(t.valor)}</td>
+            <td class="${corTipo}">${t.tipo}</td>
+            <td><span class="${corSts}">${fmtStatus(t.status)}</span></td>
+            <td>${formatarData(t.dataVencimento)}</td>
+        </tr>`;
+    }).join('');
+}
+
+function atualizarCards(lista) {
+    const rec = lista.filter(t=>t.tipo==='RECEITA'&&t.status!=='CANCELADO').reduce((s,t)=>s+Number(t.valor),0);
+    const desp = lista.filter(t=>t.tipo==='DESPESA'&&t.status!=='CANCELADO').reduce((s,t)=>s+Number(t.valor),0);
+    const pen = lista.filter(t=>t.status==='PENDENTE').reduce((s,t)=>s+Number(t.valor),0);
+    const saldo = rec - desp;
+
+    document.getElementById('totalReceitas').textContent = formatarMoeda(rec);
+    document.getElementById('totalDespesas').textContent = formatarMoeda(desp);
+    document.getElementById('saldoAtual').textContent = formatarMoeda(saldo);
+    document.getElementById('valorPendente').textContent = formatarMoeda(pen);
+
+    const cardSaldo = document.getElementById('cardSaldo');
+    cardSaldo.classList.remove('saldo-positivo','saldo-negativo');
+    cardSaldo.classList.add(saldo>=0?'saldo-positivo':'saldo-negativo');
+}
+
+// ========== CADASTRAR PRODUTO ==========
+document.getElementById('formProduto').addEventListener('submit', async e => {
+    e.preventDefault(); limparMensagens();
+    const btn = e.target.querySelector('button');
+    const dados = {
+        nome: document.getElementById('nomeProd').value.trim(),
+        descricao: document.getElementById('descProd').value.trim()||null,
+        quantidade: Number(document.getElementById('qtd').value),
+        quantidadeMinima: Number(document.getElementById('qtdMin').value),
+        valorCusto: parseFloat(document.getElementById('custo').value),
+        valorVenda: parseFloat(document.getElementById('venda').value)
+    };
+
+    btn.disabled=true; btn.textContent='Cadastrando...';
+    try {
+        const res = await fetch(API_PRODUTOS, {
+            method:'POST',
+            headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+            body: JSON.stringify(dados)
+        });
+        if (res.status===201 || res.ok) {
+            document.getElementById('msgProdSucesso').textContent='✅ Produto cadastrado!';
+            document.getElementById('msgProdSucesso').style.display='block';
+            e.target.reset(); carregarProdutos();
+        } else {
+            document.getElementById('msgProdErro').textContent='❌ Erro ao cadastrar';
+            document.getElementById('msgProdErro').style.display='block';
+        }
+    } catch {
+        document.getElementById('msgProdErro').textContent='❌ Erro de conexão';
+        document.getElementById('msgProdErro').style.display='block';
+    } finally { btn.disabled=false; btn.textContent='✅ Cadastrar Produto'; }
+});
+
+// ========== CARREGAR PRODUTOS ==========
+async function carregarProdutos() {
+    try {
+        const res = await fetch(API_PRODUTOS, { headers: {'Authorization':'Bearer '+token} });
+        if (!res.ok) throw new Error();
+        listaProdutos = await res.json(); renderProdutos(listaProdutos);
+    } catch {
+        document.getElementById('corpoProdutos').innerHTML='<tr><td colspan="3" class="sem-dados">❌ Erro ao carregar</td></tr>';
+    }
+}
+
+function renderProdutos(lista) {
+    const b = document.getElementById('corpoProdutos');
+    if (!lista.length) { b.innerHTML='<tr><td colspan="3" class="sem-dados">Nenhum produto cadastrado</td></tr>'; return; }
+    b.innerHTML = lista.map(p=>`<tr><td><strong>${p.nome}</strong></td><td>${p.quantidade}</td><td>${formatarMoeda(p.valorVenda)}</td></tr>`).join('');
+}
+
+// Filtros
+document.getElementById('buscaTransacao')?.addEventListener('input', aplicarFiltros);
+document.getElementById('filtroTipo')?.addEventListener('input', aplicarFiltros);
+function aplicarFiltros(lista = listaTransacoes) {
+    const termo = document.getElementById('buscaTransacao')?.value.toLowerCase().trim()||'';
+    const filtroTipo = document.getElementById('filtroTipo')?.value||'';
+    let f = lista;
+    if (termo) f = f.filter(t=>t.descricao?.toLowerCase().includes(termo));
+    if (filtroTipo) f = f.filter(t=>t.tipo===filtroTipo);
+    renderTransacoes(f);
+}
+</script>
 </body>
 </html>

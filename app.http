@@ -5,8 +5,8 @@ POST http://localhost:8089/auth/login
 Content-Type: application/json
 
 {
-  "email": "osmar.dev@gmail.com",
-  "senha": "Osmar4547*"
+  "email": "osmar.gsilva1987@gmail.com",
+  "senha": "123456789"
 }
 
 ### ================================
@@ -20,7 +20,7 @@ Content-Type: application/json
   "nome": "José Osmar",
   "email": "osmar.dev@gmail.com",
   "senha": "Osmar4547*",
-  "cpf": "12345678909",
+  "cpf": "12345678907",
   "cnpj": "12345678901234",
   "telefone": "87999998888",
   "role": "ADMIN"
