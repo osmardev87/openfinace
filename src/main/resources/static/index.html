@@ -421,6 +421,12 @@
     </div>
 
     <script>
+        if (!token) {
+            console.warn('Sessão expirada! Redirecionando para login...');
+            setTimeout(() => {
+                window.location.href = '/login.html';
+            }, 2000);
+        }
         const API_BASE = "https://openfinace.onrender.com";
         const API_TRANSACOES = API_BASE + "/transacoes";
         const API_PRODUTOS = API_BASE + "/produto/";
