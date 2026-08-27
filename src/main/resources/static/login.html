@@ -1,451 +1,386 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔐 Login | Finace</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        secondary: '#2563eb',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for crisp icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Inter', Roboto, sans-serif;
-        }
-
-        :root {
-            --primaria: #1e293b;
-            --secundaria: #3b82f6;
-            --secundaria-escura: #2563eb;
-            --sucesso: #10b981;
-            --perigo: #ef4444;
-            --claro: #f8fafc;
-            --cinza-200: #e2e8f0;
-            --cinza-300: #cbd5e1;
-            --cinza-500: #64748b;
-            --cinza-700: #334155;
-            --fundo: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            --sombra-forte: 0 12px 40px rgba(0,0,0,0.25);
-            --raio-borda: 18px;
-            --raio-sm: 10px;
-        }
-
-        body {
-            background: var(--fundo);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 440px;
-        }
-
-        .logo {
-            text-align: center;
-            color: white;
-            margin-bottom: 2rem;
-        }
-
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .logo p {
-            opacity: 0.7;
-            margin-top: 0.3rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: var(--raio-borda);
-            padding: 2.5rem;
-            box-shadow: var(--sombra-forte);
-        }
-
-        .troca-form {
-            display: flex;
-            background: var(--claro);
-            border-radius: var(--raio-sm);
-            padding: 0.35rem;
-            margin-bottom: 2rem;
-        }
-
-        .btn-form {
-            flex: 1;
-            padding: 0.85rem;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--cinza-500);
-            cursor: pointer;
-            transition: all 0.25s ease;
-        }
-
-        .btn-form.ativo {
-            background: white;
-            color: var(--secundaria);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .painel-form {
-            display: none;
-            animation: entrar 0.35s ease;
-        }
-
-        .painel-form.visivel {
-            display: block;
-        }
-
-        @keyframes entrar {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        h2 {
-            font-size: 1.35rem;
-            color: var(--primaria);
-            margin-bottom: 1.6rem;
-            text-align: center;
+        .animate-fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-
-        .grupo {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--cinza-700);
-            font-size: 0.9rem;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 0.95rem 1.1rem;
-            border: 2px solid var(--cinza-200);
-            border-radius: var(--raio-sm);
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            background: var(--claro);
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--secundaria);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(59,130,246,0.12);
-        }
-
-        input.invalido {
-            border-color: var(--perigo);
-            background: #fef2f2;
-        }
-
-        .linha-dupla {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .btn-principal {
-            width: 100%;
-            padding: 1.05rem;
-            border: none;
-            border-radius: var(--raio-sm);
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            transition: all 0.25s ease;
-        }
-
-        .btn-principal:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59,130,246,0.35);
-        }
-
-        .btn-principal:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .mensagem {
-            margin-top: 1.2rem;
-            padding: 1rem;
-            border-radius: var(--raio-sm);
-            text-align: center;
-            font-weight: 600;
-            display: none;
-        }
-
-        .msg-sucesso {
-            background: #ecfdf5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .msg-erro {
-            background: #fef2f2;
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        .opcional::after {
-            content: " (opcional)";
-            font-size: 0.75rem;
-            color: var(--cinza-500);
-            font-weight: normal;
-        }
-
-        @media (max-width: 480px) {
-            .linha-dupla { grid-template-columns: 1fr; }
-            .card { padding: 1.8rem 1.4rem; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
         }
     </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-slate-800 min-h-full flex items-center justify-center p-4 sm:p-6 selection:bg-blue-500 selection:text-white">
 
-<div class="container">
-    <div class="logo">
-        <h1>📊 Finace</h1>
-        <p>Sistema de Gestão Financeira</p>
-    </div>
-
-    <div class="card">
-        <!-- Botões para trocar entre Login e Cadastro -->
-        <div class="troca-form">
-            <button class="btn-form ativo" data-alvo="login">🔐 Entrar</button>
-            <button class="btn-form" data-alvo="cadastro">👤 Cadastrar</button>
+    <div class="w-full max-w-md space-y-6 animate-fade-in">
+        
+        <!-- Logo Header -->
+        <div class="text-center space-y-2">
+            <div class="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 items-center justify-center shadow-lg shadow-blue-500/30 text-white text-2xl mb-1">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Finace</h1>
+            <p class="text-xs sm:text-sm text-slate-400 font-medium">Sua Gestão Financeira Inteligente</p>
         </div>
 
-        <!-- ===== FORMULÁRIO DE LOGIN ===== -->
-        <div id="login" class="painel-form visivel">
-            <h2>Entrar na sua conta</h2>
-            <form id="formLogin">
-                <div class="grupo">
-                    <label for="emailLogin">E-mail</label>
-                    <input type="email" id="emailLogin" required placeholder="seu@email.com">
+        <!-- Glassmorphism Card -->
+        <div class="glass-card p-6 sm:p-8 rounded-3xl shadow-2xl border border-slate-700/50 space-y-6">
+            
+            <!-- Switch Tabs (Entrar / Cadastrar) -->
+            <div class="flex bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
+                <button type="button" onclick="alternarPainel('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm">
+                    <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Entrar
+                </button>
+                <button type="button" onclick="alternarPainel('registro')" id="btnTabRegistro" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-800">
+                    <i class="fa-solid fa-user-plus mr-1.5"></i> Criar Conta
+                </button>
+            </div>
+
+            <form id="formLogin" class="painel-form visivel space-y-4">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-bold text-slate-900">Acesse sua conta</h2>
+                    <p class="text-xs text-slate-500">Informe suas credenciais para continuar</p>
                 </div>
-                <div class="grupo">
-                    <label for="senhaLogin">Senha</label>
-                    <input type="password" id="senhaLogin" required placeholder="Sua senha">
+
+                <div class="space-y-4 pt-2">
+                    <div class="space-y-1.5">
+                        <label for="loginEmail" class="text-xs font-bold uppercase tracking-wider text-slate-600">E-mail <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                            <input type="email" id="loginEmail" required placeholder="seu@email.com" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="loginSenha" class="text-xs font-bold uppercase tracking-wider text-slate-600">Senha <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <input type="password" id="loginSenha" required placeholder="••••••••" class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <button type="button" onclick="alternarVisibilidadeSenha('loginSenha', this)" class="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 text-sm">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn-principal" id="btnLogin">Entrar</button>
-                <div class="mensagem msg-sucesso" id="msgLoginOk"></div>
-                <div class="mensagem msg-erro" id="msgLoginErro"></div>
+
+                <button type="submit" id="btnSubmitLogin" class="w-full mt-2 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar no Sistema
+                </button>
+
+                <div id="msgLoginErro" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-rose-50 text-rose-700 border border-rose-200"></div>
             </form>
-        </div>
 
-        <!-- ===== FORMULÁRIO DE CADASTRO ===== -->
-        <div id="cadastro" class="painel-form">
-            <h2>Criar nova conta</h2>
-            <form id="formCadastro">
-                <div class="grupo">
-                    <label for="nomeCad">Nome Completo</label>
-                    <input type="text" id="nomeCad" required placeholder="Seu nome completo">
+            <form id="formRegistro" class="painel-form hidden space-y-4">
+                <div class="space-y-1">
+                    <h2 class="text-lg font-bold text-slate-900">Cadastre-se grátis</h2>
+                    <p class="text-xs text-slate-500">Crie sua conta em segundos</p>
                 </div>
-                <div class="grupo">
-                    <label for="emailCad">E-mail</label>
-                    <input type="email" id="emailCad" required placeholder="seu@email.com">
-                </div>
-                <div class="grupo">
-                    <label for="senhaCad">Senha</label>
-                    <input type="password" id="senhaCad" required placeholder="Mínimo 6 caracteres">
-                </div>
-                <div class="linha-dupla">
-                    <div class="grupo">
-                        <label for="cpfCad" class="opcional">CPF</label>
-                        <input type="text" id="cpfCad" placeholder="000.000.000-00">
+
+                <div class="space-y-3 pt-2">
+                    <div class="space-y-1.5">
+                        <label for="regNome" class="text-xs font-bold uppercase tracking-wider text-slate-600">Nome Completo / Razão Social <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="regNome" required placeholder="Seu nome ou da empresa" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
                     </div>
-                    <div class="grupo">
-                        <label for="cnpjCad" class="opcional">CNPJ</label>
-                        <input type="text" id="cnpjCad" placeholder="00.000.000/0000-00">
+
+                    <div class="space-y-1.5">
+                        <label for="regEmail" class="text-xs font-bold uppercase tracking-wider text-slate-600">E-mail <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-envelope"></i>
+                            </span>
+                            <input type="email" id="regEmail" required placeholder="seu@email.com" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
                     </div>
-                </div>
-                <div class="linha-dupla">
-                    <div class="grupo">
-                        <label for="telefoneCad" class="opcional">Telefone</label>
-                        <input type="text" id="telefoneCad" placeholder="(00) 00000-0000">
-                    </div>
-                    <div class="grupo">
-                        <label for="roleCad">Função</label>
-                        <select id="roleCad">
-                            <option value="ADMIN">🔑 Administrador</option>
-                            <option value="VENDEDOR">💼 Vendedor</option>
-                            <option value="CLIENTE">👤 Cliente</option>
-                            <option value="FORNECEDOR">🏪 Fornecedor</option>
+
+                    <div class="space-y-1.5">
+                        <label for="regPerfil" class="text-xs font-bold uppercase tracking-wider text-slate-600">Perfil de Acesso <span class="text-rose-500">*</span></label>
+                        <select id="regPerfil" onchange="alternarCamposPerfil()" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <option value="PESSOAL" selected>👤 Pessoal</option>
+                            <option value="EMPRESA">🏢 Empresa / Negócio</option>
                         </select>
                     </div>
+
+                    <!-- Campo CPF (Aparece se Pessoal) -->
+                    <div id="containerCpf" class="space-y-1.5">
+                        <label for="regCpf" class="text-xs font-bold uppercase tracking-wider text-slate-600">CPF <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-id-card"></i>
+                            </span>
+                            <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCpf(this)" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Campo CNPJ (Aparece se Empresa) -->
+                    <div id="containerCnpj" class="space-y-1.5 hidden">
+                        <label for="regCnpj" class="text-xs font-bold uppercase tracking-wider text-slate-600">CNPJ <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-building"></i>
+                            </span>
+                            <input type="text" id="regCnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCnpj(this)" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="regSenha" class="text-xs font-bold uppercase tracking-wider text-slate-600">Senha <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
+                                <i class="fa-solid fa-lock"></i>
+                            </span>
+                            <input type="password" id="regSenha" required placeholder="Mínimo 6 caracteres" class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
+                            <button type="button" onclick="alternarVisibilidadeSenha('regSenha', this)" class="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 text-sm">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn-principal" id="btnCadastro">Criar Conta</button>
-                <div class="mensagem msg-sucesso" id="msgCadOk"></div>
-                <div class="mensagem msg-erro" id="msgCadErro"></div>
+
+                <button type="submit" id="btnSubmitRegistro" class="w-full mt-2 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-check"></i> Concluir Cadastro
+                </button>
+
+                <div id="msgRegistroSucesso" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-emerald-50 text-emerald-700 border border-emerald-200"></div>
+                <div id="msgRegistroErro" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-rose-50 text-rose-700 border border-rose-200"></div>
             </form>
+
         </div>
+
+        <!-- Footer Note -->
+        <p class="text-center text-xs text-slate-500 font-medium">
+            &copy; 2026 Finace. Todos os direitos reservados.
+        </p>
+
     </div>
-</div>
 
-<script>
-// ✅ URL do Backend
-const API_AUTH = 'http://localhost:8089/auth';
+    <script>
+        const API_BASE = 'https://cuddly-couscous-q7rv4vpx4jpj296rq-8089.app.github.dev';
+        const API_LOGIN = API_BASE + '/auth/login';
+        const API_REGISTRO = API_BASE + '/auth/registrar';
 
-// Se já estiver logado → vai direto ao Dashboard
-if (localStorage.getItem('token')) {
-    window.location.href = '/dashboard.html';
-}
+        function alternarPainel(painel) {
+            const formLogin = document.getElementById('formLogin');
+            const formRegistro = document.getElementById('formRegistro');
+            const btnTabLogin = document.getElementById('btnTabLogin');
+            const btnTabRegistro = document.getElementById('btnTabRegistro');
 
-// Troca entre Login e Cadastro
-document.querySelectorAll('.btn-form').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-form').forEach(b => b.classList.remove('ativo'));
-        btn.classList.add('ativo');
+            if (painel === 'login') {
+                formLogin.classList.remove('hidden');
+                formLogin.classList.add('visivel', 'animate-fade-in');
+                formRegistro.classList.add('hidden');
+                formRegistro.classList.remove('visivel');
 
-        const alvo = btn.dataset.alvo;
-        document.querySelectorAll('.painel-form').forEach(p => p.classList.remove('visivel'));
-        document.getElementById(alvo).classList.add('visivel');
+                btnTabLogin.className = "flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm";
+                btnTabRegistro.className = "flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-800";
+            } else {
+                formRegistro.classList.remove('hidden');
+                formRegistro.classList.add('visivel', 'animate-fade-in');
+                formLogin.classList.add('hidden');
+                formLogin.classList.remove('visivel');
 
-        limparMensagens();
-    });
-});
+                btnTabRegistro.className = "flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-emerald-600 shadow-sm";
+                btnTabLogin.className = "flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-800";
+            }
+        }
 
-function limparMensagens() {
-    document.querySelectorAll('.mensagem').forEach(m => m.style.display = 'none');
-    document.querySelectorAll('input').forEach(i => i.classList.remove('invalido'));
-}
+        function alternarVisibilidadeSenha(idInput, btn) {
+            const input = document.getElementById(idInput);
+            const icone = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icone.className = 'fa-solid fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icone.className = 'fa-solid fa-eye';
+            }
+        }
 
-// ========== LOGIN ==========
-document.getElementById('formLogin').addEventListener('submit', async e => {
-    e.preventDefault();
-    limparMensagens();
-    const btn = document.getElementById('btnLogin');
+        function alternarCamposPerfil() {
+            const perfil = document.getElementById('regPerfil').value;
+            const containerCpf = document.getElementById('containerCpf');
+            const containerCnpj = document.getElementById('containerCnpj');
+            const inputCpf = document.getElementById('regCpf');
+            const inputCnpj = document.getElementById('regCnpj');
 
-    const dados = {
-        email: document.getElementById('emailLogin').value.trim(),
-        senha: document.getElementById('senhaLogin').value
-    };
+            if (perfil === 'EMPRESA') {
+                containerCpf.classList.add('hidden');
+                inputCpf.removeAttribute('required');
+                inputCpf.value = '';
 
-    if (!dados.email || !dados.senha) {
-        document.getElementById('msgLoginErro').textContent = '⚠️ Preencha e-mail e senha!';
-        document.getElementById('msgLoginErro').style.display = 'block';
-        return;
-    }
+                containerCnpj.classList.remove('hidden');
+                inputCnpj.setAttribute('required', 'true');
+            } else {
+                containerCnpj.classList.add('hidden');
+                inputCnpj.removeAttribute('required');
+                inputCnpj.value = '';
 
-    btn.disabled = true;
-    btn.textContent = 'Entrando...';
+                containerCpf.classList.remove('hidden');
+                inputCpf.setAttribute('required', 'true');
+            }
+        }
 
-    try {
-        const res = await fetch(`${API_AUTH}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
+        function mascaraCpf(i) {
+            let v = i.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            i.value = v;
+        }
+
+        function mascaraCnpj(i) {
+            let v = i.value.replace(/\D/g, '');
+            if (v.length > 14) v = v.slice(0, 14);
+            v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+            v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+            v = v.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+            i.value = v;
+        }
+
+        // Evento de Login
+        document.getElementById('formLogin').addEventListener('submit', async e => {
+            e.preventDefault();
+            const msgErro = document.getElementById('msgLoginErro');
+            msgErro.classList.add('hidden');
+
+            const btn = document.getElementById('btnSubmitLogin');
+            const email = document.getElementById('loginEmail').value.trim();
+            const senha = document.getElementById('loginSenha').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Autenticando...';
+
+            try {
+                const res = await fetch(API_LOGIN, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('token', data.token || data.accessToken || data);
+                    localStorage.setItem('nome', data.nome || email.split('@')[0]);
+                    
+                    mostrarNotificacaoToast('Login efetuado com sucesso! Redirecionando...', 'sucesso');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    const errData = await res.json().catch(() => ({ message: 'Credenciais inválidas' }));
+                    msgErro.textContent = '❌ ' + (errData.message || 'E-mail ou senha incorretos.');
+                    msgErro.classList.remove('hidden');
+                }
+            } catch (err) {
+                msgErro.textContent = '❌ Erro de conexão com o servidor.';
+                msgErro.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar no Sistema';
+            }
         });
 
-        const resposta = await res.json();
+        // Evento de Registro
+        document.getElementById('formRegistro').addEventListener('submit', async e => {
+            e.preventDefault();
+            const msgErro = document.getElementById('msgRegistroErro');
+            const msgSucesso = document.getElementById('msgRegistroSucesso');
+            msgErro.classList.add('hidden');
+            msgSucesso.classList.add('hidden');
 
-        if (res.ok && resposta.token) {
-            // ✅ Salva TOKEN e DADOS do USUÁRIO exatos do LoginResponse
-            localStorage.setItem('token', resposta.token);
-            localStorage.setItem('id', resposta.user.id);
-            localStorage.setItem('nome', resposta.user.nome);
-            localStorage.setItem('email', resposta.user.email);
-            localStorage.setItem('cpf', resposta.user.cpf || '');
-            localStorage.setItem('cnpj', resposta.user.cnpj || '');
-            localStorage.setItem('telefone', resposta.user.telefone || '');
-            localStorage.setItem('role', resposta.user.role);
+            const btn = document.getElementById('btnSubmitRegistro');
+            const nome = document.getElementById('regNome').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const senha = document.getElementById('regSenha').value;
+            const perfil = document.getElementById('regPerfil').value;
+            const cpf = document.getElementById('regCpf').value.trim();
+            const cnpj = document.getElementById('regCnpj').value.trim();
 
-            document.getElementById('msgLoginOk').textContent = '✅ Login realizado com sucesso!';
-            document.getElementById('msgLoginOk').style.display = 'block';
+            if (senha.length < 6) {
+                msgErro.textContent = '❌ A senha deve ter pelo menos 6 caracteres.';
+                msgErro.classList.remove('hidden');
+                return;
+            }
 
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1000);
-        } else {
-            document.getElementById('msgLoginErro').textContent = '❌ ' + (resposta.message || 'E-mail ou senha inválidos');
-            document.getElementById('msgLoginErro').style.display = 'block';
-        }
-    } catch (erro) {
-        document.getElementById('msgLoginErro').textContent = '❌ Erro de conexão com o servidor';
-        document.getElementById('msgLoginErro').style.display = 'block';
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Entrar';
-    }
-});
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Cadastrando...';
 
-// ========== CADASTRO ==========
-document.getElementById('formCadastro').addEventListener('submit', async e => {
-    e.preventDefault();
-    limparMensagens();
-    const btn = document.getElementById('btnCadastro');
+            try {
+                const res = await fetch(API_REGISTRO, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, email, senha, perfil, cpf: perfil === 'PESSOAL' ? cpf : null, cnpj: perfil === 'EMPRESA' ? cnpj : null })
+                });
 
-    const senha = document.getElementById('senhaCad').value;
-    if (senha.length < 6) {
-        document.getElementById('msgCadErro').textContent = '⚠️ Senha deve ter pelo menos 6 caracteres';
-        document.getElementById('msgCadErro').style.display = 'block';
-        document.getElementById('senhaCad').classList.add('invalido');
-        return;
-    }
-
-    const dados = {
-        nome: document.getElementById('nomeCad').value.trim(),
-        email: document.getElementById('emailCad').value.trim(),
-        senha: senha,
-        cpf: document.getElementById('cpfCad').value.trim() || null,
-        cnpj: document.getElementById('cnpjCad').value.trim() || null,
-        telefone: document.getElementById('telefoneCad').value.trim() || null,
-        role: document.getElementById('roleCad').value
-    };
-
-    if (!dados.nome || !dados.email) {
-        document.getElementById('msgCadErro').textContent = '⚠️ Nome e e-mail são obrigatórios!';
-        document.getElementById('msgCadErro').style.display = 'block';
-        return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Cadastrando...';
-
-    try {
-        const res = await fetch(`${API_AUTH}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
+                if (res.status === 201 || res.ok) {
+                    msgSucesso.textContent = '✅ Cadastro realizado com sucesso! Faça login.';
+                    msgSucesso.classList.remove('hidden');
+                    document.getElementById('formRegistro').reset();
+                    alternarCamposPerfil();
+                    setTimeout(() => {
+                        alternarPainel('login');
+                    }, 1500);
+                } else {
+                    const errData = await res.json().catch(() => ({ message: 'Erro ao cadastrar' }));
+                    msgErro.textContent = '❌ ' + (errData.message || 'Verifique os dados informados.');
+                    msgErro.classList.remove('hidden');
+                }
+            } catch (err) {
+                msgErro.textContent = '❌ Erro de conexão com o servidor.';
+                msgErro.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-user-check"></i> Concluir Cadastro';
+            }
         });
 
-        const resposta = await res.json();
-
-        if (res.status === 201 || res.ok) {
-            document.getElementById('msgCadOk').textContent = '✅ Conta criada! Faça login para entrar.';
-            document.getElementById('msgCadOk').style.display = 'block';
-            e.target.reset();
-
-            // Muda para aba de login após 1.5s
-            setTimeout(() => {
-                document.querySelector('[data-alvo="login"]').click();
-            }, 1500);
-        } else {
-            document.getElementById('msgCadErro').textContent = '❌ ' + (resposta.message || 'Não foi possível cadastrar');
-            document.getElementById('msgCadErro').style.display = 'block';
+        function mostrarNotificacaoToast(texto, tipo) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-6 right-6 z-50 px-6 py-4 rounded-2xl shadow-xl text-white text-sm font-bold flex items-center gap-3 animate-fade-in ${tipo === 'erro' ? 'bg-rose-600' : 'bg-emerald-600'}`;
+            toast.innerHTML = `<i class="fa-solid ${tipo === 'erro' ? 'fa-triangle-exclamation' : 'fa-circle-check'} text-lg"></i> ${texto}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
-    } catch {
-        document.getElementById('msgCadErro').textContent = '❌ Erro de conexão com o servidor';
-        document.getElementById('msgCadErro').style.display = 'block';
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Criar Conta';
-    }
-});
-</script>
+    </script>
 </body>
 </html>

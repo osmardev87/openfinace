@@ -1,7 +1,7 @@
 package tech.gomesdev87.finace.produto;
 
 import java.util.List;
-import java.util.UUID;
+
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import tech.gomesdev87.finace.auth.Token;
-import tech.gomesdev87.finace.auth.dto.JwtUserData;
 import tech.gomesdev87.finace.produto.dto.ProdutoRequestDTO;
 
 @RestController

@@ -46,7 +46,7 @@ Content-Type: application/json
 
 
 ### ⚠️ Copie o token da resposta acima e cole na linha abaixo:
- @token = eyJraWQiOiJjb25lY3RhZmluYWNlLXNlY3JldC1rZXkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmaW5hY2UiLCJzdWIiOiJlMTQyNDI5Yy1kZWIyLTQ3NTYtYmQxYy02YjkxODViZmQ0ZjEiLCJleHAiOjE3OTAzNDY1NTIsImlhdCI6MTc4Nzc1NDU1MiwiZW1haWwiOiJvc21hci5kZXZAZ21haWwuY29tIn0.AWN7qQLRQZIo_OEpuvVoshTSh9wAXTkpcyzr79n_5yQ
+ @token = eyJraWQiOiJjb25lY3RhZmluYWNlLXNlY3JldC1rZXkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmaW5hY2UiLCJzdWIiOiIwYjZjMzE1OS0xNDUyLTQ5OTYtODZhZS00MzQ5M2RmMjQyNjEiLCJleHAiOjE3OTA0MjM0MDUsImlhdCI6MTc4NzgzMTQwNSwiZW1haWwiOiJvc21hci5nc2lsdmExOTg3QGdtYWlsLmNvbSJ9.6X4I5K-uaoXeOLsP6gINIMqUpR23QBXkteM0-e1uuH4
 
 
 ### ================================
@@ -144,3 +144,12 @@ Authorization: Bearer {{token}}
   "parceiroId": "93bfb2ec-2b15-4e00-a2c7-bfa47fa2bbd2",
   "entradaNotaId": "123e4567-e89b-12d3-a456-426614174000"
 }
+
+
+
+### ================================
+### ✅ 4. TRANSAÇÃO COMPLETA (com tudo)
+### ================================
+GET  http://localhost:8089/transacoes/
+Content-Type: application/json
+Authorization: Bearer {{token}}
