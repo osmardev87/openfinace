@@ -112,11 +112,6 @@
             <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="transacoes">
                 <i class="fa-solid fa-list-check w-5 text-center text-lg"></i> Transações
             </button>
-
-            <!-- <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-500 mt-6 mb-2">Estoque</p>
-            <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="produtos">
-                <i class="fa-solid fa-boxes-stacked w-5 text-center text-lg"></i> Produtos
-            </button> -->
         </nav>
 
         <div class="p-4 border-t border-slate-700/40">
@@ -289,7 +284,7 @@
         <section id="transacoes" class="painel hidden animate-fade-in space-y-6">
             <div>
                 <h2 class="text-2xl font-bold text-white">Histórico de Transações</h2>
-                <p class="text-slate-400 text-sm">Visualize e filtre suas entradas e saídas</p>
+                <p class="text-slate-400 text-sm">Visualize, filtre, edite e exclua suas entradas e saídas</p>
             </div>
             <div class="card p-6 sm:p-8 rounded-2xl space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/40">
@@ -316,45 +311,11 @@
                                 <th class="p-4">Forma Pgto.</th>
                                 <th class="p-4">Status</th>
                                 <th class="p-4">Data</th>
+                                <th class="p-4 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="corpoTabelaTransacoes" class="divide-y divide-slate-700/40 text-sm">
-                            <tr><td colspan="7" class="text-center py-12 text-slate-400 font-medium">Carregando transações...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== PAINEL: PRODUTOS / ESTOQUE ===== -->
-        <section id="produtos" class="painel hidden animate-fade-in space-y-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white">Controle de Estoque</h2>
-                    <p class="text-slate-400 text-sm">Gerencie seus produtos e preços de venda</p>
-                </div>
-                <button onclick="abrirModalProduto()" class="px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2">
-                    <i class="fa-solid fa-plus text-sm"></i> Novo Produto
-                </button>
-            </div>
-
-            <!-- Tabela de Produtos Cadastrados -->
-            <div class="card p-6 sm:p-8 rounded-2xl space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-white">Produtos Cadastrados</h3>
-                </div>
-                <div class="overflow-x-auto rounded-xl border border-slate-700/40">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
-                                <th class="p-4">Nome</th>
-                                <th class="p-4">Estoque</th>
-                                <th class="p-4">Vl. Custo</th>
-                                <th class="p-4">Vl. Venda</th>
-                            </tr>
-                        </thead>
-                        <tbody id="corpoProdutos" class="divide-y divide-slate-700/40 text-sm">
-                            <tr><td colspan="4" class="text-center py-12 text-slate-400 font-medium">Carregando produtos...</td></tr>
+                            <tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Carregando transações...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -363,57 +324,80 @@
 
     </main>
 
-    <!-- ===== MODAL DE CADASTRO DE PRODUTO ===== -->
-    <div id="modalProduto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
+    <!-- ===== MODAL DE EDIÇÃO DE TRANSAÇÃO ===== -->
+    <div id="modalEditarTransacao" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
         <div class="card animate-modal w-full max-w-xl rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 border border-slate-700/60 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-4 border-b border-slate-700/40">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center">
-                        <i class="fa-solid fa-boxes-stacked text-lg"></i>
+                        <i class="fa-solid fa-pen-to-square text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-white">Cadastrar Novo Produto</h3>
-                        <p class="text-xs text-slate-400">Preencha os dados do item para o estoque</p>
+                        <h3 class="text-lg font-bold text-white">Editar Transação</h3>
+                        <p class="text-xs text-slate-400">Atualize os dados da transação selecionada</p>
                     </div>
                 </div>
-                <button onclick="fecharModalProduto()" class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                <button onclick="fecharModalEditar()" class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <form id="formProduto" class="space-y-4">
+            <form id="formEditarTransacao" class="space-y-4">
+                <input type="hidden" id="editId">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2 flex flex-col gap-1.5">
-                        <label for="nomeProd" class="text-xs font-bold uppercase tracking-wider text-slate-400">Nome do Produto <span class="text-rose-500">*</span></label>
-                        <input type="text" id="nomeProd" required placeholder="Ex: Camiseta Básica" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
-                    </div>
-                    <div class="sm:col-span-2 flex flex-col gap-1.5">
-                        <label for="descProd" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição (opcional)</label>
-                        <textarea id="descProd" rows="2" placeholder="Detalhes do produto..." class="px-4 py-3 rounded-xl border input-dark text-sm font-medium"></textarea>
+                        <label for="editDescricao" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span class="text-rose-500">*</span></label>
+                        <input type="text" id="editDescricao" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="qtd" class="text-xs font-bold uppercase tracking-wider text-slate-400">Quantidade *</label>
-                        <input type="number" id="qtd" min="0" required value="0" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editCategoria" class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
+                        <input type="text" id="editCategoria" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="qtdMin" class="text-xs font-bold uppercase tracking-wider text-slate-400">Qtd. Mínima *</label>
-                        <input type="number" id="qtdMin" min="0" required value="2" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editValor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor (R$) <span class="text-rose-500">*</span></label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3 text-slate-400 text-sm font-semibold">R$</span>
+                            <input type="number" id="editValor" step="0.01" required class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        </div>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="custo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor Custo (R$) *</label>
-                        <input type="number" id="custo" step="0.01" required value="0" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editTipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo <span class="text-rose-500">*</span></label>
+                        <select id="editTipo" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <option value="RECEITA">✅ Receita (Entrada)</option>
+                            <option value="DESPESA">❌ Despesa (Saída)</option>
+                        </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="venda" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor Venda (R$) *</label>
-                        <input type="number" id="venda" step="0.01" required value="0" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editStatus" class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
+                        <select id="editStatus" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <option value="PENDENTE">⏳ Pendente</option>
+                            <option value="PAGO">✅ Pago / Recebido</option>
+                            <option value="CANCELADO">❌ Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="editFormaPagamento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
+                        <select id="editFormaPagamento" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <option value="">Não informada</option>
+                            <option value="DINHEIRO">💵 Dinheiro</option>
+                            <option value="PIX">🔄 PIX</option>
+                            <option value="CARTAO_CREDITO">💳 Cartão de Crédito</option>
+                            <option value="CARTAO_DEBITO">💳 Cartão de Débito</option>
+                            <option value="BOLETO">📄 Boleto</option>
+                            <option value="TRANSFERENCIA">🏦 Transferência</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label for="editDataVencimento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Data de Vencimento <span class="text-rose-500">*</span></label>
+                        <input type="date" id="editDataVencimento" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                 </div>
-                <div id="msgProdSucesso" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
-                <div id="msgProdErro" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
+                <div id="msgEditSucesso" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
+                <div id="msgEditErro" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
                 <div class="pt-3 flex items-center justify-end gap-3">
-                    <button type="button" onclick="fecharModalProduto()" class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
-                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
-                        <i class="fa-solid fa-check"></i> Salvar Produto
+                    <button type="button" onclick="fecharModalEditar()" class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-check"></i> Salvar Alterações
                     </button>
                 </div>
             </form>
@@ -423,10 +407,8 @@
     <script>
         const API_BASE = "https://openfinace.onrender.com";
         const API_TRANSACOES = API_BASE + "/transacoes/";
-        const API_PRODUTOS = API_BASE + "/produto/";
         let token = localStorage.getItem('token');
         let listaTransacoes = [];
-        let listaProdutos = [];
 
         // Controle de Tema
         function alternarTema() {
@@ -473,26 +455,6 @@
             }
             document.getElementById('dataVencimento').valueAsDate = new Date();
             carregarTransacoes();
-            carregarProdutos();
-        });
-
-        // Controle do Modal de Produtos
-        function abrirModalProduto() {
-            document.getElementById('modalProduto').classList.remove('hidden');
-            document.getElementById('msgProdSucesso').classList.add('hidden');
-            document.getElementById('msgProdErro').classList.add('hidden');
-            document.getElementById('formProduto').reset();
-        }
-
-        function fecharModalProduto() {
-            document.getElementById('modalProduto').classList.add('hidden');
-        }
-
-        // Fechar modal ao clicar fora dele
-        document.getElementById('modalProduto').addEventListener('click', (e) => {
-            if (e.target.id === 'modalProduto') {
-                fecharModalProduto();
-            }
         });
 
         // Navegação do Menu Lateral
@@ -510,7 +472,6 @@
                 document.getElementById(idPainel).classList.remove('hidden');
 
                 if (idPainel === 'transacoes') carregarTransacoes();
-                if (idPainel === 'produtos') carregarProdutos();
                 if (idPainel === 'dashboard') carregarTransacoes();
             });
         });
@@ -621,9 +582,8 @@
                 renderTransacoes(listaTransacoes);
                 renderTransacoesRecentes(listaTransacoes);
                 atualizarCards(listaTransacoes);
-              
             } catch {
-                document.getElementById('corpoTabelaTransacoes').innerHTML = '<tr><td colspan="7" class="text-center py-12 text-rose-500 font-medium">❌ Erro ao carregar transações</td></tr>';
+                document.getElementById('corpoTabelaTransacoes').innerHTML = '<tr><td colspan="8" class="text-center py-12 text-rose-500 font-medium">❌ Erro ao carregar transações</td></tr>';
                 document.getElementById('corpoTransacoesRecentes').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-rose-500 font-medium">❌ Erro ao carregar transações</td></tr>';
             }
         }
@@ -659,10 +619,11 @@
         function renderTransacoes(lista) {
             const b = document.getElementById('corpoTabelaTransacoes');
             if (!lista.length) {
-                b.innerHTML = '<tr><td colspan="7" class="text-center py-12 text-slate-400 font-medium">Nenhuma transação encontrada</td></tr>';
+                b.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Nenhuma transação encontrada</td></tr>';
                 return;
             }
             b.innerHTML = lista.map(t => {
+                const idTransacao = t.id || t._id;
                 const corTipo = t.tipo === 'RECEITA' 
                     ? '<span class="font-bold text-emerald-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-up"></i> Receita</span>' 
                     : '<span class="font-bold text-rose-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-down"></i> Despesa</span>';
@@ -675,8 +636,108 @@
                     <td class="p-4 whitespace-nowrap">${fmtFormaPgto(t.formaPagamento)}</td>
                     <td class="p-4">${fmtStatus(t.status)}</td>
                     <td class="p-4 text-slate-400 font-medium">${formatarData(t.dataVencimento)}</td>
+                    <td class="p-4 text-center whitespace-nowrap">
+                        <button onclick="abrirModalEditar('${idTransacao}')" class="px-3 py-1.5 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-400 rounded-lg text-xs font-semibold mr-1.5 transition-all" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deletarTransacao('${idTransacao}')" class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-semibold transition-all" title="Excluir">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>`;
             }).join('');
+        }
+
+        // Funções para Editar Transação
+        function abrirModalEditar(id) {
+            const t = listaTransacoes.find(item => (item.id == id || item._id == id));
+            if (!t) return;
+            
+            document.getElementById('editId').value = id;
+            document.getElementById('editDescricao').value = t.descricao || '';
+            document.getElementById('editCategoria').value = t.categoria || '';
+            document.getElementById('editValor').value = t.valor || '';
+            document.getElementById('editTipo').value = t.tipo || 'RECEITA';
+            document.getElementById('editStatus').value = t.status || 'PENDENTE';
+            document.getElementById('editFormaPagamento').value = t.formaPagamento || '';
+            document.getElementById('editDataVencimento').value = t.dataVencimento ? t.dataVencimento.split('T')[0] : '';
+            
+            document.getElementById('msgEditSucesso').classList.add('hidden');
+            document.getElementById('msgEditErro').classList.add('hidden');
+            document.getElementById('modalEditarTransacao').classList.remove('hidden');
+        }
+
+        function fecharModalEditar() {
+            document.getElementById('modalEditarTransacao').classList.add('hidden');
+        }
+
+        document.getElementById('modalEditarTransacao').addEventListener('click', (e) => {
+            if (e.target.id === 'modalEditarTransacao') {
+                fecharModalEditar();
+            }
+        });
+
+        document.getElementById('formEditarTransacao').addEventListener('submit', async e => {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const msgSucesso = document.getElementById('msgEditSucesso');
+            const msgErro = document.getElementById('msgEditErro');
+            msgSucesso.classList.add('hidden');
+            msgErro.classList.add('hidden');
+
+            const dados = {
+                descricao: document.getElementById('editDescricao').value.trim(),
+                categoria: document.getElementById('editCategoria').value.trim() || null,
+                valor: parseFloat(document.getElementById('editValor').value),
+                tipo: document.getElementById('editTipo').value,
+                status: document.getElementById('editStatus').value,
+                formaPagamento: document.getElementById('editFormaPagamento').value || null,
+                dataVencimento: document.getElementById('editDataVencimento').value
+            };
+
+            try {
+                const res = await fetch(`${API_TRANSACOES}${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify(dados)
+                });
+                if (res.ok) {
+                    msgSucesso.textContent = '✅ Transação atualizada com sucesso!';
+                    msgSucesso.classList.remove('hidden');
+                    msgSucesso.classList.add('bg-emerald-500/15', 'text-emerald-500', 'border', 'border-emerald-500/25');
+                    carregarTransacoes();
+                    setTimeout(() => {
+                        fecharModalEditar();
+                    }, 1000);
+                } else {
+                    const erro = await res.json().catch(() => ({}));
+                    msgErro.textContent = '❌ ' + (erro.message || 'Erro ao atualizar transação');
+                    msgErro.classList.remove('hidden');
+                    msgErro.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
+                }
+            } catch {
+                msgErro.textContent = '❌ Erro de conexão com o servidor';
+                msgErro.classList.remove('hidden');
+                msgErro.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
+            }
+        });
+
+        // Função para Deletar Transação
+        async function deletarTransacao(id) {
+            if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
+            try {
+                const res = await fetch(`${API_TRANSACOES}${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (res.ok) {
+                    carregarTransacoes();
+                } else {
+                    alert('❌ Erro ao excluir transação.');
+                }
+            } catch {
+                alert('❌ Erro de conexão com o servidor.');
+            }
         }
 
         function atualizarCards(lista) {
@@ -700,81 +761,6 @@
                 saldoElem.className = "text-2xl sm:text-3xl font-extrabold text-rose-500 tracking-tight";
                 barraSaldo.className = "absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 to-red-400";
             }
-        }
-
-        // Cadastrar Produto (via Modal)
-        document.getElementById('formProduto').addEventListener('submit', async e => {
-            e.preventDefault();
-            document.getElementById('msgProdSucesso').classList.add('hidden');
-            document.getElementById('msgProdErro').classList.add('hidden');
-            const btn = e.target.querySelector('button[type="submit"]');
-            const dados = {
-                nome: document.getElementById('nomeProd').value.trim(),
-                descricao: document.getElementById('descProd').value.trim() || null,
-                quantidade: Number(document.getElementById('qtd').value),
-                quantidadeMinima: Number(document.getElementById('qtdMin').value),
-                valorCusto: parseFloat(document.getElementById('custo').value),
-                valorVenda: parseFloat(document.getElementById('venda').value)
-            };
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Cadastrando...';
-            try {
-                const res = await fetch(API_PRODUTOS, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                    body: JSON.stringify(dados)
-                });
-                if (res.status === 201 || res.ok) {
-                    const msg = document.getElementById('msgProdSucesso');
-                    msg.textContent = '✅ Produto cadastrado com sucesso!';
-                    msg.classList.remove('hidden');
-                    msg.classList.add('bg-emerald-500/15', 'text-emerald-500', 'border', 'border-emerald-500/25');
-                    carregarProdutos();
-                    setTimeout(() => {
-                        fecharModalProduto();
-                    }, 1200);
-                } else {
-                    const msg = document.getElementById('msgProdErro');
-                    msg.textContent = '❌ Erro ao cadastrar produto';
-                    msg.classList.remove('hidden');
-                    msg.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
-                }
-            } catch {
-                const msg = document.getElementById('msgProdErro');
-                msg.textContent = '❌ Erro de conexão com o servidor';
-                msg.classList.remove('hidden');
-                msg.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Salvar Produto';
-            }
-        });
-
-        // Carregar Produtos
-        async function carregarProdutos() {
-            try {
-                const res = await fetch(API_PRODUTOS, { headers: { 'Authorization': 'Bearer ' + token } });
-                if (!res.ok) throw new Error();
-                listaProdutos = await res.json();
-                renderProdutos(listaProdutos);
-            } catch {
-                document.getElementById('corpoProdutos').innerHTML = '<tr><td colspan="4" class="text-center py-12 text-rose-500 font-medium">❌ Erro ao carregar produtos</td></tr>';
-            }
-        }
-
-        function renderProdutos(lista) {
-           
-            const b = document.getElementById('corpoProdutos');
-            if (!lista.length) {
-                b.innerHTML = '<tr><td colspan="4" class="text-center py-12 text-slate-400 font-medium">Nenhum produto cadastrado</td></tr>';
-                return;
-            }
-            b.innerHTML = lista.map(p => `<tr class="hover:bg-slate-700/30 transition-colors">
-                <td class="p-4 font-semibold text-white">${p.nome}</td>
-                <td class="p-4 font-medium text-slate-400">${p.quantidade}</td>
-                <td class="p-4 font-medium text-slate-400">${formatarMoeda(p.valorCusto)}</td>
-                <td class="p-4 font-bold text-white">${formatarMoeda(p.valorVenda)}</td>
-            </tr>`).join('');
         }
 
         // Filtros em tempo real
