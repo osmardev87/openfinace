@@ -62,7 +62,7 @@ public class TransacaoFinanceiraController {
     }
 
     // 💰 DELETAR TRANSAÇÃO EXISTENTE
-    @DeleteMapping("/deletar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<List<TransacaoFinanceira>> deletar(@PathVariable UUID id, Authentication auth) {
         transacaoService.deletar(id, this.tokenService.getUserId(auth));
         return ResponseEntity
