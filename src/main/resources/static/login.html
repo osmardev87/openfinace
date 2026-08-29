@@ -219,7 +219,7 @@
                     
                     mostrarNotificacaoToast('Login efetuado com sucesso! Redirecionando...', 'sucesso');
                     setTimeout(() => {
-                        window.location.href = '/';
+                        window.location.href = '/dashboard';
                     }, 1000);
                 } else {
                     const errData = await res.json().catch(() => ({ message: 'Credenciais inválidas' }));
