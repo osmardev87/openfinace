@@ -37,7 +37,7 @@ public class TransacaoFinanceiraService {
     }
 
     public TransacaoFinanceira atualizar(UUID id, TransacaoFinanceiraRequestDTO dto, UUID userId) {
-        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndID(userId, id)
+        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndId(userId, id)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada para o usuário."));
@@ -58,7 +58,7 @@ public class TransacaoFinanceiraService {
     }
 
     public void deletar(UUID id, UUID userId) {
-        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndID(userId, id)
+        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndId(userId, id)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Transação não encontrada para o usuário."));
