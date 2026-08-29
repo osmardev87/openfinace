@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | FinanceFácil</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -25,154 +23,55 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateX(12px); }
+            to { opacity: 1; transform: translateX(0); }
         }
-
         @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
-
-        .animate-fade-in {
-            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .animate-modal {
-            animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
+        .animate-fade-in { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-modal { animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
         /* Tema Escuro Padrão */
-        body {
-            background-color: #0F172A;
-            color: #E2E8F0;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
-            border: 1px solid rgba(71, 85, 105, 0.35);
-            backdrop-filter: blur(8px);
-        }
-
-        .input-dark {
-            background-color: rgba(30, 41, 59, 0.5);
-            border-color: rgba(71, 85, 105, 0.4);
-            color: #E2E8F0;
-        }
-
-        .input-dark:focus {
-            background-color: rgba(30, 41, 59, 0.9);
-            border-color: #4F46E5;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-        }
-
+        body { background-color: #0F172A; color: #E2E8F0; transition: background-color 0.3s ease, color 0.3s ease; }
+        .card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(71, 85, 105, 0.35); }
+        .input-dark { background-color: rgba(30, 41, 59, 0.5); border-color: rgba(71, 85, 105, 0.4); color: #E2E8F0; }
+        .input-dark:focus { background-color: rgba(30, 41, 59, 0.8); border-color: #4F46E5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        
         /* Tema Claro */
-        body.light {
-            background-color: #F8FAFC;
-            color: #1E293B;
-        }
+        body.light { background-color: #F8FAFC; color: #1E293B; }
+        body.light .card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(241, 245, 249, 0.95)); border: 1px solid rgba(203, 213, 225, 0.8); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        body.light .input-dark { background-color: #FFFFFF; border-color: #CBD5E1; color: #1E293B; }
+        body.light .input-dark:focus { background-color: #FFFFFF; border-color: #4F46E5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
+        body.light .text-slate-400 { color: #64748B !important; }
+        body.light .text-slate-300 { color: #475569 !important; }
+        body.light .text-white { color: #0F172A !important; }
+        body.light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.8) !important; }
+        body.light .border-slate-700\/40 { border-color: rgba(226, 232, 240, 0.8) !important; }
+        body.light .hover\:bg-slate-700\/30:hover { background-color: rgba(241, 245, 249, 0.9) !important; }
 
-        body.light .card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95));
-            border: 1px solid rgba(203, 213, 225, 0.8);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
-        }
-
-        body.light .input-dark {
-            background-color: #FFFFFF;
-            border-color: #CBD5E1;
-            color: #1E293B;
-        }
-
-        body.light .input-dark:focus {
-            background-color: #FFFFFF;
-            border-color: #4F46E5;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-        }
-
-        body.light .text-slate-400 {
-            color: #64748B !important;
-        }
-
-        body.light .text-slate-300 {
-            color: #475569 !important;
-        }
-
-        body.light .text-white {
-            color: #0F172A !important;
-        }
-
-        body.light .bg-slate-800\/40 {
-            background-color: rgba(241, 245, 249, 0.8) !important;
-        }
-
-        body.light .border-slate-700\/40 {
-            border-color: rgba(226, 232, 240, 0.8) !important;
-        }
-
-        body.light .hover\:bg-slate-700\/30:hover {
-            background-color: rgba(241, 245, 249, 0.9) !important;
-        }
-
-        .menu-item {
-            transition: all 0.2s ease;
-        }
-
-        .menu-item.ativa {
-            background-color: rgba(79, 70, 229, 0.15);
-            color: #4F46E5;
-            border-left: 3px solid #4F46E5;
-        }
-
-        body.light .menu-item.ativa {
-            background-color: rgba(79, 70, 229, 0.1);
-            color: #4F46E5;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 3px;
-        }
+        .menu-item { transition: all 0.2s ease; }
+        .menu-item.ativa { background-color: rgba(79, 70, 229, 0.15); color: #4F46E5; border-left: 3px solid #4F46E5; }
+        body.light .menu-item.ativa { background-color: rgba(79, 70, 229, 0.1); color: #4F46E5; }
+        
+        .painel { transition: opacity 0.3s ease; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
     </style>
 </head>
-
 <body class="min-h-full flex selection:bg-indigo-500 selection:text-white">
 
-    <!-- Notificações Toast Flutuantes -->
-    <div id="toastContainer" class="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none"></div>
-
     <!-- ========== MENU LATERAL ========== -->
-    <aside class="w-64 min-h-screen card border-r border-slate-700/40 flex flex-col fixed left-0 top-0 bottom-0 z-40">
+    <aside class="w-54 min-h-screen card border-r border-slate-700/40 flex flex-col fixed left-0 top-0 bottom-0 z-40">
         <div class="p-5 border-b border-slate-700/40 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-md shadow-indigo-500/30">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-md shadow-indigo-500/30">
                     <i class="fa-solid fa-coins text-lg text-white"></i>
                 </div>
                 <div>
                     <h1 class="font-bold text-lg tracking-tight text-white">FinanceFácil</h1>
-                    <p class="text-xs text-slate-400 font-medium">Controle Inteligente</p>
+                    <p class="text-xs text-slate-400 font-medium">Controle financeiro</p>
                 </div>
             </div>
         </div>
@@ -180,23 +79,21 @@
         <!-- Botão de Alternar Tema (Claro / Escuro) -->
         <div class="px-5 py-3 border-b border-slate-700/40 flex items-center justify-between bg-slate-800/20">
             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aparência</span>
-            <button onclick="alternarTema()" id="btnTema"
-                class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-all border border-slate-600/30">
+            <button onclick="alternarTema()" id="btnTema" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-all border border-slate-600/30">
                 <i class="fa-solid fa-moon text-indigo-400" id="iconeTema"></i> <span id="textoTema">Escuro</span>
             </button>
         </div>
 
         <div class="px-5 py-4 border-b border-slate-700/40">
             <div class="flex items-center gap-3">
-                <div
-                    class="w-9 h-9 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-500 font-bold">
-                    <span id="iniciaisUsuario">US</span>
+                <div class="w-9 h-9 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-500">
+                    <i class="fa-solid fa-user"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p id="nomeUsuario" class="text-sm font-semibold text-white truncate">Usuário Convidado</p>
+                    <p id="nomeUsuario" class="text-sm font-semibold text-white truncate">Carregando...</p>
                     <div class="flex items-center gap-1.5">
-                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span class="text-xs text-slate-400">Sessão Ativa</span>
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                        <span class="text-xs text-slate-400">Online</span>
                     </div>
                 </div>
             </div>
@@ -204,32 +101,21 @@
 
         <nav class="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
             <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Painel</p>
-            <button
-                class="menu-item ativa w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300"
-                data-painel="dashboard">
+            <button class="menu-item ativa w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300" data-painel="dashboard">
                 <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i> Visão Geral
             </button>
 
             <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-500 mt-6 mb-2">Movimentações</p>
-            <button
-                class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200"
-                data-painel="lancamento">
+            <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="lancamento">
                 <i class="fa-solid fa-circle-plus w-5 text-center text-lg"></i> Novo Lançamento
             </button>
-            <button
-                class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200"
-                data-painel="transacoes">
+            <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="transacoes">
                 <i class="fa-solid fa-list-check w-5 text-center text-lg"></i> Transações
             </button>
         </nav>
 
-        <div class="p-4 border-t border-slate-700/40 space-y-2">
-            <button onclick="carregarDadosDemo()"
-                class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 transition-all">
-                <i class="fa-solid fa-wand-magic-sparkles w-5 text-center"></i> Carregar Dados Demo
-            </button>
-            <button onclick="sair()"
-                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
+        <div class="p-4 border-t border-slate-700/40">
+            <button onclick="sair()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
                 <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-lg"></i> Sair da Conta
             </button>
         </div>
@@ -240,60 +126,42 @@
 
         <!-- ===== PAINEL: VISÃO GERAL ===== -->
         <section id="dashboard" class="painel animate-fade-in space-y-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white">Visão Geral</h2>
-                    <p class="text-slate-400 text-sm">Acompanhe o desempenho das suas finanças em tempo real</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="document.querySelector('[data-painel=\" lancamento\"]').click()"
-                        class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all">
-                        <i class="fa-solid fa-plus"></i> Novo Lançamento Rápido
-                    </button>
-                </div>
+            <div>
+                <h2 class="text-2xl font-bold text-white">Visão Geral</h2>
+                <p class="text-slate-400 text-sm">Acompanhe o desempenho das suas finanças</p>
             </div>
 
             <!-- Cards de Resumo -->
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div
-                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400">
-                    </div>
+                <div class="card p-6 rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Receitas</h3>
-                        <div
-                            class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-arrow-trend-up"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-500 tracking-tight" id="totalReceitas">
-                        R$ 0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-500 tracking-tight" id="totalReceitas">R$ 0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Entradas confirmadas</p>
                 </div>
 
-                <div
-                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
+                <div class="card p-6 rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 to-red-400"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Despesas</h3>
-                        <div
-                            class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-arrow-trend-down"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-rose-500 tracking-tight" id="totalDespesas">R$
-                        0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-rose-500 tracking-tight" id="totalDespesas">R$ 0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Saídas efetuadas</p>
                 </div>
 
-                <div
-                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500"
-                        id="barraSaldo"></div>
+                <div class="card p-6 rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" id="barraSaldo"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Atual</h3>
-                        <div
-                            class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-wallet"></i>
                         </div>
                     </div>
@@ -301,67 +169,45 @@
                     <p class="text-xs text-slate-400 mt-1">Receitas menos despesas</p>
                 </div>
 
-                <div
-                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-400">
-                    </div>
+                <div class="card p-6 rounded-2xl hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-400"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">A Pagar / Receber</h3>
-                        <div
-                            class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-amber-500 tracking-tight" id="valorPendente">R$
-                        0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-amber-500 tracking-tight" id="valorPendente">R$ 0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Pendências em aberto</p>
                 </div>
             </section>
 
-            <!-- Gráfico Interativo -->
-            <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="card p-6 rounded-2xl lg:col-span-1 flex flex-col justify-between">
+            <!-- 📋 TRANSAÇÕES RECENTES NA VISÃO GERAL -->
+            <section class="card p-6 sm:p-8 rounded-2xl space-y-4">
+                <div class="flex justify-between items-center">
                     <div>
-                        <h3 class="text-lg font-bold text-white mb-1">Distribuição de Despesas</h3>
-                        <p class="text-xs text-slate-400">Por categoria informada</p>
+                        <h3 class="text-lg font-bold text-white">Transações Recentes</h3>
+                        <p class="text-xs text-slate-400">Últimas movimentações registradas</p>
                     </div>
-                    <div class="relative w-full h-64 my-4 flex items-center justify-center">
-                        <canvas id="graficoCategorias"></canvas>
-                    </div>
-                    <div id="legendaGrafico" class="text-xs text-slate-400 text-center"></div>
+                    <button onclick="document.querySelector('[data-painel=\"transacoes\"]').click()" class="text-sm text-indigo-500 hover:text-indigo-400 font-semibold transition-colors">
+                        Ver todas <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
                 </div>
-
-                <div class="card p-6 sm:p-8 rounded-2xl lg:col-span-2 space-y-4 flex flex-col justify-between">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Transações Recentes</h3>
-                            <p class="text-xs text-slate-400">Últimas movimentações registradas</p>
-                        </div>
-                        <button onclick="document.querySelector('[data-painel=\" transacoes\"]').click()"
-                            class="text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
-                            Ver todas <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto rounded-xl border border-slate-700/40 flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr
-                                    class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
-                                    <th class="p-3">Descrição</th>
-                                    <th class="p-3">Valor</th>
-                                    <th class="p-3">Tipo</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3">Data</th>
-                                </tr>
-                            </thead>
-                            <tbody id="corpoTransacoesRecentes" class="divide-y divide-slate-700/40 text-sm">
-                                <tr>
-                                    <td colspan="5" class="text-center py-8 text-slate-400 font-medium">Carregando
-                                        transações...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="overflow-x-auto rounded-xl border border-slate-700/40">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
+                                <th class="p-4">Descrição</th>
+                                <th class="p-4">Valor</th>
+                                <th class="p-4">Tipo</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4">Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpoTransacoesRecentes" class="divide-y divide-slate-700/40 text-sm">
+                            <tr><td colspan="5" class="text-center py-8 text-slate-400 font-medium">Carregando transações...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </section>
@@ -370,59 +216,45 @@
         <section id="lancamento" class="painel hidden animate-fade-in space-y-6">
             <div>
                 <h2 class="text-2xl font-bold text-white">Novo Lançamento</h2>
-                <p class="text-slate-400 text-sm">Registre receitas ou despesas com agilidade e precisão</p>
+                <p class="text-slate-400 text-sm">Registre receitas ou despesas com facilidade</p>
             </div>
-            <div class="card p-6 sm:p-8 rounded-2xl max-w-3xl">
+            <div class="card p-6 sm:p-8 rounded-2xl">
                 <form id="formTransacao" class="space-y-5">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="md:col-span-2 flex flex-col gap-1.5">
-                            <label for="descricao"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span
-                                    class="text-rose-500">*</span></label>
-                            <input type="text" id="descricao" required
-                                placeholder="Ex: Venda de mercadorias, Aluguel, Supermercado..."
-                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                        <div class="md:col-span-2 lg:col-span-3 flex flex-col gap-1.5">
+                            <label for="descricao" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span class="text-rose-500">*</span></label>
+                            <input type="text" id="descricao" required placeholder="Ex: Venda de mercadorias, Aluguel, etc." class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="categoria"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
-                            <input type="text" id="categoria" placeholder="Ex: Alimentação, Venda, Moradia"
-                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="categoria" class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria (opcional)</label>
+                            <input type="text" id="categoria" placeholder="Ex: Venda, Estoque, Serviço" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="valor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor
-                                (R$) <span class="text-rose-500">*</span></label>
+                            <label for="valor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor (R$) <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-3 text-slate-400 text-sm font-semibold">R$</span>
-                                <input type="number" id="valor" step="0.01" required placeholder="0,00"
-                                    class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                                <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="tipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo
-                                <span class="text-rose-500">*</span></label>
-                            <select id="tipo" required
-                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="tipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo <span class="text-rose-500">*</span></label>
+                            <select id="tipo" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                                 <option value="" disabled selected>Selecione o tipo...</option>
                                 <option value="RECEITA">✅ Receita (Entrada)</option>
                                 <option value="DESPESA">❌ Despesa (Saída)</option>
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="status"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
+                            <label for="status" class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
                             <select id="status" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
-                                <option value="PENDENTE">⏳ Pendente</option>
-                                <option value="PAGO" selected>✅ Pago / Recebido</option>
+                                <option value="PENDENTE" selected>⏳ Pendente</option>
+                                <option value="PAGO">✅ Pago / Recebido</option>
                                 <option value="CANCELADO">❌ Cancelado</option>
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="formaPagamento"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de
-                                Pagamento</label>
-                            <select id="formaPagamento"
-                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="formaPagamento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
+                            <select id="formaPagamento" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                                 <option value="" selected>Não informada</option>
                                 <option value="DINHEIRO">💵 Dinheiro</option>
                                 <option value="PIX">🔄 PIX</option>
@@ -433,44 +265,33 @@
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="dataVencimento"
-                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span
-                                    class="text-rose-500">*</span></label>
-                            <input type="date" id="dataVencimento" required
-                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="dataVencimento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Data de Vencimento <span class="text-rose-500">*</span></label>
+                            <input type="date" id="dataVencimento" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                     </div>
-                    <div class="pt-4 flex items-center justify-end gap-3">
-                        <button type="submit" id="btnLancar"
-                            class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <button type="submit" id="btnLancar" class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-check"></i> Lançar Transação
                         </button>
                     </div>
+                    <div id="msgSucesso" class="hidden p-4 rounded-xl text-sm font-semibold text-center"></div>
+                    <div id="msgErro" class="hidden p-4 rounded-xl text-sm font-semibold text-center"></div>
                 </form>
             </div>
         </section>
 
         <!-- ===== PAINEL: TRANSAÇÕES ===== -->
         <section id="transacoes" class="painel hidden animate-fade-in space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white">Histórico de Transações</h2>
-                    <p class="text-slate-400 text-sm">Visualize, filtre, edite e gerencie suas entradas e saídas</p>
-                </div>
-                <button onclick="exportarDadosJSON()"
-                    class="px-4 py-2.5 bg-slate-700/60 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs flex items-center gap-2 transition-all border border-slate-600/40">
-                    <i class="fa-solid fa-download"></i> Exportar Dados JSON
-                </button>
+            <div>
+                <h2 class="text-2xl font-bold text-white">Histórico de Transações</h2>
+                <p class="text-slate-400 text-sm">Visualize, filtre, edite e exclua suas entradas e saídas</p>
             </div>
             <div class="card p-6 sm:p-8 rounded-2xl space-y-6">
-                <div
-                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/40">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/40">
                     <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                        <div class="relative flex-1 sm:w-64">
-                            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i
-                                    class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" id="buscaTransacao" placeholder="Buscar por descrição..."
-                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border input-dark text-sm">
+                        <div class="relative flex-1 sm:w-54">
+                            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="buscaTransacao" placeholder="Buscar por descrição..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border input-dark text-sm">
                         </div>
                         <select id="filtroTipo" class="px-4 py-2.5 rounded-xl border input-dark text-sm">
                             <option value="">Todos os tipos</option>
@@ -482,8 +303,7 @@
                 <div class="overflow-x-auto rounded-xl border border-slate-700/40">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr
-                                class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
+                            <tr class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
                                 <th class="p-4">Descrição</th>
                                 <th class="p-4">Categoria</th>
                                 <th class="p-4">Valor</th>
@@ -495,10 +315,7 @@
                             </tr>
                         </thead>
                         <tbody id="corpoTabelaTransacoes" class="divide-y divide-slate-700/40 text-sm">
-                            <tr>
-                                <td colspan="8" class="text-center py-12 text-slate-400 font-medium">Carregando
-                                    transações...</td>
-                            </tr>
+                            <tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Carregando transações...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -508,10 +325,8 @@
     </main>
 
     <!-- ===== MODAL DE EDIÇÃO DE TRANSAÇÃO ===== -->
-    <div id="modalEditarTransacao"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
-        <div
-            class="card animate-modal w-full max-w-xl rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 border border-slate-700/60 max-h-[90vh] overflow-y-auto">
+    <div id="modalEditarTransacao" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
+        <div class="card animate-modal w-full max-w-xl rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 border border-slate-700/60 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-4 border-b border-slate-700/40">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center">
@@ -522,8 +337,7 @@
                         <p class="text-xs text-slate-400">Atualize os dados da transação selecionada</p>
                     </div>
                 </div>
-                <button onclick="fecharModalEditar()"
-                    class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                <button onclick="fecharModalEditar()" class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -532,39 +346,29 @@
                 <input type="hidden" id="editId">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2 flex flex-col gap-1.5">
-                        <label for="editDescricao"
-                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span
-                                class="text-rose-500">*</span></label>
-                        <input type="text" id="editDescricao" required
-                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editDescricao" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span class="text-rose-500">*</span></label>
+                        <input type="text" id="editDescricao" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editCategoria"
-                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
-                        <input type="text" id="editCategoria"
-                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editCategoria" class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
+                        <input type="text" id="editCategoria" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editValor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor
-                            (R$) <span class="text-rose-500">*</span></label>
+                        <label for="editValor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor (R$) <span class="text-rose-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-slate-400 text-sm font-semibold">R$</span>
-                            <input type="number" id="editValor" step="0.01" required
-                                class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <input type="number" id="editValor" step="0.01" required class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editTipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo
-                            <span class="text-rose-500">*</span></label>
-                        <select id="editTipo" required
-                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editTipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo <span class="text-rose-500">*</span></label>
+                        <select id="editTipo" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="RECEITA">✅ Receita (Entrada)</option>
                             <option value="DESPESA">❌ Despesa (Saída)</option>
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editStatus"
-                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
+                        <label for="editStatus" class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
                         <select id="editStatus" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="PENDENTE">⏳ Pendente</option>
                             <option value="PAGO">✅ Pago / Recebido</option>
@@ -572,10 +376,8 @@
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editFormaPagamento"
-                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
-                        <select id="editFormaPagamento"
-                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editFormaPagamento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
+                        <select id="editFormaPagamento" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="">Não informada</option>
                             <option value="DINHEIRO">💵 Dinheiro</option>
                             <option value="PIX">🔄 PIX</option>
@@ -586,18 +388,15 @@
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editDataVencimento"
-                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span
-                                class="text-rose-500">*</span></label>
-                        <input type="date" id="editDataVencimento" required
-                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editDataVencimento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Data de Vencimento <span class="text-rose-500">*</span></label>
+                        <input type="date" id="editDataVencimento" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                 </div>
+                <div id="msgEditSucesso" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
+                <div id="msgEditErro" class="hidden p-3 rounded-xl text-sm font-semibold text-center"></div>
                 <div class="pt-3 flex items-center justify-end gap-3">
-                    <button type="button" onclick="fecharModalEditar()"
-                        class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
-                    <button type="submit"
-                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
+                    <button type="button" onclick="fecharModalEditar()" class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
+                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-check"></i> Salvar Alterações
                     </button>
                 </div>
@@ -605,84 +404,18 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== -->
-    <div id="modalConfirmacao"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
-        <div
-            class="card animate-modal w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 border border-slate-700/60 text-center">
-            <div
-                class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto text-xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <h3 id="tituloConfirmacao" class="text-lg font-bold text-white">Confirmação</h3>
-            <p id="textoConfirmacao" class="text-sm text-slate-300">Deseja realmente prosseguir com esta ação?</p>
-            <div class="flex justify-center gap-3 pt-2">
-                <button id="btnCancelarConfirmacao"
-                    class="px-4 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
-                <button id="btnSimConfirmacao"
-                    class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all shadow-md shadow-rose-500/20">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
     <script>
         const API_BASE = "https://openfinace.onrender.com";
         const API_TRANSACOES = API_BASE + "/transacoes/";
-        let token = localStorage.getItem('token') || 'demo-token';
+        let token = localStorage.getItem('token');
         let listaTransacoes = [];
-        let chartInstancia = null;
-
-        // Sistema de Notificações Toast Modernas
-        function mostrarToast(mensagem, tipo = 'sucesso') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-
-            const cores = {
-                sucesso: 'bg-emerald-600/90 text-white border-emerald-500/30',
-                erro: 'bg-rose-600/90 text-white border-rose-500/30',
-                aviso: 'bg-amber-600/90 text-white border-amber-500/30'
-            };
-            const icones = {
-                sucesso: 'fa-circle-check',
-                erro: 'fa-circle-xmark',
-                aviso: 'fa-triangle-exclamation'
-            };
-            toast.className = `px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-3 text-sm font-semibold pointer-events-auto transition-all duration-300 animate-fade-in ${cores[tipo] || cores.sucesso}`;
-            toast.innerHTML = `<i class="fa-solid ${icones[tipo] || icones.sucesso} text-lg"></i> <span>${mensagem}</span>`;
-
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateY(-10px)';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
-        }
-
-        // Modal de Confirmação customizado
-        function confirmarAcao(titulo, texto, callback) {
-            const modal = document.getElementById('modalConfirmacao');
-            document.getElementById('tituloConfirmacao').textContent = titulo;
-            document.getElementById('textoConfirmacao').textContent = texto;
-            modal.classList.remove('hidden');
-            const btnSim = document.getElementById('btnSimConfirmacao');
-            const btnNao = document.getElementById('btnCancelarConfirmacao');
-            const fechar = () => {
-                modal.classList.add('hidden');
-                btnSim.replaceWith(btnSim.cloneNode(true));
-                btnNao.replaceWith(btnNao.cloneNode(true));
-            };
-            document.getElementById('btnSimConfirmacao').onclick = () => {
-                fechar();
-                callback();
-            };
-            document.getElementById('btnCancelarConfirmacao').onclick = fechar;
-        }
 
         // Controle de Tema
         function alternarTema() {
             const body = document.body;
             const icone = document.getElementById('iconeTema');
             const texto = document.getElementById('textoTema');
+
             if (body.classList.contains('light')) {
                 body.classList.remove('light');
                 localStorage.setItem('tema', 'dark');
@@ -694,7 +427,6 @@
                 icone.className = "fa-solid fa-sun text-amber-500";
                 texto.textContent = "Claro";
             }
-            if (chartInstancia) atualizarGrafico(listaTransacoes);
         }
 
         function carregarTemaSalvo() {
@@ -702,6 +434,7 @@
             const body = document.body;
             const icone = document.getElementById('iconeTema');
             const texto = document.getElementById('textoTema');
+
             if (temaSalvo === 'light') {
                 body.classList.add('light');
                 if (icone) icone.className = "fa-solid fa-sun text-amber-500";
@@ -715,29 +448,14 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             carregarTemaSalvo();
-            const nome = localStorage.getItem('nome') || 'Convidado';
-            document.getElementById('nomeUsuario').textContent = nome;
-            const iniciais = nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('iniciaisUsuario').textContent = iniciais || 'US';
+            const nome = localStorage.getItem('nome');
+            document.getElementById('nomeUsuario').textContent = nome || 'Usuário';
+            if (!token) {
+                console.warn('Sessão expirada!');
+            }
             document.getElementById('dataVencimento').valueAsDate = new Date();
             carregarTransacoes();
         });
-
-        // Dados demo se API falhar ou para testes locais
-        function carregarDadosDemo() {
-            listaTransacoes = [
-                { id: '1', descricao: 'Salário Mensal', categoria: 'Salário', valor: 5500.00, tipo: 'RECEITA', status: 'PAGO', formaPagamento: 'TRANSFERENCIA', dataVencimento: '2026-06-01' },
-                { id: '2', descricao: 'Aluguel do Apartamento', categoria: 'Moradia', valor: 1800.00, tipo: 'DESPESA', status: 'PAGO', formaPagamento: 'BOLETO', dataVencimento: '2026-06-05' },
-                { id: '3', descricao: 'Supermercado Mensal', categoria: 'Alimentação', valor: 950.50, tipo: 'DESPESA', status: 'PAGO', formaPagamento: 'CARTAO_CREDITO', dataVencimento: '2026-06-10' },
-                { id: '4', descricao: 'Projeto Freelance Web', categoria: 'Serviço', valor: 2200.00, tipo: 'RECEITA', status: 'PENDENTE', formaPagamento: 'PIX', dataVencimento: '2026-06-25' },
-                { id: '5', descricao: 'Conta de Internet Fibra', categoria: 'Serviços', valor: 120.00, tipo: 'DESPESA', status: 'PENDENTE', formaPagamento: 'PIX', dataVencimento: '2026-06-20' }
-            ];
-            renderTransacoes(listaTransacoes);
-            renderTransacoesRecentes(listaTransacoes);
-            atualizarCards(listaTransacoes);
-            atualizarGrafico(listaTransacoes);
-            mostrarToast('Dados de demonstração carregados com sucesso!', 'sucesso');
-        }
 
         // Navegação do Menu Lateral
         document.querySelectorAll('.menu-item').forEach(botao => {
@@ -748,21 +466,19 @@
                 });
                 botao.classList.add('ativa', 'text-slate-300', 'bg-slate-700/20');
                 botao.classList.remove('text-slate-400', 'hover:bg-slate-700/40', 'hover:text-slate-200');
+
                 const idPainel = botao.dataset.painel;
                 document.querySelectorAll('.painel').forEach(p => p.classList.add('hidden'));
                 document.getElementById(idPainel).classList.remove('hidden');
-                if (idPainel === 'transacoes') renderTransacoes(listaTransacoes);
-                if (idPainel === 'dashboard') {
-                    atualizarCards(listaTransacoes);
-                    atualizarGrafico(listaTransacoes);
-                }
+
+                if (idPainel === 'transacoes') carregarTransacoes();
+                if (idPainel === 'dashboard') carregarTransacoes();
             });
         });
 
         function sair() {
             localStorage.clear();
-            window.location.href = '#login';
-            mostrarToast('Sessão encerrada com sucesso.', 'aviso');
+            window.location.href = '/login.html';
         }
 
         function formatarMoeda(v) {
@@ -804,78 +520,72 @@
         // Lançar Transação
         document.getElementById('formTransacao').addEventListener('submit', async e => {
             e.preventDefault();
+            document.getElementById('msgSucesso').classList.add('hidden');
+            document.getElementById('msgErro').classList.add('hidden');
             const btn = document.getElementById('btnLancar');
             const dados = {
                 descricao: document.getElementById('descricao').value.trim(),
-                categoria: document.getElementById('categoria').value.trim() || 'Geral',
+                categoria: document.getElementById('categoria').value.trim() || null,
                 valor: parseFloat(document.getElementById('valor').value),
                 tipo: document.getElementById('tipo').value,
                 status: document.getElementById('status').value,
                 formaPagamento: document.getElementById('formaPagamento').value || null,
                 dataVencimento: document.getElementById('dataVencimento').value
             };
-            if (!dados.descricao || isNaN(dados.valor) || !dados.tipo || !dados.dataVencimento) {
-                mostrarToast('Preencha todos os campos obrigatórios!', 'erro');
+            if (!dados.descricao || !dados.valor || !dados.tipo || !dados.dataVencimento) {
+                const msg = document.getElementById('msgErro');
+                msg.textContent = '❌ Preencha todos os campos obrigatórios!';
+                msg.classList.remove('hidden', 'bg-emerald-500/15', 'text-emerald-500');
+                msg.classList.add('bg-amber-500/15', 'text-amber-500', 'border', 'border-amber-500/25');
                 return;
             }
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Salvando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Enviando...';
             try {
                 const res = await fetch(API_TRANSACOES, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(dados)
                 });
-                if (!res.ok) throw new Error();
+                if (res.status === 201 || res.ok) {
+                    const msg = document.getElementById('msgSucesso');
+                    msg.textContent = '✅ Transação lançada com sucesso!';
+                    msg.classList.remove('hidden');
+                    msg.classList.add('bg-emerald-500/15', 'text-emerald-500', 'border', 'border-emerald-500/25');
+                    e.target.reset();
+                    document.getElementById('dataVencimento').valueAsDate = new Date();
+                    carregarTransacoes();
+                } else {
+                    const erro = await res.json().catch(() => ({ message: 'Erro desconhecido' }));
+                    const msg = document.getElementById('msgErro');
+                    msg.textContent = '❌ ' + (erro.message || 'Verifique os dados informados');
+                    msg.classList.remove('hidden');
+                    msg.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
+                }
             } catch {
-                listaTransacoes.unshift({ ...dados, _id: '_' + Math.random().toString(36).substr(2, 9) });
+                const msg = document.getElementById('msgErro');
+                msg.textContent = '❌ Erro de conexão com o servidor';
+                msg.classList.remove('hidden');
+                msg.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Lançar Transação';
-                mostrarToast('Transação lançada com sucesso!', 'sucesso');
-                e.target.reset();
-                document.getElementById('dataVencimento').valueAsDate = new Date();
-                carregarTransacoes();
             }
         });
 
-        // ✅ CARREGAR TRANSAÇÕES — CORRIGIDO
+        // Carregar Transações
         async function carregarTransacoes() {
-            console.log('🔄 Buscando transações na API...');
             try {
-                const res = await fetch(API_TRANSACOES, {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-
-                console.log('📡 Resposta da API:', res.status, res.statusText);
-
-                if (!res.ok) throw new Error(`Erro ${res.status}`);
-
-                const dados = await res.json();
-                console.log('📦 Dados recebidos:', dados);
-
-                // ✅ Normaliza: garante que valor é número e trata id/_id
-                listaTransacoes = dados.map(t => ({
-                    ...t,
-                    valor: Number(t.valor) || 0,       // Garante tipo numérico
-                    id: t._id || t.id                   // Garante que id existe
-                }));
-
-                console.log('✅ Transações processadas:', listaTransacoes);
-
-            } catch (erro) {
-                console.warn('⚠️ Erro ao buscar API, usando demo:', erro.message);
-                if (!listaTransacoes.length) {
-                    carregarDadosDemo();
-                    return;
-                }
+                const res = await fetch(API_TRANSACOES, { headers: { 'Authorization': 'Bearer ' + token } });
+                if (!res.ok) throw new Error();
+                listaTransacoes = await res.json();
+                renderTransacoes(listaTransacoes);
+                renderTransacoesRecentes(listaTransacoes);
+                atualizarCards(listaTransacoes);
+            } catch {
+                document.getElementById('corpoTabelaTransacoes').innerHTML = '<tr><td colspan="8" class="text-center py-12 text-rose-500 font-medium">❌ Erro ao carregar transações</td></tr>';
+                document.getElementById('corpoTransacoesRecentes').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-rose-500 font-medium">❌ Erro ao carregar transações</td></tr>';
             }
-
-            // ✅ SEMPRE atualiza tudo após carregar
-            renderTransacoes(listaTransacoes);
-            renderTransacoesRecentes(listaTransacoes);
-            atualizarCards(listaTransacoes);
-            atualizarGrafico(listaTransacoes);
         }
 
         // Renderizar transações recentes na Visão Geral (limite de 5)
@@ -888,19 +598,21 @@
             const recentes = [...lista]
                 .sort((a, b) => new Date(b.dataVencimento || 0) - new Date(a.dataVencimento || 0))
                 .slice(0, 5);
+
             b.innerHTML = recentes.map(t => {
                 const corValor = t.tipo === 'RECEITA' ? 'text-emerald-500' : 'text-rose-500';
                 const sinal = t.tipo === 'RECEITA' ? '+' : '-';
-                const tipoTexto = t.tipo === 'RECEITA'
-                    ? '<span class="text-emerald-500 text-xs font-semibold">Receita</span>'
+                const tipoTexto = t.tipo === 'RECEITA' 
+                    ? '<span class="text-emerald-500 text-xs font-semibold">Receita</span>' 
                     : '<span class="text-rose-500 text-xs font-semibold">Despesa</span>';
+
                 return `<tr class="hover:bg-slate-700/30 transition-colors">
-            <td class="p-3 font-semibold text-white">${t.descricao || '—'}</td>
-            <td class="p-3 font-bold ${corValor}">${sinal} ${formatarMoeda(t.valor)}</td>
-            <td class="p-3">${tipoTexto}</td>
-            <td class="p-3">${fmtStatusSimples(t.status)}</td>
-            <td class="p-3 text-slate-400 text-sm">${formatarData(t.dataVencimento)}</td>
-        </tr>`;
+                    <td class="p-4 font-semibold text-white">${t.descricao || '—'}</td>
+                    <td class="p-4 font-bold ${corValor}">${sinal} ${formatarMoeda(t.valor)}</td>
+                    <td class="p-4">${tipoTexto}</td>
+                    <td class="p-4">${fmtStatusSimples(t.status)}</td>
+                    <td class="p-4 text-slate-400 text-sm">${formatarData(t.dataVencimento)}</td>
+                </tr>`;
             }).join('');
         }
 
@@ -911,39 +623,36 @@
                 return;
             }
             b.innerHTML = lista.map(t => {
-                const idTransacao = t._id || t.id; // ✅ Trata ambos os formatos
-                const corTipo = t.tipo === 'RECEITA'
-                    ? '<span class="font-bold text-emerald-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-up"></i> Receita</span>'
+                const idTransacao = t.id || t._id;
+                const corTipo = t.tipo === 'RECEITA' 
+                    ? '<span class="font-bold text-emerald-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-up"></i> Receita</span>' 
                     : '<span class="font-bold text-rose-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-down"></i> Despesa</span>';
                 const categoriaFormatada = t.categoria ? t.categoria.charAt(0).toUpperCase() + t.categoria.slice(1).toLowerCase() : '—';
                 return `<tr class="hover:bg-slate-700/30 transition-colors">
-            <td class="p-4 font-semibold text-white">${t.descricao || '—'}</td>
-            <td class="p-4 text-slate-400">${categoriaFormatada}</td>
-            <td class="p-4 font-bold text-white">${formatarMoeda(t.valor)}</td>
-            <td class="p-4">${corTipo}</td>
-            <td class="p-4 whitespace-nowrap">${fmtFormaPgto(t.formaPagamento)}</td>
-            <td class="p-4">${fmtStatus(t.status)}</td>
-            <td class="p-4 text-slate-400 font-medium">${formatarData(t.dataVencimento)}</td>
-            <td class="p-4 text-center whitespace-nowrap">
-                <button onclick="abrirModalEditar('${idTransacao}')" class="px-3 py-1.5 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-400 rounded-lg text-xs font-semibold mr-1.5 transition-all" title="Editar">
-                    <i class="fa-solid fa-pen"></i>
-                </button>
-                <button onclick="deletarTransacao('${idTransacao}')" class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-semibold transition-all" title="Excluir">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </td>
-        </tr>`;
+                    <td class="p-4 font-semibold text-white">${t.descricao || '—'}</td>
+                    <td class="p-4 text-slate-400">${categoriaFormatada}</td>
+                    <td class="p-4 font-bold text-white">${formatarMoeda(t.valor)}</td>
+                    <td class="p-4">${corTipo}</td>
+                    <td class="p-4 whitespace-nowrap">${fmtFormaPgto(t.formaPagamento)}</td>
+                    <td class="p-4">${fmtStatus(t.status)}</td>
+                    <td class="p-4 text-slate-400 font-medium">${formatarData(t.dataVencimento)}</td>
+                    <td class="p-4 text-center whitespace-nowrap">
+                        <button onclick="abrirModalEditar('${idTransacao}')" class="px-3 py-1.5 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-400 rounded-lg text-xs font-semibold mr-1.5 transition-all" title="Editar">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deletarTransacao('${idTransacao}')" class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-semibold transition-all" title="Excluir">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>`;
             }).join('');
         }
 
-        // ✅ Editar Transação — corrigido para aceitar _id
+        // Funções para Editar Transação
         function abrirModalEditar(id) {
-            const t = listaTransacoes.find(item => (item._id == id || item.id == id));
-            if (!t) {
-                mostrarToast('Transação não encontrada!', 'erro');
-                return;
-            }
-
+            const t = listaTransacoes.find(item => (item.id == id || item._id == id));
+            if (!t) return;
+            
             document.getElementById('editId').value = id;
             document.getElementById('editDescricao').value = t.descricao || '';
             document.getElementById('editCategoria').value = t.categoria || '';
@@ -952,7 +661,9 @@
             document.getElementById('editStatus').value = t.status || 'PENDENTE';
             document.getElementById('editFormaPagamento').value = t.formaPagamento || '';
             document.getElementById('editDataVencimento').value = t.dataVencimento ? t.dataVencimento.split('T')[0] : '';
-
+            
+            document.getElementById('msgEditSucesso').classList.add('hidden');
+            document.getElementById('msgEditErro').classList.add('hidden');
             document.getElementById('modalEditarTransacao').classList.remove('hidden');
         }
 
@@ -960,51 +671,75 @@
             document.getElementById('modalEditarTransacao').classList.add('hidden');
         }
 
+        document.getElementById('modalEditarTransacao').addEventListener('click', (e) => {
+            if (e.target.id === 'modalEditarTransacao') {
+                fecharModalEditar();
+            }
+        });
+
         document.getElementById('formEditarTransacao').addEventListener('submit', async e => {
             e.preventDefault();
             const id = document.getElementById('editId').value;
+            const msgSucesso = document.getElementById('msgEditSucesso');
+            const msgErro = document.getElementById('msgEditErro');
+            msgSucesso.classList.add('hidden');
+            msgErro.classList.add('hidden');
+
             const dados = {
                 descricao: document.getElementById('editDescricao').value.trim(),
-                categoria: document.getElementById('editCategoria').value.trim() || 'Geral',
+                categoria: document.getElementById('editCategoria').value.trim() || null,
                 valor: parseFloat(document.getElementById('editValor').value),
                 tipo: document.getElementById('editTipo').value,
                 status: document.getElementById('editStatus').value,
                 formaPagamento: document.getElementById('editFormaPagamento').value || null,
                 dataVencimento: document.getElementById('editDataVencimento').value
             };
-            const index = listaTransacoes.findIndex(item => (item._id == id || item.id == id));
-            if (index !== -1) {
-                listaTransacoes[index] = { ...listaTransacoes[index], ...dados };
-            }
+
             try {
-                await fetch(`${API_TRANSACOES}${id}`, {
+                const res = await fetch(`${API_TRANSACOES}${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(dados)
                 });
-            } catch { }
-            mostrarToast('Transação atualizada com sucesso!', 'sucesso');
-            fecharModalEditar();
-            carregarTransacoes();
+                if (res.ok) {
+                    msgSucesso.textContent = '✅ Transação atualizada com sucesso!';
+                    msgSucesso.classList.remove('hidden');
+                    msgSucesso.classList.add('bg-emerald-500/15', 'text-emerald-500', 'border', 'border-emerald-500/25');
+                    carregarTransacoes();
+                    setTimeout(() => {
+                        fecharModalEditar();
+                    }, 1000);
+                } else {
+                    const erro = await res.json().catch(() => ({}));
+                    msgErro.textContent = '❌ ' + (erro.message || 'Erro ao atualizar transação');
+                    msgErro.classList.remove('hidden');
+                    msgErro.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
+                }
+            } catch {
+                msgErro.textContent = '❌ Erro de conexão com o servidor';
+                msgErro.classList.remove('hidden');
+                msgErro.classList.add('bg-rose-500/15', 'text-rose-500', 'border', 'border-rose-500/25');
+            }
         });
 
-        // ✅ Deletar Transação — corrigido para aceitar _id
-        function deletarTransacao(id) {
-            confirmarAcao('Excluir Transação', 'Tem certeza absoluta que deseja excluir este registro?', () => {
-                listaTransacoes = listaTransacoes.filter(item => (item._id != id && item.id != id));
-
-                try {
-                    fetch(`${API_TRANSACOES}${id}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    });
-                } catch { }
-                mostrarToast('Transação excluída com sucesso!', 'aviso');
-                carregarTransacoes();
-            });
+        // Função para Deletar Transação
+        async function deletarTransacao(id) {
+            if (!confirm('Tem certeza que deseja excluir esta transação?')) return;
+            try {
+                const res = await fetch(`${API_TRANSACOES}${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (res.ok) {
+                    carregarTransacoes();
+                } else {
+                    alert('❌ Erro ao excluir transação.');
+                }
+            } catch {
+                alert('❌ Erro de conexão com o servidor.');
+            }
         }
 
-        // ✅ Atualizar Cards — garante cálculos corretos com valores numéricos
         function atualizarCards(lista) {
             const rec = lista.filter(t => t.tipo === 'RECEITA' && t.status !== 'CANCELADO').reduce((s, t) => s + Number(t.valor), 0);
             const desp = lista.filter(t => t.tipo === 'DESPESA' && t.status !== 'CANCELADO').reduce((s, t) => s + Number(t.valor), 0);
@@ -1028,71 +763,9 @@
             }
         }
 
-        // ✅ Gráfico — mensagem melhorada e lógica confirmada
-        function atualizarGrafico(lista) {
-            const ctx = document.getElementById('graficoCategorias').getContext('2d');
-            const despesas = lista.filter(t => t.tipo === 'DESPESA' && t.status !== 'CANCELADO');
-
-            const categoriasMap = {};
-            despesas.forEach(t => {
-                const cat = t.categoria || 'Outros';
-                categoriasMap[cat] = (categoriasMap[cat] || 0) + Number(t.valor);
-            });
-            const labels = Object.keys(categoriasMap);
-            const data = Object.values(categoriasMap);
-
-            if (chartInstancia) chartInstancia.destroy();
-            const isLight = document.body.classList.contains('light');
-            const corTexto = isLight ? '#334155' : '#94A3B8';
-
-            if (!labels.length) {
-                document.getElementById('legendaGrafico').textContent =
-                    lista.length === 0
-                        ? 'Nenhuma transação registrada ainda.'
-                        : '✅ Apenas receitas — sem despesas para exibir.';
-                return;
-            }
-
-            document.getElementById('legendaGrafico').textContent = '';
-            chartInstancia = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['#EF4444', '#F59E0B', '#10B981', '#6366F1', '#EC4899', '#8B5CF6', '#14B8A6'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { color: corTexto, font: { size: 11, family: 'Inter' }, boxWidth: 12 }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Exportar Dados para JSON
-        function exportarDadosJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(listaTransacoes, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "financefacil_backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-            mostrarToast('Backup exportado com sucesso!', 'sucesso');
-        }
-
         // Filtros em tempo real
         document.getElementById('buscaTransacao')?.addEventListener('input', aplicarFiltros);
         document.getElementById('filtroTipo')?.addEventListener('change', aplicarFiltros);
-
         function aplicarFiltros() {
             const termo = document.getElementById('buscaTransacao')?.value.toLowerCase().trim() || '';
             const filtroTipo = document.getElementById('filtroTipo')?.value || '';
@@ -1103,5 +776,4 @@
         }
     </script>
 </body>
-
 </html>
