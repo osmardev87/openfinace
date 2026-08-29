@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,42 +25,138 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-modal { animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        
-        /* Tema Escuro Padrão */
-        body { background-color: #0F172A; color: #E2E8F0; transition: background-color 0.3s ease, color 0.3s ease; }
-        .card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9)); border: 1px solid rgba(71, 85, 105, 0.35); backdrop-filter: blur(8px); }
-        .input-dark { background-color: rgba(30, 41, 59, 0.5); border-color: rgba(71, 85, 105, 0.4); color: #E2E8F0; }
-        .input-dark:focus { background-color: rgba(30, 41, 59, 0.9); border-color: #4F46E5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
-        
-        /* Tema Claro */
-        body.light { background-color: #F8FAFC; color: #1E293B; }
-        body.light .card { background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95)); border: 1px solid rgba(203, 213, 225, 0.8); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
-        body.light .input-dark { background-color: #FFFFFF; border-color: #CBD5E1; color: #1E293B; }
-        body.light .input-dark:focus { background-color: #FFFFFF; border-color: #4F46E5; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15); }
-        body.light .text-slate-400 { color: #64748B !important; }
-        body.light .text-slate-300 { color: #475569 !important; }
-        body.light .text-white { color: #0F172A !important; }
-        body.light .bg-slate-800\/40 { background-color: rgba(241, 245, 249, 0.8) !important; }
-        body.light .border-slate-700\/40 { border-color: rgba(226, 232, 240, 0.8) !important; }
-        body.light .hover\:bg-slate-700\/30:hover { background-color: rgba(241, 245, 249, 0.9) !important; }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
 
-        .menu-item { transition: all 0.2s ease; }
-        .menu-item.ativa { background-color: rgba(79, 70, 229, 0.15); color: #4F46E5; border-left: 3px solid #4F46E5; }
-        body.light .menu-item.ativa { background-color: rgba(79, 70, 229, 0.1); color: #4F46E5; }
-        
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-modal {
+            animation: modalIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Tema Escuro Padrão */
+        body {
+            background-color: #0F172A;
+            color: #E2E8F0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(71, 85, 105, 0.35);
+            backdrop-filter: blur(8px);
+        }
+
+        .input-dark {
+            background-color: rgba(30, 41, 59, 0.5);
+            border-color: rgba(71, 85, 105, 0.4);
+            color: #E2E8F0;
+        }
+
+        .input-dark:focus {
+            background-color: rgba(30, 41, 59, 0.9);
+            border-color: #4F46E5;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
+
+        /* Tema Claro */
+        body.light {
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
+
+        body.light .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.95));
+            border: 1px solid rgba(203, 213, 225, 0.8);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light .input-dark {
+            background-color: #FFFFFF;
+            border-color: #CBD5E1;
+            color: #1E293B;
+        }
+
+        body.light .input-dark:focus {
+            background-color: #FFFFFF;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
+
+        body.light .text-slate-400 {
+            color: #64748B !important;
+        }
+
+        body.light .text-slate-300 {
+            color: #475569 !important;
+        }
+
+        body.light .text-white {
+            color: #0F172A !important;
+        }
+
+        body.light .bg-slate-800\/40 {
+            background-color: rgba(241, 245, 249, 0.8) !important;
+        }
+
+        body.light .border-slate-700\/40 {
+            border-color: rgba(226, 232, 240, 0.8) !important;
+        }
+
+        body.light .hover\:bg-slate-700\/30:hover {
+            background-color: rgba(241, 245, 249, 0.9) !important;
+        }
+
+        .menu-item {
+            transition: all 0.2s ease;
+        }
+
+        .menu-item.ativa {
+            background-color: rgba(79, 70, 229, 0.15);
+            color: #4F46E5;
+            border-left: 3px solid #4F46E5;
+        }
+
+        body.light .menu-item.ativa {
+            background-color: rgba(79, 70, 229, 0.1);
+            color: #4F46E5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
     </style>
 </head>
+
 <body class="min-h-full flex selection:bg-indigo-500 selection:text-white">
 
     <!-- Notificações Toast Flutuantes -->
@@ -69,7 +166,8 @@
     <aside class="w-64 min-h-screen card border-r border-slate-700/40 flex flex-col fixed left-0 top-0 bottom-0 z-40">
         <div class="p-5 border-b border-slate-700/40 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-md shadow-indigo-500/30">
+                <div
+                    class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center shadow-md shadow-indigo-500/30">
                     <i class="fa-solid fa-coins text-lg text-white"></i>
                 </div>
                 <div>
@@ -82,14 +180,16 @@
         <!-- Botão de Alternar Tema (Claro / Escuro) -->
         <div class="px-5 py-3 border-b border-slate-700/40 flex items-center justify-between bg-slate-800/20">
             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aparência</span>
-            <button onclick="alternarTema()" id="btnTema" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-all border border-slate-600/30">
+            <button onclick="alternarTema()" id="btnTema"
+                class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-700/50 hover:bg-slate-700 text-slate-300 transition-all border border-slate-600/30">
                 <i class="fa-solid fa-moon text-indigo-400" id="iconeTema"></i> <span id="textoTema">Escuro</span>
             </button>
         </div>
 
         <div class="px-5 py-4 border-b border-slate-700/40">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-500 font-bold">
+                <div
+                    class="w-9 h-9 rounded-full bg-indigo-500/15 flex items-center justify-center text-indigo-500 font-bold">
                     <span id="iniciaisUsuario">US</span>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -104,24 +204,32 @@
 
         <nav class="flex-1 py-6 px-3 space-y-2 overflow-y-auto">
             <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Painel</p>
-            <button class="menu-item ativa w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300" data-painel="dashboard">
+            <button
+                class="menu-item ativa w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-300"
+                data-painel="dashboard">
                 <i class="fa-solid fa-chart-pie w-5 text-center text-lg"></i> Visão Geral
             </button>
 
             <p class="px-3 text-xs font-bold uppercase tracking-wider text-slate-500 mt-6 mb-2">Movimentações</p>
-            <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="lancamento">
+            <button
+                class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200"
+                data-painel="lancamento">
                 <i class="fa-solid fa-circle-plus w-5 text-center text-lg"></i> Novo Lançamento
             </button>
-            <button class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200" data-painel="transacoes">
+            <button
+                class="menu-item w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-slate-400 hover:bg-slate-700/40 hover:text-slate-200"
+                data-painel="transacoes">
                 <i class="fa-solid fa-list-check w-5 text-center text-lg"></i> Transações
             </button>
         </nav>
 
         <div class="p-4 border-t border-slate-700/40 space-y-2">
-            <button onclick="carregarDadosDemo()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 transition-all">
+            <button onclick="carregarDadosDemo()"
+                class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold text-indigo-400 hover:bg-indigo-500/10 transition-all">
                 <i class="fa-solid fa-wand-magic-sparkles w-5 text-center"></i> Carregar Dados Demo
             </button>
-            <button onclick="sair()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
+            <button onclick="sair()"
+                class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
                 <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-lg"></i> Sair da Conta
             </button>
         </div>
@@ -138,7 +246,8 @@
                     <p class="text-slate-400 text-sm">Acompanhe o desempenho das suas finanças em tempo real</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button onclick="document.querySelector('[data-painel=\"lancamento\"]').click()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all">
+                    <button onclick="document.querySelector('[data-painel=\" lancamento\"]').click()"
+                        class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs flex items-center gap-2 shadow-lg shadow-indigo-500/20 transition-all">
                         <i class="fa-solid fa-plus"></i> Novo Lançamento Rápido
                     </button>
                 </div>
@@ -146,35 +255,45 @@
 
             <!-- Cards de Resumo -->
             <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
+                <div
+                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-400">
+                    </div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Receitas</h3>
-                        <div class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-arrow-trend-up"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-500 tracking-tight" id="totalReceitas">R$ 0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-500 tracking-tight" id="totalReceitas">
+                        R$ 0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Entradas confirmadas</p>
                 </div>
 
-                <div class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
+                <div
+                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
                     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-rose-500 to-red-400"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Despesas</h3>
-                        <div class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-arrow-trend-down"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-rose-500 tracking-tight" id="totalDespesas">R$ 0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-rose-500 tracking-tight" id="totalDespesas">R$
+                        0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Saídas efetuadas</p>
                 </div>
 
-                <div class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500" id="barraSaldo"></div>
+                <div
+                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500"
+                        id="barraSaldo"></div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Atual</h3>
-                        <div class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-wallet"></i>
                         </div>
                     </div>
@@ -182,15 +301,19 @@
                     <p class="text-xs text-slate-400 mt-1">Receitas menos despesas</p>
                 </div>
 
-                <div class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-400"></div>
+                <div
+                    class="card p-6 rounded-2xl hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 to-orange-400">
+                    </div>
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">A Pagar / Receber</h3>
-                        <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                         </div>
                     </div>
-                    <div class="text-2xl sm:text-3xl font-extrabold text-amber-500 tracking-tight" id="valorPendente">R$ 0,00</div>
+                    <div class="text-2xl sm:text-3xl font-extrabold text-amber-500 tracking-tight" id="valorPendente">R$
+                        0,00</div>
                     <p class="text-xs text-slate-400 mt-1">Pendências em aberto</p>
                 </div>
             </section>
@@ -214,14 +337,16 @@
                             <h3 class="text-lg font-bold text-white">Transações Recentes</h3>
                             <p class="text-xs text-slate-400">Últimas movimentações registradas</p>
                         </div>
-                        <button onclick="document.querySelector('[data-painel=\"transacoes\"]').click()" class="text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+                        <button onclick="document.querySelector('[data-painel=\" transacoes\"]').click()"
+                            class="text-sm text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
                             Ver todas <i class="fa-solid fa-arrow-right ml-1"></i>
                         </button>
                     </div>
                     <div class="overflow-x-auto rounded-xl border border-slate-700/40 flex-1">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
+                                <tr
+                                    class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
                                     <th class="p-3">Descrição</th>
                                     <th class="p-3">Valor</th>
                                     <th class="p-3">Tipo</th>
@@ -230,7 +355,10 @@
                                 </tr>
                             </thead>
                             <tbody id="corpoTransacoesRecentes" class="divide-y divide-slate-700/40 text-sm">
-                                <tr><td colspan="5" class="text-center py-8 text-slate-400 font-medium">Carregando transações...</td></tr>
+                                <tr>
+                                    <td colspan="5" class="text-center py-8 text-slate-400 font-medium">Carregando
+                                        transações...</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -248,30 +376,41 @@
                 <form id="formTransacao" class="space-y-5">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="md:col-span-2 flex flex-col gap-1.5">
-                            <label for="descricao" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span class="text-rose-500">*</span></label>
-                            <input type="text" id="descricao" required placeholder="Ex: Venda de mercadorias, Aluguel, Supermercado..." class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="descricao"
+                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span
+                                    class="text-rose-500">*</span></label>
+                            <input type="text" id="descricao" required
+                                placeholder="Ex: Venda de mercadorias, Aluguel, Supermercado..."
+                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="categoria" class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
-                            <input type="text" id="categoria" placeholder="Ex: Alimentação, Venda, Moradia" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="categoria"
+                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
+                            <input type="text" id="categoria" placeholder="Ex: Alimentação, Venda, Moradia"
+                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="valor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor (R$) <span class="text-rose-500">*</span></label>
+                            <label for="valor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor
+                                (R$) <span class="text-rose-500">*</span></label>
                             <div class="relative">
                                 <span class="absolute left-4 top-3 text-slate-400 text-sm font-semibold">R$</span>
-                                <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                                <input type="number" id="valor" step="0.01" required placeholder="0,00"
+                                    class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             </div>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="tipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo <span class="text-rose-500">*</span></label>
-                            <select id="tipo" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="tipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo
+                                <span class="text-rose-500">*</span></label>
+                            <select id="tipo" required
+                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                                 <option value="" disabled selected>Selecione o tipo...</option>
                                 <option value="RECEITA">✅ Receita (Entrada)</option>
                                 <option value="DESPESA">❌ Despesa (Saída)</option>
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="status" class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
+                            <label for="status"
+                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
                             <select id="status" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                                 <option value="PENDENTE">⏳ Pendente</option>
                                 <option value="PAGO" selected>✅ Pago / Recebido</option>
@@ -279,8 +418,11 @@
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="formaPagamento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
-                            <select id="formaPagamento" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="formaPagamento"
+                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de
+                                Pagamento</label>
+                            <select id="formaPagamento"
+                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                                 <option value="" selected>Não informada</option>
                                 <option value="DINHEIRO">💵 Dinheiro</option>
                                 <option value="PIX">🔄 PIX</option>
@@ -291,12 +433,16 @@
                             </select>
                         </div>
                         <div class="flex flex-col gap-1.5">
-                            <label for="dataVencimento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span class="text-rose-500">*</span></label>
-                            <input type="date" id="dataVencimento" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <label for="dataVencimento"
+                                class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span
+                                    class="text-rose-500">*</span></label>
+                            <input type="date" id="dataVencimento" required
+                                class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                     </div>
                     <div class="pt-4 flex items-center justify-end gap-3">
-                        <button type="submit" id="btnLancar" class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
+                        <button type="submit" id="btnLancar"
+                            class="px-8 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
                             <i class="fa-solid fa-check"></i> Lançar Transação
                         </button>
                     </div>
@@ -311,16 +457,20 @@
                     <h2 class="text-2xl font-bold text-white">Histórico de Transações</h2>
                     <p class="text-slate-400 text-sm">Visualize, filtre, edite e gerencie suas entradas e saídas</p>
                 </div>
-                <button onclick="exportarDadosJSON()" class="px-4 py-2.5 bg-slate-700/60 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs flex items-center gap-2 transition-all border border-slate-600/40">
+                <button onclick="exportarDadosJSON()"
+                    class="px-4 py-2.5 bg-slate-700/60 hover:bg-slate-700 text-slate-200 font-semibold rounded-xl text-xs flex items-center gap-2 transition-all border border-slate-600/40">
                     <i class="fa-solid fa-download"></i> Exportar Dados JSON
                 </button>
             </div>
             <div class="card p-6 sm:p-8 rounded-2xl space-y-6">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/40">
+                <div
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-700/40">
                     <div class="flex flex-wrap gap-3 w-full sm:w-auto">
                         <div class="relative flex-1 sm:w-64">
-                            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i class="fa-solid fa-magnifying-glass"></i></span>
-                            <input type="text" id="buscaTransacao" placeholder="Buscar por descrição..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border input-dark text-sm">
+                            <span class="absolute left-3.5 top-3 text-slate-400 text-sm"><i
+                                    class="fa-solid fa-magnifying-glass"></i></span>
+                            <input type="text" id="buscaTransacao" placeholder="Buscar por descrição..."
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border input-dark text-sm">
                         </div>
                         <select id="filtroTipo" class="px-4 py-2.5 rounded-xl border input-dark text-sm">
                             <option value="">Todos os tipos</option>
@@ -332,7 +482,8 @@
                 <div class="overflow-x-auto rounded-xl border border-slate-700/40">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
+                            <tr
+                                class="bg-slate-800/40 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-700/40">
                                 <th class="p-4">Descrição</th>
                                 <th class="p-4">Categoria</th>
                                 <th class="p-4">Valor</th>
@@ -344,7 +495,10 @@
                             </tr>
                         </thead>
                         <tbody id="corpoTabelaTransacoes" class="divide-y divide-slate-700/40 text-sm">
-                            <tr><td colspan="8" class="text-center py-12 text-slate-400 font-medium">Carregando transações...</td></tr>
+                            <tr>
+                                <td colspan="8" class="text-center py-12 text-slate-400 font-medium">Carregando
+                                    transações...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -354,8 +508,10 @@
     </main>
 
     <!-- ===== MODAL DE EDIÇÃO DE TRANSAÇÃO ===== -->
-    <div id="modalEditarTransacao" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
-        <div class="card animate-modal w-full max-w-xl rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 border border-slate-700/60 max-h-[90vh] overflow-y-auto">
+    <div id="modalEditarTransacao"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
+        <div
+            class="card animate-modal w-full max-w-xl rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 border border-slate-700/60 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center pb-4 border-b border-slate-700/40">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center">
@@ -366,7 +522,8 @@
                         <p class="text-xs text-slate-400">Atualize os dados da transação selecionada</p>
                     </div>
                 </div>
-                <button onclick="fecharModalEditar()" class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
+                <button onclick="fecharModalEditar()"
+                    class="w-9 h-9 rounded-xl bg-slate-800/50 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-all">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -375,29 +532,39 @@
                 <input type="hidden" id="editId">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="sm:col-span-2 flex flex-col gap-1.5">
-                        <label for="editDescricao" class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span class="text-rose-500">*</span></label>
-                        <input type="text" id="editDescricao" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editDescricao"
+                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Descrição <span
+                                class="text-rose-500">*</span></label>
+                        <input type="text" id="editDescricao" required
+                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editCategoria" class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
-                        <input type="text" id="editCategoria" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editCategoria"
+                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Categoria</label>
+                        <input type="text" id="editCategoria"
+                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editValor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor (R$) <span class="text-rose-500">*</span></label>
+                        <label for="editValor" class="text-xs font-bold uppercase tracking-wider text-slate-400">Valor
+                            (R$) <span class="text-rose-500">*</span></label>
                         <div class="relative">
                             <span class="absolute left-4 top-3 text-slate-400 text-sm font-semibold">R$</span>
-                            <input type="number" id="editValor" step="0.01" required class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                            <input type="number" id="editValor" step="0.01" required
+                                class="w-full pl-11 pr-4 py-3 rounded-xl border input-dark text-sm font-medium">
                         </div>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editTipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo <span class="text-rose-500">*</span></label>
-                        <select id="editTipo" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editTipo" class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo
+                            <span class="text-rose-500">*</span></label>
+                        <select id="editTipo" required
+                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="RECEITA">✅ Receita (Entrada)</option>
                             <option value="DESPESA">❌ Despesa (Saída)</option>
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editStatus" class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
+                        <label for="editStatus"
+                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Status</label>
                         <select id="editStatus" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="PENDENTE">⏳ Pendente</option>
                             <option value="PAGO">✅ Pago / Recebido</option>
@@ -405,8 +572,10 @@
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editFormaPagamento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
-                        <select id="editFormaPagamento" class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editFormaPagamento"
+                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Forma de Pagamento</label>
+                        <select id="editFormaPagamento"
+                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                             <option value="">Não informada</option>
                             <option value="DINHEIRO">💵 Dinheiro</option>
                             <option value="PIX">🔄 PIX</option>
@@ -417,13 +586,18 @@
                         </select>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label for="editDataVencimento" class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span class="text-rose-500">*</span></label>
-                        <input type="date" id="editDataVencimento" required class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
+                        <label for="editDataVencimento"
+                            class="text-xs font-bold uppercase tracking-wider text-slate-400">Data <span
+                                class="text-rose-500">*</span></label>
+                        <input type="date" id="editDataVencimento" required
+                            class="px-4 py-3 rounded-xl border input-dark text-sm font-medium">
                     </div>
                 </div>
                 <div class="pt-3 flex items-center justify-end gap-3">
-                    <button type="button" onclick="fecharModalEditar()" class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
-                    <button type="submit" class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
+                    <button type="button" onclick="fecharModalEditar()"
+                        class="px-5 py-3 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
+                    <button type="submit"
+                        class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/25 transition-all active:scale-98 flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-check"></i> Salvar Alterações
                     </button>
                 </div>
@@ -432,16 +606,21 @@
     </div>
 
     <!-- ===== MODAL DE CONFIRMAÇÃO PERSONALIZADO ===== -->
-    <div id="modalConfirmacao" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
-        <div class="card animate-modal w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 border border-slate-700/60 text-center">
-            <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto text-xl">
+    <div id="modalConfirmacao"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm hidden p-4">
+        <div
+            class="card animate-modal w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 border border-slate-700/60 text-center">
+            <div
+                class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-500 flex items-center justify-center mx-auto text-xl">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 id="tituloConfirmacao" class="text-lg font-bold text-white">Confirmação</h3>
             <p id="textoConfirmacao" class="text-sm text-slate-300">Deseja realmente prosseguir com esta ação?</p>
             <div class="flex justify-center gap-3 pt-2">
-                <button id="btnCancelarConfirmacao" class="px-4 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
-                <button id="btnSimConfirmacao" class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all shadow-md shadow-rose-500/20">Confirmar</button>
+                <button id="btnCancelarConfirmacao"
+                    class="px-4 py-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-300 font-semibold text-sm transition-all">Cancelar</button>
+                <button id="btnSimConfirmacao"
+                    class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-sm transition-all shadow-md shadow-rose-500/20">Confirmar</button>
             </div>
         </div>
     </div>
@@ -457,22 +636,20 @@
         function mostrarToast(mensagem, tipo = 'sucesso') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            
+
             const cores = {
                 sucesso: 'bg-emerald-600/90 text-white border-emerald-500/30',
                 erro: 'bg-rose-600/90 text-white border-rose-500/30',
                 aviso: 'bg-amber-600/90 text-white border-amber-500/30'
             };
-
             const icones = {
                 sucesso: 'fa-circle-check',
                 erro: 'fa-circle-xmark',
                 aviso: 'fa-triangle-exclamation'
             };
-
             toast.className = `px-4 py-3 rounded-xl shadow-xl backdrop-blur-md border flex items-center gap-3 text-sm font-semibold pointer-events-auto transition-all duration-300 animate-fade-in ${cores[tipo] || cores.sucesso}`;
             toast.innerHTML = `<i class="fa-solid ${icones[tipo] || icones.sucesso} text-lg"></i> <span>${mensagem}</span>`;
-            
+
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -481,22 +658,19 @@
             }, 3500);
         }
 
-        // Modal de Confirmação customizado (substitui alert/confirm nativos)
+        // Modal de Confirmação customizado
         function confirmarAcao(titulo, texto, callback) {
             const modal = document.getElementById('modalConfirmacao');
             document.getElementById('tituloConfirmacao').textContent = titulo;
             document.getElementById('textoConfirmacao').textContent = texto;
             modal.classList.remove('hidden');
-
             const btnSim = document.getElementById('btnSimConfirmacao');
             const btnNao = document.getElementById('btnCancelarConfirmacao');
-
             const fechar = () => {
                 modal.classList.add('hidden');
                 btnSim.replaceWith(btnSim.cloneNode(true));
                 btnNao.replaceWith(btnNao.cloneNode(true));
             };
-
             document.getElementById('btnSimConfirmacao').onclick = () => {
                 fechar();
                 callback();
@@ -509,7 +683,6 @@
             const body = document.body;
             const icone = document.getElementById('iconeTema');
             const texto = document.getElementById('textoTema');
-
             if (body.classList.contains('light')) {
                 body.classList.remove('light');
                 localStorage.setItem('tema', 'dark');
@@ -529,7 +702,6 @@
             const body = document.body;
             const icone = document.getElementById('iconeTema');
             const texto = document.getElementById('textoTema');
-
             if (temaSalvo === 'light') {
                 body.classList.add('light');
                 if (icone) icone.className = "fa-solid fa-sun text-amber-500";
@@ -547,7 +719,6 @@
             document.getElementById('nomeUsuario').textContent = nome;
             const iniciais = nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('iniciaisUsuario').textContent = iniciais || 'US';
-
             document.getElementById('dataVencimento').valueAsDate = new Date();
             carregarTransacoes();
         });
@@ -577,11 +748,9 @@
                 });
                 botao.classList.add('ativa', 'text-slate-300', 'bg-slate-700/20');
                 botao.classList.remove('text-slate-400', 'hover:bg-slate-700/40', 'hover:text-slate-200');
-
                 const idPainel = botao.dataset.painel;
                 document.querySelectorAll('.painel').forEach(p => p.classList.add('hidden'));
                 document.getElementById(idPainel).classList.remove('hidden');
-
                 if (idPainel === 'transacoes') renderTransacoes(listaTransacoes);
                 if (idPainel === 'dashboard') {
                     atualizarCards(listaTransacoes);
@@ -637,7 +806,6 @@
             e.preventDefault();
             const btn = document.getElementById('btnLancar');
             const dados = {
-                id: '_' + Math.random().toString(36).substr(2, 9),
                 descricao: document.getElementById('descricao').value.trim(),
                 categoria: document.getElementById('categoria').value.trim() || 'Geral',
                 valor: parseFloat(document.getElementById('valor').value),
@@ -646,16 +814,12 @@
                 formaPagamento: document.getElementById('formaPagamento').value || null,
                 dataVencimento: document.getElementById('dataVencimento').value
             };
-
             if (!dados.descricao || isNaN(dados.valor) || !dados.tipo || !dados.dataVencimento) {
                 mostrarToast('Preencha todos os campos obrigatórios!', 'erro');
                 return;
             }
-
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Salvando...';
-
-            // Tentativa real na API, com fallback elegante local
             try {
                 const res = await fetch(API_TRANSACOES, {
                     method: 'POST',
@@ -664,8 +828,7 @@
                 });
                 if (!res.ok) throw new Error();
             } catch {
-                // Simulação local para robustez completa
-                listaTransacoes.unshift(dados);
+                listaTransacoes.unshift({ ...dados, _id: '_' + Math.random().toString(36).substr(2, 9) });
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> Lançar Transação';
@@ -676,18 +839,39 @@
             }
         });
 
-        // Carregar Transações
+        // ✅ CARREGAR TRANSAÇÕES — CORRIGIDO
         async function carregarTransacoes() {
+            console.log('🔄 Buscando transações na API...');
             try {
-                const res = await fetch(API_TRANSACOES, { headers: { 'Authorization': 'Bearer ' + token } });
-                if (!res.ok) throw new Error();
-                listaTransacoes = await res.json();
-            } catch {
+                const res = await fetch(API_TRANSACOES, {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                console.log('📡 Resposta da API:', res.status, res.statusText);
+
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+                const dados = await res.json();
+                console.log('📦 Dados recebidos:', dados);
+
+                // ✅ Normaliza: garante que valor é número e trata id/_id
+                listaTransacoes = dados.map(t => ({
+                    ...t,
+                    valor: Number(t.valor) || 0,       // Garante tipo numérico
+                    id: t._id || t.id                   // Garante que id existe
+                }));
+
+                console.log('✅ Transações processadas:', listaTransacoes);
+
+            } catch (erro) {
+                console.warn('⚠️ Erro ao buscar API, usando demo:', erro.message);
                 if (!listaTransacoes.length) {
                     carregarDadosDemo();
                     return;
                 }
             }
+
+            // ✅ SEMPRE atualiza tudo após carregar
             renderTransacoes(listaTransacoes);
             renderTransacoesRecentes(listaTransacoes);
             atualizarCards(listaTransacoes);
@@ -704,21 +888,19 @@
             const recentes = [...lista]
                 .sort((a, b) => new Date(b.dataVencimento || 0) - new Date(a.dataVencimento || 0))
                 .slice(0, 5);
-
             b.innerHTML = recentes.map(t => {
                 const corValor = t.tipo === 'RECEITA' ? 'text-emerald-500' : 'text-rose-500';
                 const sinal = t.tipo === 'RECEITA' ? '+' : '-';
-                const tipoTexto = t.tipo === 'RECEITA' 
-                    ? '<span class="text-emerald-500 text-xs font-semibold">Receita</span>' 
+                const tipoTexto = t.tipo === 'RECEITA'
+                    ? '<span class="text-emerald-500 text-xs font-semibold">Receita</span>'
                     : '<span class="text-rose-500 text-xs font-semibold">Despesa</span>';
-
                 return `<tr class="hover:bg-slate-700/30 transition-colors">
-                    <td class="p-3 font-semibold text-white">${t.descricao || '—'}</td>
-                    <td class="p-3 font-bold ${corValor}">${sinal} ${formatarMoeda(t.valor)}</td>
-                    <td class="p-3">${tipoTexto}</td>
-                    <td class="p-3">${fmtStatusSimples(t.status)}</td>
-                    <td class="p-3 text-slate-400 text-sm">${formatarData(t.dataVencimento)}</td>
-                </tr>`;
+            <td class="p-3 font-semibold text-white">${t.descricao || '—'}</td>
+            <td class="p-3 font-bold ${corValor}">${sinal} ${formatarMoeda(t.valor)}</td>
+            <td class="p-3">${tipoTexto}</td>
+            <td class="p-3">${fmtStatusSimples(t.status)}</td>
+            <td class="p-3 text-slate-400 text-sm">${formatarData(t.dataVencimento)}</td>
+        </tr>`;
             }).join('');
         }
 
@@ -729,36 +911,39 @@
                 return;
             }
             b.innerHTML = lista.map(t => {
-                const idTransacao = t.id || t._id;
-                const corTipo = t.tipo === 'RECEITA' 
-                    ? '<span class="font-bold text-emerald-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-up"></i> Receita</span>' 
+                const idTransacao = t._id || t.id; // ✅ Trata ambos os formatos
+                const corTipo = t.tipo === 'RECEITA'
+                    ? '<span class="font-bold text-emerald-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-up"></i> Receita</span>'
                     : '<span class="font-bold text-rose-500 flex items-center gap-1.5"><i class="fa-solid fa-arrow-down"></i> Despesa</span>';
                 const categoriaFormatada = t.categoria ? t.categoria.charAt(0).toUpperCase() + t.categoria.slice(1).toLowerCase() : '—';
                 return `<tr class="hover:bg-slate-700/30 transition-colors">
-                    <td class="p-4 font-semibold text-white">${t.descricao || '—'}</td>
-                    <td class="p-4 text-slate-400">${categoriaFormatada}</td>
-                    <td class="p-4 font-bold text-white">${formatarMoeda(t.valor)}</td>
-                    <td class="p-4">${corTipo}</td>
-                    <td class="p-4 whitespace-nowrap">${fmtFormaPgto(t.formaPagamento)}</td>
-                    <td class="p-4">${fmtStatus(t.status)}</td>
-                    <td class="p-4 text-slate-400 font-medium">${formatarData(t.dataVencimento)}</td>
-                    <td class="p-4 text-center whitespace-nowrap">
-                        <button onclick="abrirModalEditar('${idTransacao}')" class="px-3 py-1.5 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-400 rounded-lg text-xs font-semibold mr-1.5 transition-all" title="Editar">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
-                        <button onclick="deletarTransacao('${idTransacao}')" class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-semibold transition-all" title="Excluir">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>`;
+            <td class="p-4 font-semibold text-white">${t.descricao || '—'}</td>
+            <td class="p-4 text-slate-400">${categoriaFormatada}</td>
+            <td class="p-4 font-bold text-white">${formatarMoeda(t.valor)}</td>
+            <td class="p-4">${corTipo}</td>
+            <td class="p-4 whitespace-nowrap">${fmtFormaPgto(t.formaPagamento)}</td>
+            <td class="p-4">${fmtStatus(t.status)}</td>
+            <td class="p-4 text-slate-400 font-medium">${formatarData(t.dataVencimento)}</td>
+            <td class="p-4 text-center whitespace-nowrap">
+                <button onclick="abrirModalEditar('${idTransacao}')" class="px-3 py-1.5 bg-indigo-500/15 hover:bg-indigo-500/30 text-indigo-400 rounded-lg text-xs font-semibold mr-1.5 transition-all" title="Editar">
+                    <i class="fa-solid fa-pen"></i>
+                </button>
+                <button onclick="deletarTransacao('${idTransacao}')" class="px-3 py-1.5 bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-semibold transition-all" title="Excluir">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </td>
+        </tr>`;
             }).join('');
         }
 
-        // Funções para Editar Transação
+        // ✅ Editar Transação — corrigido para aceitar _id
         function abrirModalEditar(id) {
-            const t = listaTransacoes.find(item => (item.id == id || item._id == id));
-            if (!t) return;
-            
+            const t = listaTransacoes.find(item => (item._id == id || item.id == id));
+            if (!t) {
+                mostrarToast('Transação não encontrada!', 'erro');
+                return;
+            }
+
             document.getElementById('editId').value = id;
             document.getElementById('editDescricao').value = t.descricao || '';
             document.getElementById('editCategoria').value = t.categoria || '';
@@ -767,7 +952,7 @@
             document.getElementById('editStatus').value = t.status || 'PENDENTE';
             document.getElementById('editFormaPagamento').value = t.formaPagamento || '';
             document.getElementById('editDataVencimento').value = t.dataVencimento ? t.dataVencimento.split('T')[0] : '';
-            
+
             document.getElementById('modalEditarTransacao').classList.remove('hidden');
         }
 
@@ -787,42 +972,39 @@
                 formaPagamento: document.getElementById('editFormaPagamento').value || null,
                 dataVencimento: document.getElementById('editDataVencimento').value
             };
-
-            const index = listaTransacoes.findIndex(item => (item.id == id || item._id == id));
+            const index = listaTransacoes.findIndex(item => (item._id == id || item.id == id));
             if (index !== -1) {
                 listaTransacoes[index] = { ...listaTransacoes[index], ...dados };
             }
-
             try {
                 await fetch(`${API_TRANSACOES}${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
                     body: JSON.stringify(dados)
                 });
-            } catch {}
-
+            } catch { }
             mostrarToast('Transação atualizada com sucesso!', 'sucesso');
             fecharModalEditar();
             carregarTransacoes();
         });
 
-        // Função para Deletar Transação com Modal de Confirmação
+        // ✅ Deletar Transação — corrigido para aceitar _id
         function deletarTransacao(id) {
             confirmarAcao('Excluir Transação', 'Tem certeza absoluta que deseja excluir este registro?', () => {
-                listaTransacoes = listaTransacoes.filter(item => (item.id != id && item._id != id));
-                
+                listaTransacoes = listaTransacoes.filter(item => (item._id != id && item.id != id));
+
                 try {
                     fetch(`${API_TRANSACOES}${id}`, {
                         method: 'DELETE',
                         headers: { 'Authorization': 'Bearer ' + token }
                     });
-                } catch {}
-
+                } catch { }
                 mostrarToast('Transação excluída com sucesso!', 'aviso');
                 carregarTransacoes();
             });
         }
 
+        // ✅ Atualizar Cards — garante cálculos corretos com valores numéricos
         function atualizarCards(lista) {
             const rec = lista.filter(t => t.tipo === 'RECEITA' && t.status !== 'CANCELADO').reduce((s, t) => s + Number(t.valor), 0);
             const desp = lista.filter(t => t.tipo === 'DESPESA' && t.status !== 'CANCELADO').reduce((s, t) => s + Number(t.valor), 0);
@@ -846,31 +1028,32 @@
             }
         }
 
-        // Gráfico de Categorias com Chart.js
+        // ✅ Gráfico — mensagem melhorada e lógica confirmada
         function atualizarGrafico(lista) {
             const ctx = document.getElementById('graficoCategorias').getContext('2d');
             const despesas = lista.filter(t => t.tipo === 'DESPESA' && t.status !== 'CANCELADO');
-            
+
             const categoriasMap = {};
             despesas.forEach(t => {
                 const cat = t.categoria || 'Outros';
                 categoriasMap[cat] = (categoriasMap[cat] || 0) + Number(t.valor);
             });
-
             const labels = Object.keys(categoriasMap);
             const data = Object.values(categoriasMap);
 
             if (chartInstancia) chartInstancia.destroy();
-
             const isLight = document.body.classList.contains('light');
             const corTexto = isLight ? '#334155' : '#94A3B8';
 
             if (!labels.length) {
-                document.getElementById('legendaGrafico').textContent = 'Nenhuma despesa registrada para exibir no gráfico.';
+                document.getElementById('legendaGrafico').textContent =
+                    lista.length === 0
+                        ? 'Nenhuma transação registrada ainda.'
+                        : '✅ Apenas receitas — sem despesas para exibir.';
                 return;
             }
-            document.getElementById('legendaGrafico').textContent = '';
 
+            document.getElementById('legendaGrafico').textContent = '';
             chartInstancia = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
@@ -909,6 +1092,7 @@
         // Filtros em tempo real
         document.getElementById('buscaTransacao')?.addEventListener('input', aplicarFiltros);
         document.getElementById('filtroTipo')?.addEventListener('change', aplicarFiltros);
+
         function aplicarFiltros() {
             const termo = document.getElementById('buscaTransacao')?.value.toLowerCase().trim() || '';
             const filtroTipo = document.getElementById('filtroTipo')?.value || '';
@@ -919,4 +1103,5 @@
         }
     </script>
 </body>
+
 </html>
