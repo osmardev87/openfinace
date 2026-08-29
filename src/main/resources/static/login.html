@@ -61,9 +61,9 @@
                 <button type="button" onclick="alternarPainel('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm">
                     <i class="fa-solid fa-right-to-bracket mr-1.5"></i> Entrar
                 </button>
-                <button type="button" onclick="alternarPainel('registro')" id="btnTabRegistro" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-800">
+                <!-- <button type="button" onclick="alternarPainel('registro')" id="btnTabRegistro" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 text-slate-500 hover:text-slate-800">
                     <i class="fa-solid fa-user-plus mr-1.5"></i> Criar Conta
-                </button>
+                </button> -->
             </div>
 
             <form id="formLogin" class="painel-form visivel space-y-4">
@@ -104,84 +104,7 @@
                 <div id="msgLoginErro" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-rose-50 text-rose-700 border border-rose-200"></div>
             </form>
 
-            <form id="formRegistro" class="painel-form hidden space-y-4">
-                <div class="space-y-1">
-                    <h2 class="text-lg font-bold text-slate-900">Cadastre-se grátis</h2>
-                    <p class="text-xs text-slate-500">Crie sua conta em segundos</p>
-                </div>
-
-                <div class="space-y-3 pt-2">
-                    <div class="space-y-1.5">
-                        <label for="regNome" class="text-xs font-bold uppercase tracking-wider text-slate-600">Nome Completo / Razão Social <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
-                                <i class="fa-solid fa-user"></i>
-                            </span>
-                            <input type="text" id="regNome" required placeholder="Seu nome ou da empresa" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label for="regEmail" class="text-xs font-bold uppercase tracking-wider text-slate-600">E-mail <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
-                                <i class="fa-solid fa-envelope"></i>
-                            </span>
-                            <input type="email" id="regEmail" required placeholder="seu@email.com" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label for="regPerfil" class="text-xs font-bold uppercase tracking-wider text-slate-600">Perfil de Acesso <span class="text-rose-500">*</span></label>
-                        <select id="regPerfil" onchange="alternarCamposPerfil()" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                            <option value="PESSOAL" selected>👤 Pessoal</option>
-                            <option value="EMPRESA">🏢 Empresa / Negócio</option>
-                        </select>
-                    </div>
-
-                    <!-- Campo CPF (Aparece se Pessoal) -->
-                    <div id="containerCpf" class="space-y-1.5">
-                        <label for="regCpf" class="text-xs font-bold uppercase tracking-wider text-slate-600">CPF <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
-                                <i class="fa-solid fa-id-card"></i>
-                            </span>
-                            <input type="text" id="regCpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCpf(this)" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                        </div>
-                    </div>
-
-                    <!-- Campo CNPJ (Aparece se Empresa) -->
-                    <div id="containerCnpj" class="space-y-1.5 hidden">
-                        <label for="regCnpj" class="text-xs font-bold uppercase tracking-wider text-slate-600">CNPJ <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
-                                <i class="fa-solid fa-building"></i>
-                            </span>
-                            <input type="text" id="regCnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCnpj(this)" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                        </div>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label for="regSenha" class="text-xs font-bold uppercase tracking-wider text-slate-600">Senha <span class="text-rose-500">*</span></label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-slate-400 text-sm">
-                                <i class="fa-solid fa-lock"></i>
-                            </span>
-                            <input type="password" id="regSenha" required placeholder="Mínimo 6 caracteres" class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-slate-800 text-sm font-medium focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all">
-                            <button type="button" onclick="alternarVisibilidadeSenha('regSenha', this)" class="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600 text-sm">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" id="btnSubmitRegistro" class="w-full mt-2 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-98 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-user-check"></i> Concluir Cadastro
-                </button>
-
-                <div id="msgRegistroSucesso" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-emerald-50 text-emerald-700 border border-emerald-200"></div>
-                <div id="msgRegistroErro" class="hidden p-3.5 rounded-xl text-xs font-semibold text-center bg-rose-50 text-rose-700 border border-rose-200"></div>
-            </form>
+        
 
         </div>
 
@@ -195,7 +118,7 @@
     <script>
         const API_BASE = 'https://openfinace.onrender.com';
         const API_LOGIN = API_BASE + '/auth/login';
-        const API_REGISTRO = API_BASE + '/auth/registrar';
+        const API_REGISTRO = API_BASE + '/auth/register';
 
         function alternarPainel(painel) {
             const formLogin = document.getElementById('formLogin');

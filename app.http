@@ -13,12 +13,12 @@ Content-Type: application/json
 ### 👤 CRIAR USUÁRIO — Completo
 ### ROLE ( VENDEDOR, ADMIN )
 ### ================================
-POST http://localhost:8089/auth/register
+POST https://openfinace.onrender.com/auth/register
 Content-Type: application/json
 
 {
   "nome": "José Osmar",
-  "email": "osmar.dev@gmail.com",
+  "email": "osmar.dev87@gmail.com",
   "senha": "Osmar4547*",
   "cpf": "12345678907",
   "cnpj": "12345678901234",
