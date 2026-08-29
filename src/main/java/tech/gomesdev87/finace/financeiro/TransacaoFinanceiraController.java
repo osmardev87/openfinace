@@ -6,9 +6,11 @@ import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -51,7 +53,7 @@ public class TransacaoFinanceiraController {
     }
 
     // 💰 ATUALIZAR TRANSAÇÃO EXISTENTE
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<List<TransacaoFinanceira>> atualizar(@PathVariable UUID id,
             @Valid @RequestBody TransacaoFinanceiraRequestDTO dto, Authentication auth) {
         transacaoService.atualizar(id, dto, this.tokenService.getUserId(auth));
@@ -60,7 +62,7 @@ public class TransacaoFinanceiraController {
     }
 
     // 💰 DELETAR TRANSAÇÃO EXISTENTE
-    @PostMapping("/deletar/{id}")
+    @DeleteMapping("/deletar/{id}")
     public ResponseEntity<List<TransacaoFinanceira>> deletar(@PathVariable UUID id, Authentication auth) {
         transacaoService.deletar(id, this.tokenService.getUserId(auth));
         return ResponseEntity
