@@ -4,17 +4,14 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import tech.gomesdev87.finace.financeiro.dto.TransacaoFinanceiraRequestDTO;
-import tech.gomesdev87.finace.user.UserRepository;
 
 @Service
 public class TransacaoFinanceiraService {
     private final TransacaoFinanceiraRepository repositorio;
-    private final UserRepository userRepository;
 
-    public TransacaoFinanceiraService(UserRepository userRepository,
+    public TransacaoFinanceiraService(
             TransacaoFinanceiraRepository transacaoFinanceiraRepository) {
         this.repositorio = transacaoFinanceiraRepository;
-        this.userRepository = userRepository;
     }
 
     // No seu Service, converta assim:
@@ -27,9 +24,9 @@ public class TransacaoFinanceiraService {
                 .formaPagamento(dto.formaPagamento()).dataVencimento(dto.dataVencimento()).build();
 
         // Associa Parceiro se veio ID
-        if (dto.parceiroId() != null) {
-            transacao.setParceiro(userRepository.findById(dto.parceiroId()).orElse(null));
-        }
+        // if (dto.parceiroId() != null) {
+        // transacao.setParceiro(userRepository.findById(dto.parceiroId()).orElse(null));
+        // }
 
         // // Associa Nota Fiscal se veio ID
         // if (dto.entradaNotaId() != null) {
@@ -39,7 +36,33 @@ public class TransacaoFinanceiraService {
         return repositorio.save(transacao);
     }
 
+    public TransacaoFinanceira atualizar(UUID id, TransacaoFinanceiraRequestDTO dto, UUID userId) {
+        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndID(userId, id)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Transação não encontrada para o usuário."));
+
+        transacaoExistente.setDescricao(dto.descricao());
+        transacaoExistente.setCategoria(dto.categoria() != null ? dto.categoria() : "OUTROS");
+        transacaoExistente.setValor(dto.valor());
+        transacaoExistente.setTipo(dto.tipo());
+        transacaoExistente.setStatus(dto.status() != null ? dto.status() : "PENDENTE");
+        transacaoExistente.setFormaPagamento(dto.formaPagamento());
+        transacaoExistente.setDataVencimento(dto.dataVencimento());
+
+        return repositorio.save(transacaoExistente);
+    }
+
     public List<TransacaoFinanceira> listFinanceira(UUID id) {
         return this.repositorio.findByUserId(id);
+    }
+
+    public void deletar(UUID id, UUID userId) {
+        TransacaoFinanceira transacaoExistente = repositorio.findByUserIdAndID(userId, id)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Transação não encontrada para o usuário."));
+
+        repositorio.delete(transacaoExistente);
     }
 }

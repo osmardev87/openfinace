@@ -14,6 +14,8 @@ public interface TransacaoFinanceiraRepository extends JpaRepository<TransacaoFi
     // Lista todas as transações de um usuário específico
     List<TransacaoFinanceira> findByUserId(UUID userId);
 
+    List<TransacaoFinanceira> findByUserIdAndID(UUID userId, UUID id);
+
     // Busca transações por intervalo de data de vencimento
     List<TransacaoFinanceira> findByUserIdAndDataVencimentoBetween(UUID userId, LocalDate inicio, LocalDate fim);
 
