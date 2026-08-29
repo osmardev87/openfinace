@@ -422,7 +422,7 @@
 
     <script>
         const API_BASE = "https://openfinace.onrender.com";
-        const API_TRANSACOES = API_BASE + "/transacoes";
+        const API_TRANSACOES = API_BASE + "/transacoes/";
         const API_PRODUTOS = API_BASE + "/produto/";
         let token = localStorage.getItem('token');
         let listaTransacoes = [];
@@ -615,7 +615,7 @@
         // Carregar Transações
         async function carregarTransacoes() {
             try {
-                const res = await fetch(API_TRANSACOES+"/", { headers: { 'Authorization': 'Bearer ' + token } });
+                const res = await fetch(API_TRANSACOES, { headers: { 'Authorization': 'Bearer ' + token } });
                 if (!res.ok) throw new Error();
                 listaTransacoes = await res.json();
                 renderTransacoes(listaTransacoes);
