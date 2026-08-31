@@ -233,13 +233,11 @@
 
     <!-- Script JavaScript conectado ao Spring Boot -->
     <script>
+        // Definir a URL base da API no topo para evitar ReferenceError por hoisting / ordem de execução
+        const API_BASE_URL = "https://openfinace.onrender.com"; 
+
         let products = [];
         let selectedProductIndex = -1;
-
-        // Altere para o endereço do seu backend Spring Boot (ex: http://localhost:8080)
-        const API_BASE_URL = API_BASE + "/produto/";
-         const API_BASE = "https://openfinace.onrender.com";
-       
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchProductsFromAPI();
@@ -250,7 +248,8 @@
 
         // Obter cabeçalhos com autenticação Bearer Token
         function getAuthHeaders() {
-            const token = localStorage.getItem('token');
+            const tokenInput = document.getElementById('jwtTokenInput');
+            const token = tokenInput ? tokenInput.value.trim() : "";
             return {
                 "Content-Type": "application/json",
                 ...(token ? { "Authorization": `Bearer ${token}` } : {})
@@ -260,11 +259,11 @@
         // Buscar produtos do endpoint GET /produto/
         async function fetchProductsFromAPI() {
             const syncIcon = document.getElementById('syncIcon');
-            syncIcon.classList.add('fa-spin');
+            if (syncIcon) syncIcon.classList.add('fa-spin');
             showToast("A sincronizar dados com o Spring Boot...", "success");
 
             try {
-                const response = await fetch(`${API_BASE_URL}`, {
+                const response = await fetch(`${API_BASE_URL}/produto/`, {
                     method: 'GET',
                     headers: getAuthHeaders()
                 });
@@ -274,15 +273,15 @@
                 }
 
                 const data = await response.json();
-                products = data;
+                products = Array.isArray(data) ? data : [];
                 renderInventory();
                 renderShortcuts();
-                syncIcon.classList.remove('fa-spin');
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
                 showToast("Produtos carregados do servidor!");
 
             } catch (error) {
                 console.error("Erro ao conectar com a API:", error);
-                syncIcon.classList.remove('fa-spin');
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
                 showToast("Falha na conexão com o servidor.", "error");
             }
         }
@@ -290,21 +289,31 @@
         // Alternância de Abas
         function switchTab(tab) {
             const isConsulta = tab === 'consulta';
-            document.getElementById('tab-consulta').classList.toggle('hidden', !isConsulta);
-            document.getElementById('tab-estoque').classList.toggle('hidden', isConsulta);
+            const tabConsulta = document.getElementById('tab-consulta');
+            const tabEstoque = document.getElementById('tab-estoque');
+            const btnConsulta = document.getElementById('btn-consulta');
+            const btnEstoque = document.getElementById('btn-estoque');
 
-            document.getElementById('btn-consulta').className = isConsulta ? 
-                "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
-                "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
+            if (tabConsulta) tabConsulta.classList.toggle('hidden', !isConsulta);
+            if (tabEstoque) tabEstoque.classList.toggle('hidden', isConsulta);
+
+            if (btnConsulta) {
+                btnConsulta.className = isConsulta ? 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
+            }
             
-            document.getElementById('btn-estoque').className = !isConsulta ? 
-                "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
-                "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
+            if (btnEstoque) {
+                btnEstoque.className = !isConsulta ? 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
+            }
         }
 
         // Renderizar Tabela de Estoque
         function renderInventory() {
             const tbody = document.getElementById('inventoryTableBody');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             if (products.length === 0) {
@@ -313,15 +322,22 @@
             }
 
             products.forEach((p, index) => {
+                const sku = p.sku || '--';
+                const nome = p.nome || 'Produto sem nome';
+                const custo = Number(p.valorCusto || 0).toFixed(2);
+                const venda = Number(p.valorVenda || 0).toFixed(2);
+                const qtd = p.quantidade ?? 0;
+                const minQtd = p.quantidadeMinima ?? 5;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="p-3.5 font-mono font-semibold text-indigo-600">${p.sku || '--'}</td>
-                        <td class="p-3.5 font-medium text-slate-800">${p.nome}</td>
-                        <td class="p-3.5 text-slate-600">R$ ${(p.valorCusto || 0).toFixed(2)}</td>
-                        <td class="p-3.5 font-semibold text-slate-800">R$ ${(p.valorVenda || 0).toFixed(2)}</td>
+                        <td class="p-3.5 font-mono font-semibold text-indigo-600">${sku}</td>
+                        <td class="p-3.5 font-medium text-slate-800">${nome}</td>
+                        <td class="p-3.5 text-slate-600">R$ ${custo}</td>
+                        <td class="p-3.5 font-semibold text-slate-800">R$ ${venda}</td>
                         <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${p.quantidade <= (p.quantidadeMinima || 5) ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
-                                ${p.quantidade} un
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${qtd <= minQtd ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
+                                ${qtd} un
                             </span>
                         </td>
                         <td class="p-3.5 text-center space-x-2">
@@ -335,31 +351,39 @@
         // Renderizar Atalhos Rápidos na Consulta
         function renderShortcuts() {
             const container = document.getElementById('quickShortcuts');
+            if (!container) return;
             container.innerHTML = '';
             products.forEach(p => {
+                const sku = p.sku || '';
+                const nome = p.nome || '';
                 container.innerHTML += `
-                    <button onclick="selectProductByCode('${p.sku}')" class="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 border border-transparent rounded-lg text-xs font-medium text-slate-600 transition">
-                        ${p.sku} - ${p.nome}
+                    <button type="button" onclick="selectProductByCode('${sku}')" class="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 border border-transparent rounded-lg text-xs font-medium text-slate-600 transition">
+                        ${sku} - ${nome}
                     </button>
                 `;
             });
         }
 
         function selectProductByCode(sku) {
-            document.getElementById('searchInput').value = sku;
-            handleSearch();
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.value = sku;
+                handleSearch();
+            }
         }
 
         // Lógica de Busca no Input
         function handleSearch() {
-            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            if (!searchInput) return;
+            const query = searchInput.value.trim().toLowerCase();
             if (!query) {
                 selectedProductIndex = -1;
                 toggleDisplay(false);
                 return;
             }
 
-            const foundIndex = products.findIndex(p => (p.sku && p.sku.toLowerCase() === query) || p.nome.toLowerCase().includes(query));
+            const foundIndex = products.findIndex(p => (p.sku && p.sku.toLowerCase() === query) || (p.nome && p.nome.toLowerCase().includes(query)));
             
             if (foundIndex !== -1) {
                 selectedProductIndex = foundIndex;
@@ -372,14 +396,22 @@
         }
 
         function toggleDisplay(show) {
-            document.getElementById('productDisplay').classList.toggle('hidden', !show);
-            document.getElementById('emptyDisplay').classList.toggle('hidden', show);
+            const productDisplay = document.getElementById('productDisplay');
+            const emptyDisplay = document.getElementById('emptyDisplay');
+            if (productDisplay) productDisplay.classList.toggle('hidden', !show);
+            if (emptyDisplay) emptyDisplay.classList.toggle('hidden', show);
+
             if (show && selectedProductIndex !== -1) {
                 const p = products[selectedProductIndex];
-                document.getElementById('dispName').innerText = p.nome;
-                document.getElementById('dispCode').innerText = p.sku || 'AUTO';
-                document.getElementById('dispStock').innerText = p.quantidade + " un";
-                document.getElementById('dispOriginalPrice').innerText = `R$ ${(p.valorVenda || 0).toFixed(2)}`;
+                const dispName = document.getElementById('dispName');
+                const dispCode = document.getElementById('dispCode');
+                const dispStock = document.getElementById('dispStock');
+                const dispOriginalPrice = document.getElementById('dispOriginalPrice');
+
+                if (dispName) dispName.innerText = p.nome || '--';
+                if (dispCode) dispCode.innerText = p.sku || 'AUTO';
+                if (dispStock) dispStock.innerText = (p.quantidade ?? 0) + " un";
+                if (dispOriginalPrice) dispOriginalPrice.innerText = `R$ ${(p.valorVenda || 0).toFixed(2)}`;
             }
         }
 
@@ -388,19 +420,26 @@
             if (selectedProductIndex === -1) return;
 
             const p = products[selectedProductIndex];
-            const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
+            const discountInput = document.getElementById('discountInput');
+            const discountPercent = discountInput ? parseFloat(discountInput.value) || 0 : 0;
             const price = p.valorVenda || 0;
             
             const discountValue = price * (discountPercent / 100);
             const finalPrice = price - discountValue;
 
-            document.getElementById('dispDiscountVal').innerText = `- R$ ${discountValue.toFixed(2)} (${discountPercent}%)`;
-            document.getElementById('dispFinalPrice').innerText = `R$ ${finalPrice.toFixed(2)}`;
+            const dispDiscountVal = document.getElementById('dispDiscountVal');
+            const dispFinalPrice = document.getElementById('dispFinalPrice');
+
+            if (dispDiscountVal) dispDiscountVal.innerText = `- R$ ${discountValue.toFixed(2)} (${discountPercent}%)`;
+            if (dispFinalPrice) dispFinalPrice.innerText = `R$ ${finalPrice.toFixed(2)}`;
         }
 
         function applyDiscountPreset(val) {
-            document.getElementById('discountInput').value = val;
-            updateCalculation();
+            const discountInput = document.getElementById('discountInput');
+            if (discountInput) {
+                discountInput.value = val;
+                updateCalculation();
+            }
         }
 
         // Simulação de Venda
@@ -419,37 +458,53 @@
             p.quantidade -= 1;
             renderInventory();
             toggleDisplay(true);
-            document.getElementById('dispStock').innerText = p.quantidade + " un";
+            const dispStock = document.getElementById('dispStock');
+            if (dispStock) dispStock.innerText = p.quantidade + " un";
             showToast(`Venda registada! Estoque atualizado para ${p.quantidade} un.`);
         }
 
         function openModal() {
-            document.getElementById('productModal').classList.remove('hidden');
-            document.getElementById('productModal').classList.add('flex');
-            document.getElementById('productForm').reset();
+            const modal = document.getElementById('productModal');
+            const form = document.getElementById('productForm');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            if (form) form.reset();
         }
 
         function closeModal() {
-            document.getElementById('productModal').classList.add('hidden');
-            document.getElementById('productModal').classList.remove('flex');
+            const modal = document.getElementById('productModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
         }
 
         // Enviar POST para cadastrar novo produto no backend
         async function saveProduct(e) {
             e.preventDefault();
             
+            const modalSku = document.getElementById('modalSku');
+            const modalName = document.getElementById('modalName');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalCost = document.getElementById('modalCost');
+            const modalPrice = document.getElementById('modalPrice');
+            const modalStock = document.getElementById('modalStock');
+            const modalMinStock = document.getElementById('modalMinStock');
+
             const productDTO = {
-                sku: document.getElementById('modalSku').value.trim() || null,
-                nome: document.getElementById('modalName').value,
-                descricao: document.getElementById('modalDesc').value,
-                valorCusto: parseFloat(document.getElementById('modalCost').value),
-                valorVenda: parseFloat(document.getElementById('modalPrice').value),
-                quantidade: parseInt(document.getElementById('modalStock').value),
-                quantidadeMinima: parseInt(document.getElementById('modalMinStock').value)
+                sku: modalSku && modalSku.value.trim() ? modalSku.value.trim() : null,
+                nome: modalName ? modalName.value : '',
+                descricao: modalDesc ? modalDesc.value : '',
+                valorCusto: modalCost ? parseFloat(modalCost.value) || 0 : 0,
+                valorVenda: modalPrice ? parseFloat(modalPrice.value) || 0 : 0,
+                quantidade: modalStock ? parseInt(modalStock.value) || 0 : 0,
+                quantidadeMinima: modalMinStock ? parseInt(modalMinStock.value) || 5 : 5
             };
 
             try {
-                const response = await fetch(`${API_BASE_URL}`, {
+                const response = await fetch(`${API_BASE_URL}/produto/`, {
                     method: 'POST',
                     headers: getAuthHeaders(),
                     body: JSON.stringify(productDTO)
@@ -473,6 +528,8 @@
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             const toastIcon = document.getElementById('toastIcon');
+
+            if (!toast || !toastMsg || !toastIcon) return;
 
             toastMsg.innerText = msg;
             toastIcon.className = type === "success" ? "fa-solid fa-circle-check text-emerald-400" : "fa-solid fa-circle-exclamation text-rose-400";
