@@ -3,48 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Estoque e Consulta de Preços (API Spring Boot)</title>
+    <title>Sistema de Estoque e Consulta de Preços (Offline / API)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Estilo de Impressão para PDF -->
-    <style>
-        @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
-        }
-    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
     <!-- Cabeçalho -->
-    <header class="bg-indigo-600 text-white shadow-md no-print">
+    <header class="bg-indigo-600 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-server text-3xl"></i>
+                <i class="fa-solid fa-cloud-sun text-3xl"></i>
                 <div>
-                    <h1 class="text-xl font-bold">Gestão & Consulta</h1>
-                    <p class="text-xs text-indigo-200">Conectado ao Backend /produto e /auth</p>
+                    <h1 class="text-xl font-bold">Gestão & Consulta (Modo Rural / Offline)</h1>
+                    <p class="text-xs text-indigo-200">Sincronização Automática com Servidor Spring Boot</p>
                 </div>
             </div>
             <div class="flex items-center flex-wrap gap-3">
+                <!-- Indicador de Conexão / Rede -->
+                <div id="netStatusIndicator" class="flex items-center gap-2 bg-indigo-700/60 px-3 py-1.5 rounded-xl text-xs">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400" id="netDot"></span>
+                    <span id="netStatusText" class="text-indigo-200">Online</span>
+                </div>
+
                 <!-- Status do Token Rápido -->
                 <div id="authStatusIndicator" class="flex items-center gap-2 bg-indigo-700/60 px-3 py-1.5 rounded-xl text-xs">
                     <span class="w-2.5 h-2.5 rounded-full bg-rose-400" id="tokenDot"></span>
                     <span id="tokenStatusText" class="text-indigo-200">Não Autenticado</span>
                 </div>
                 
-                <!-- Botão Abrir Carrinho Modal -->
-                <button onclick="openCartModal()" class="relative bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 shadow-md">
-                    <i class="fa-solid fa-cart-shopping"></i> Carrinho
-                    <span id="cartCountBadge" class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
-                </button>
-
                 <button onclick="fetchProductsFromAPI()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-2">
-                    <i class="fa-solid fa-rotate" id="syncIcon"></i> Sincronizar API
+                    <i class="fa-solid fa-rotate" id="syncIcon"></i> Sincronizar
                 </button>
                 <nav class="flex gap-2 bg-indigo-700/50 p-1.5 rounded-xl">
                     <button onclick="switchTab('consulta')" id="btn-consulta" class="px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm">
@@ -53,9 +44,8 @@
                     <button onclick="switchTab('estoque')" id="btn-estoque" class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600">
                         <i class="fa-solid fa-warehouse mr-2"></i>Estoque
                     </button>
-                    <button onclick="sair()"
-                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
-                        <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-lg"></i> Sair da Conta
+                    <button onclick="switchTab('auth')" id="btn-auth" class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600">
+                        <i class="fa-solid fa-lock mr-2"></i>Login
                     </button>
                 </nav>
             </div>
@@ -93,12 +83,6 @@
                         <button onclick="applyDiscountPreset(10)" class="py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-medium transition">10%</button>
                         <button onclick="applyDiscountPreset(15)" class="py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-medium transition">15%</button>
                         <button onclick="applyDiscountPreset(20)" class="py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs rounded-lg font-medium transition">20%</button>
-                    </div>
-
-                    <div class="pt-4 border-t">
-                        <button onclick="addToCart()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
-                        </button>
                     </div>
                 </div>
 
@@ -152,7 +136,7 @@
 
                     <!-- Lista Rápida de Atalhos -->
                     <div class="mt-6 pt-4 border-t">
-                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Produtos Carregados via API</span>
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Produtos em Cache (Disponíveis Offline)</span>
                         <div id="quickShortcuts" class="flex flex-wrap gap-2">
                             <!-- Injetado via JS -->
                         </div>
@@ -167,7 +151,7 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
-                        <i class="fa-solid fa-warehouse text-indigo-600"></i> Gestão de Inventário (API Conectada)
+                        <i class="fa-solid fa-warehouse text-indigo-600"></i> Gestão de Inventário (Modo Híbrido)
                     </h2>
                     <button onclick="openModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2.5 rounded-xl shadow-md shadow-indigo-600/20 transition flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-plus"></i> Novo Produto
@@ -239,81 +223,6 @@
         </section>
 
     </main>
-
-    <!-- ÁREA OCULTA PARA IMPRESSÃO DO PDF / PEDIDO -->
-    <div id="printArea" class="hidden p-8 bg-white">
-        <div class="text-center border-b pb-4 mb-4">
-            <h2 class="text-2xl font-bold">COMPROVANTE DE PEDIDO / ORÇAMENTO</h2>
-            <p class="text-xs text-slate-500">Sistema de Gestão de Estoque & Vendas</p>
-            <p id="printDate" class="text-xs text-slate-500 mt-1"></p>
-        </div>
-        <table class="w-full text-left border-collapse mb-6 text-sm">
-            <thead>
-                <tr class="border-b">
-                    <th class="p-2">Item</th>
-                    <th class="p-2 text-center">Qtd</th>
-                    <th class="p-2 text-right">Preço Un.</th>
-                    <th class="p-2 text-right">Desc.</th>
-                    <th class="p-2 text-right">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody id="printTableBody">
-                <!-- Injetado via JS -->
-            </tbody>
-        </table>
-        <div class="flex justify-end border-t pt-4">
-            <div class="text-right">
-                <span class="text-sm text-slate-500 block">Total Geral:</span>
-                <span id="printTotalDisplay" class="text-xl font-bold">R$ 0,00</span>
-            </div>
-        </div>
-        <div class="mt-12 text-center text-xs text-slate-400 border-t pt-4">
-            <p>Obrigado pela preferência!</p>
-        </div>
-    </div>
-
-    <!-- Modal do Carrinho de Compras -->
-    <div id="cartModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="font-bold text-lg text-slate-700 flex items-center gap-2">
-                    <i class="fa-solid fa-cart-shopping text-indigo-600"></i> Carrinho de Compras & Pedido
-                </h3>
-                <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-
-            <div class="overflow-x-auto max-h-72 overflow-y-auto border rounded-xl">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead class="bg-slate-50 text-slate-500 text-xs uppercase sticky top-0">
-                        <tr>
-                            <th class="p-2.5">Item</th>
-                            <th class="p-2.5 text-center">Qtd</th>
-                            <th class="p-2.5 text-right">Preço Un.</th>
-                            <th class="p-2.5 text-right">Desc.</th>
-                            <th class="p-2.5 text-right">Subtotal</th>
-                            <th class="p-2.5 text-center">Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cartTableBody" class="divide-y divide-slate-100">
-                        <tr><td colspan="6" class="text-center py-6 text-slate-400">O carrinho está vazio.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div>
-                    <span class="text-xs text-slate-500 block uppercase font-semibold">Total do Pedido</span>
-                    <span id="cartTotalDisplay" class="text-2xl font-extrabold text-indigo-600">R$ 0,00</span>
-                </div>
-                <div class="flex gap-2 w-full sm:w-auto">
-                    <button onclick="clearCart()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold rounded-xl transition">Limpar</button>
-                    <button onclick="generateOrderPDF()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md shadow-emerald-600/20 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-file-pdf"></i> Gerar PDF / Pedido
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal de Cadastro / Edição -->
     <div id="productModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
@@ -409,21 +318,52 @@
         <span id="toastMsg" class="text-sm font-medium">Ação realizada com sucesso!</span>
     </div>
 
-    <!-- Script JavaScript conectado ao Spring Boot -->
+    <!-- Script JavaScript com Armazenamento Local / Modo Offline -->
     <script>
         const API_BASE_URL = "https://openfinace.onrender.com"; 
 
         let products = [];
-        let cart = [];
         let selectedProductIndex = -1;
 
         document.addEventListener('DOMContentLoaded', () => {
             checkTokenStatus();
-            fetchProductsFromAPI();
+            checkNetworkStatus();
             
+            // Carrega produtos do cache local primeiro para acesso instantâneo offline
+            loadProductsFromLocalCache();
+            
+            // Tenta sincronizar com a API em background se houver internet
+            if (navigator.onLine) {
+                fetchProductsFromAPI();
+            }
+
+            window.addEventListener('online', () => {
+                checkNetworkStatus();
+                showToast("Conexão restabelecida! A sincronizar...", "success");
+                fetchProductsFromAPI();
+            });
+
+            window.addEventListener('offline', () => {
+                checkNetworkStatus();
+                showToast("Modo Offline ativado (Zona Rural). Dados locais em uso.", "error");
+            });
+
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             document.getElementById('discountInput').addEventListener('input', updateCalculation);
         });
+
+        function checkNetworkStatus() {
+            const netDot = document.getElementById('netDot');
+            const netStatusText = document.getElementById('netStatusText');
+            const online = navigator.onLine;
+
+            if (netDot) {
+                netDot.className = online ? "w-2.5 h-2.5 rounded-full bg-emerald-400" : "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
+            }
+            if (netStatusText) {
+                netStatusText.innerText = online ? "Online" : "Offline (Rural)";
+            }
+        }
 
         function getAuthHeaders() {
             const token = localStorage.getItem('token') || "";
@@ -438,8 +378,6 @@
             const tokenDot = document.getElementById('tokenDot');
             const tokenStatusText = document.getElementById('tokenStatusText');
             const userInfoDisplay = document.getElementById('userInfoDisplay');
-            const authBtnText = document.getElementById('authBtnText');
-            const authBtnIcon = document.getElementById('authBtnIcon');
             
             const hasToken = token && token.trim().length > 0;
             if (tokenDot) {
@@ -448,31 +386,29 @@
             if (tokenStatusText) {
                 tokenStatusText.innerText = hasToken ? "Autenticado (JWT)" : "Não Autenticado";
             }
-            
             if (userInfoDisplay && hasToken) {
-                const userName = localStorage.getItem('user_name');
                 const userEmail = localStorage.getItem('user_email');
-                userInfoDisplay.innerText = userName ? `Sessão ativa: ${userName} (${userEmail})` : "Sessão ativa";
+                userInfoDisplay.innerText = userEmail ? `Sessão ativa (${userEmail})` : "Sessão ativa";
             } else if (userInfoDisplay) {
                 userInfoDisplay.innerText = "Nenhum utilizador logado.";
             }
         }
 
-        function handleAuthNavClick() {
-            const token = localStorage.getItem('token');
-            if (token && token.trim().length > 0) {
-                // Se já estiver logado, perguntar ou terminar sessão diretamente
-                if (confirm("Deseja realmente terminar a sessão atual ou trocar de conta?")) {
-                    clearAuthToken();
+        function loadProductsFromLocalCache() {
+            const cached = localStorage.getItem('offline_products');
+            if (cached) {
+                try {
+                    products = JSON.parse(cached);
+                    renderInventory();
+                    renderShortcuts();
+                } catch (e) {
+                    console.error("Erro ao carregar cache local", e);
                 }
-            } else {
-                switchTab('auth');
             }
         }
-        
-        function sair() {
-            localStorage.clear();
-            window.location.href = '/';
+
+        function saveProductsToLocalCache() {
+            localStorage.setItem('offline_products', JSON.stringify(products));
         }
 
         function requireAuth(callback) {
@@ -502,26 +438,10 @@
             }
         }
 
-        function openCartModal() {
-            const modal = document.getElementById('cartModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            }
-        }
-
-        function closeCartModal() {
-            const modal = document.getElementById('cartModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }
-        }
-
         async function handleModalLoginSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('modalLoginEmail').value.trim();
-            const senha = document.getElementById('modalLoginPassword').value;
+            const password = document.getElementById('modalLoginPassword').value;
             const btn = document.getElementById('btnModalLoginSubmit');
 
             if (btn) {
@@ -533,7 +453,7 @@
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email, senha: password })
                 });
 
                 if (!response.ok) {
@@ -541,12 +461,11 @@
                 }
 
                 const data = await response.json();
-                const token = data.token;
-                const userObj = data.user || {};
+                const token = data.token || data.accessToken || data;
+                const userObj = data.user || data.usuario || {};
 
-                localStorage.setItem('token', token);
+                localStorage.setItem('token', typeof token === 'string' ? token : (token.token || JSON.stringify(token)));
                 localStorage.setItem('user_email', userObj.email || email);
-                localStorage.setItem('user_name', userObj.nome || '');
 
                 checkTokenStatus();
                 closeAuthModal();
@@ -567,7 +486,7 @@
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
-            const senha = document.getElementById('loginPassword').value;
+            const password = document.getElementById('loginPassword').value;
             const btn = document.getElementById('btnLoginSubmit');
 
             if (btn) {
@@ -579,7 +498,7 @@
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email, senha: password })
                 });
 
                 if (!response.ok) {
@@ -587,12 +506,11 @@
                 }
 
                 const data = await response.json();
-                const token = data.token;
-                const userObj = data.user || {};
+                const token = data.token || data.accessToken || data;
+                const userObj = data.user || data.usuario || {};
 
-                localStorage.setItem('token', token);
+                localStorage.setItem('token', typeof token === 'string' ? token : (token.token || JSON.stringify(token)));
                 localStorage.setItem('user_email', userObj.email || email);
-                localStorage.setItem('user_name', userObj.nome || '');
 
                 checkTokenStatus();
                 showToast("Login realizado com sucesso!");
@@ -613,16 +531,20 @@
         function clearAuthToken() {
             localStorage.removeItem('token');
             localStorage.removeItem('user_email');
-            localStorage.removeItem('user_name');
             checkTokenStatus();
             showToast("Sessão terminada com sucesso.");
-            switchTab('auth');
+            openAuthModal();
         }
 
         async function fetchProductsFromAPI() {
             const token = localStorage.getItem('token');
             if (!token || !token.trim()) {
                 openAuthModal();
+                return;
+            }
+
+            if (!navigator.onLine) {
+                showToast("Sem internet. A utilizar dados locais (offline).", "error");
                 return;
             }
 
@@ -638,8 +560,6 @@
 
                 if (response.status === 401 || response.status === 403) {
                     if (syncIcon) syncIcon.classList.remove('fa-spin');
-                    localStorage.removeItem('token');
-                    checkTokenStatus();
                     openAuthModal();
                     throw new Error("Sessão expirada ou não autorizada.");
                 }
@@ -650,29 +570,22 @@
 
                 const data = await response.json();
                 products = Array.isArray(data) ? data : [];
+                saveProductsToLocalCache(); // Atualiza o cache local
                 renderInventory();
                 renderShortcuts();
                 if (syncIcon) syncIcon.classList.remove('fa-spin');
-                showToast("Produtos carregados do servidor!");
+                showToast("Produtos sincronizados com sucesso!");
 
             } catch (error) {
                 console.error("Erro ao conectar com a API:", error);
                 if (syncIcon) syncIcon.classList.remove('fa-spin');
                 if (error.message !== "Sessão expirada ou não autorizada.") {
-                    showToast("Falha na conexão com o servidor.", "error");
+                    showToast("Falha na conexão. A usar dados salvos offline.", "error");
                 }
             }
         }
 
         function switchTab(tab) {
-            if (tab === 'estoque' || tab === 'consulta') {
-                const token = localStorage.getItem('token');
-                if (!token || !token.trim()) {
-                    openAuthModal();
-                    return;
-                }
-            }
-
             const isConsulta = tab === 'consulta';
             const isEstoque = tab === 'estoque';
             const isAuth = tab === 'auth';
@@ -683,6 +596,7 @@
 
             const btnConsulta = document.getElementById('btn-consulta');
             const btnEstoque = document.getElementById('btn-estoque');
+            const btnAuth = document.getElementById('btn-auth');
 
             if (tabConsulta) tabConsulta.classList.toggle('hidden', !isConsulta);
             if (tabEstoque) tabEstoque.classList.toggle('hidden', !isEstoque);
@@ -698,6 +612,11 @@
                     "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
                     "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
             }
+            if (btnAuth) {
+                btnAuth.className = isAuth ? 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition bg-white text-indigo-700 shadow-sm" : 
+                    "px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600";
+            }
         }
 
         function renderInventory() {
@@ -706,7 +625,7 @@
             tbody.innerHTML = '';
 
             if (products.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">Nenhum produto encontrado.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">Nenhum produto em cache. Sincronize com internet.</td></tr>`;
                 return;
             }
 
@@ -829,129 +748,6 @@
             }
         }
 
-        // Adicionar ao Carrinho
-        function addToCart() {
-            if (selectedProductIndex === -1) {
-                showToast("Selecione um produto na busca primeiro!", "error");
-                return;
-            }
-
-            const p = products[selectedProductIndex];
-            const discountInput = document.getElementById('discountInput');
-            const discountPercent = discountInput ? parseFloat(discountInput.value) || 0 : 0;
-
-            const unitPrice = p.valorVenda || 0;
-            const discountVal = unitPrice * (discountPercent / 100);
-            const subtotal = unitPrice - discountVal;
-
-            const existingItem = cart.find(item => item.sku === p.sku);
-            if (existingItem) {
-                existingItem.qty += 1;
-                existingItem.subtotal = (unitPrice - discountVal) * existingItem.qty;
-            } else {
-                cart.push({
-                    sku: p.sku || 'AUTO',
-                    name: p.nome,
-                    unitPrice,
-                    discountPercent,
-                    discountVal,
-                    qty: 1,
-                    subtotal
-                });
-            }
-
-            renderCart();
-            showToast("Produto adicionado ao carrinho!");
-        }
-
-        function renderCart() {
-            const tbody = document.getElementById('cartTableBody');
-            const badge = document.getElementById('cartCountBadge');
-            const totalDisplay = document.getElementById('cartTotalDisplay');
-            if (!tbody) return;
-
-            tbody.innerHTML = '';
-            if (cart.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-400">O carrinho está vazio.</td></tr>`;
-                if (badge) badge.innerText = "0";
-                if (totalDisplay) totalDisplay.innerText = "R$ 0,00";
-                return;
-            }
-
-            let totalGeneral = 0;
-            let totalItems = 0;
-
-            cart.forEach((item, index) => {
-                totalGeneral += item.subtotal;
-                totalItems += item.qty;
-
-                tbody.innerHTML += `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-2.5 font-medium text-slate-800">${item.name} <span class="text-xs text-slate-400 block font-mono">${item.sku}</span></td>
-                        <td class="p-2.5 text-center">${item.qty}</td>
-                        <td class="p-2.5 text-right">R$ ${item.unitPrice.toFixed(2)}</td>
-                        <td class="p-2.5 text-right text-amber-600">${item.discountPercent}%</td>
-                        <td class="p-2.5 text-right font-semibold text-indigo-600">R$ ${item.subtotal.toFixed(2)}</td>
-                        <td class="p-2.5 text-center">
-                            <button onclick="removeFromCart(${index})" class="text-slate-400 hover:text-rose-600 transition" title="Remover"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            if (badge) badge.innerText = `${totalItems}`;
-            if (totalDisplay) totalDisplay.innerText = `R$ ${totalGeneral.toFixed(2)}`;
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            renderCart();
-            showToast("Item removido do carrinho.");
-        }
-
-        function clearCart() {
-            cart = [];
-            renderCart();
-            showToast("Carrinho limpo.");
-        }
-
-        function generateOrderPDF() {
-            if (cart.length === 0) {
-                showToast("O carrinho está vazio para gerar o pedido!", "error");
-                return;
-            }
-
-            const printTableBody = document.getElementById('printTableBody');
-            const printTotalDisplay = document.getElementById('printTotalDisplay');
-            const printDate = document.getElementById('printDate');
-
-            if (printDate) {
-                printDate.innerText = `Data: ${new Date().toLocaleString('pt-BR')}`;
-            }
-
-            if (printTableBody) {
-                printTableBody.innerHTML = '';
-                let total = 0;
-                cart.forEach(item => {
-                    total += item.subtotal;
-                    printTableBody.innerHTML += `
-                        <tr class="border-b">
-                            <td class="p-2">${item.name} (${item.sku})</td>
-                            <td class="p-2 text-center">${item.qty}</td>
-                            <td class="p-2 text-right">R$ ${item.unitPrice.toFixed(2)}</td>
-                            <td class="p-2 text-right">${item.discountPercent}%</td>
-                            <td class="p-2 text-right font-bold">R$ ${item.subtotal.toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-                if (printTotalDisplay) {
-                    printTotalDisplay.innerText = `R$ ${total.toFixed(2)}`;
-                }
-            }
-
-            window.print();
-        }
-
         function openModal() {
             requireAuth(() => {
                 const modal = document.getElementById('productModal');
@@ -996,7 +792,7 @@
 
                 if (skuInput) {
                     skuInput.value = product.sku || '';
-                    skuInput.disabled = true;
+                    skuInput.disabled = true; // SKU não muda na edição
                 }
                 if (nameInput) nameInput.value = product.nome || '';
                 if (descInput) descInput.value = product.descricao || '';
@@ -1028,9 +824,6 @@
                 const quantidade = parseInt(document.getElementById('modalStock').value) || 0;
                 const quantidadeMinima = parseInt(document.getElementById('modalMinStock').value) || 5;
 
-                const endpoint = `${API_BASE_URL}/produto/`;
-                const method = isEditing ? 'PUT' : 'POST';
-
                 const productDTO = {
                     sku: sku || null,
                     nome,
@@ -1041,16 +834,30 @@
                     quantidadeMinima
                 };
 
+                // Se estiver offline, atualiza direto no cache local para não perder a venda/cadastro
+                if (!navigator.onLine) {
+                    if (isEditing) {
+                        const idx = products.findIndex(p => p.sku === sku);
+                        if (idx !== -1) products[idx] = productDTO;
+                    } else {
+                        products.push(productDTO);
+                    }
+                    saveProductsToLocalCache();
+                    renderInventory();
+                    renderShortcuts();
+                    closeModal();
+                    showToast("Salvo offline com sucesso no dispositivo!");
+                    return;
+                }
+
                 try {
-                    const response = await fetch(endpoint, {
-                        method: method,
+                    const response = await fetch(`${API_BASE_URL}/produto/`, {
+                        method: isEditing ? 'PUT' : 'POST',
                         headers: getAuthHeaders(),
                         body: JSON.stringify(productDTO)
                     });
 
                     if (response.status === 401 || response.status === 403) {
-                        localStorage.removeItem('token');
-                        checkTokenStatus();
                         openAuthModal();
                         throw new Error("Sessão expirada.");
                     }
@@ -1077,6 +884,15 @@
             requireAuth(async () => {
                 if (!confirm(`Deseja realmente remover o produto SKU: ${sku}?`)) return;
 
+                if (!navigator.onLine) {
+                    products = products.filter(p => p.sku !== sku);
+                    saveProductsToLocalCache();
+                    renderInventory();
+                    renderShortcuts();
+                    showToast("Produto removido do cache offline.");
+                    return;
+                }
+
                 try {
                     const response = await fetch(`${API_BASE_URL}/produto/${sku}`, {
                         method: 'DELETE',
@@ -1084,8 +900,6 @@
                     });
 
                     if (response.status === 401 || response.status === 403) {
-                        localStorage.removeItem('token');
-                        checkTokenStatus();
                         openAuthModal();
                         throw new Error("Sessão expirada.");
                     }
