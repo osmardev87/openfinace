@@ -1,10 +1,9 @@
 package tech.gomesdev87.finace.produto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
-
 import tech.gomesdev87.finace.produto.dto.ProdutoRequestDTO;
 
 @Service
@@ -25,17 +24,10 @@ public class ProdutoService {
             skuFinal = skuGenerator.gerarSkuUnico(dto.nome(), userId);
         }
         // 2. Cria a entidade Produto a partir do DTO e do SKU final
-        Produto novoProduto = Produto.builder()
-                .nome(dto.nome())
-                .descricao(dto.descricao())
-                .sku(skuFinal)
-                .quantidade(dto.quantidade())
-                .quantidadeMinima(dto.quantidadeMinima())
-                .valorCusto(dto.valorCusto())
-                .valorVenda(dto.valorVenda())
-                .userId(userId)
-                .ativo(true)
-                .build();
+        Produto novoProduto = Produto.builder().nome(dto.nome()).descricao(dto.descricao())
+                .sku(skuFinal).quantidade(dto.quantidade()).quantidadeMinima(dto.quantidadeMinima())
+                .valorCusto(dto.valorCusto() != null ? dto.valorCusto() : BigDecimal.ZERO)
+                .valorVenda(dto.valorVenda()).userId(userId).ativo(true).build();
         // 3. Salva a entidade no banco de dados
         return produtoRepository.save(novoProduto);
 

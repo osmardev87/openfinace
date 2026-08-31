@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Estoque e Consulta de Preços (API)</title>
+    <title>Sistema de Estoque e Consulta de Preços (API Spring Boot)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para Ícones -->
@@ -15,13 +15,17 @@
     <header class="bg-indigo-600 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-3">
-                <i class="fa-solid fa-cloud-arrow-down text-3xl"></i>
+                <i class="fa-solid fa-server text-3xl"></i>
                 <div>
-                    <h1 class="text-xl font-bold">Gestão & Consulta via API</h1>
-                    <p class="text-xs text-indigo-200">Sincronização Automática com Servidor Externo</p>
+                    <h1 class="text-xl font-bold">Gestão & Consulta (Spring Boot API)</h1>
+                    <p class="text-xs text-indigo-200">Conectado ao Backend /produto</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-indigo-700/60 px-3 py-1.5 rounded-xl">
+                    <span class="text-xs text-indigo-200">Token JWT:</span>
+                    <input type="password" id="jwtTokenInput" placeholder="Cole seu Bearer Token aqui..." class="bg-indigo-900/50 text-white text-xs px-2 py-1 rounded border border-indigo-500 focus:outline-none w-48">
+                </div>
                 <button onclick="fetchProductsFromAPI()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-2">
                     <i class="fa-solid fa-rotate" id="syncIcon"></i> Sincronizar API
                 </button>
@@ -51,9 +55,9 @@
                     </h2>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Código ou Nome do Produto</label>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">SKU ou Nome do Produto</label>
                         <div class="relative">
-                            <input type="text" id="searchInput" placeholder="Digite o código (ex: API-101)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <input type="text" id="searchInput" placeholder="Digite o SKU (ex: PROD-001)..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400"></i>
                         </div>
                     </div>
@@ -92,7 +96,7 @@
                                 </div>
                                 <div class="flex gap-4">
                                     <div>
-                                        <span class="text-xs text-slate-400 block uppercase font-semibold">Código</span>
+                                        <span class="text-xs text-slate-400 block uppercase font-semibold">SKU</span>
                                         <span id="dispCode" class="inline-block bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-lg font-mono text-sm font-semibold">--</span>
                                     </div>
                                     <div>
@@ -121,7 +125,7 @@
                         <!-- Estado Vazio -->
                         <div id="emptyDisplay" class="py-16 text-center text-slate-400">
                             <i class="fa-solid fa-box-open text-5xl mb-3 text-slate-300"></i>
-                            <p class="text-base">Digite um código ou selecione um produto para consultar.</p>
+                            <p class="text-base">Digite um SKU ou selecione um produto para consultar.</p>
                         </div>
                     </div>
 
@@ -154,7 +158,7 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b">
-                                <th class="p-3.5">Código</th>
+                                <th class="p-3.5">SKU</th>
                                 <th class="p-3.5">Produto</th>
                                 <th class="p-3.5">Custo (R$)</th>
                                 <th class="p-3.5">Preço Venda (R$)</th>
@@ -172,7 +176,7 @@
 
     </main>
 
-    <!-- Modal de Cadastro / Edição -->
+    <!-- Modal de Cadastro -->
     <div id="productModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -181,28 +185,37 @@
             </div>
 
             <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
-                <input type="hidden" id="editIndex" value="-1">
                 <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Código do Produto</label>
-                    <input type="text" id="modalCode" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <label class="block text-sm font-medium text-slate-600 mb-1">SKU (Opcional - Deixe vazio para auto-gerar)</label>
+                    <input type="text" id="modalSku" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-600 mb-1">Nome do Produto</label>
                     <input type="text" id="modalName" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">Descrição</label>
+                    <input type="text" id="modalDesc" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Custo (R$)</label>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Valor Custo (R$)</label>
                         <input type="number" step="0.01" id="modalCost" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-slate-600 mb-1">Preço Venda (R$)</label>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Valor Venda (R$)</label>
                         <input type="number" step="0.01" id="modalPrice" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">Quantidade em Estoque</label>
-                    <input type="number" id="modalStock" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Quantidade</label>
+                        <input type="number" id="modalStock" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-600 mb-1">Qtd Mínima</label>
+                        <input type="number" id="modalMinStock" value="5" required class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
                 </div>
                 <div class="pt-2 flex gap-3">
                     <button type="button" onclick="closeModal()" class="w-1/2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2.5 rounded-xl transition">Cancelar</button>
@@ -218,13 +231,15 @@
         <span id="toastMsg" class="text-sm font-medium">Ação realizada com sucesso!</span>
     </div>
 
-    <!-- Script JavaScript com Integração API -->
+    <!-- Script JavaScript conectado ao Spring Boot -->
     <script>
         let products = [];
         let selectedProductIndex = -1;
 
-        // URL da API (pode substituir pelo endpoint real do seu backend: Node.js, PHP, Python, etc.)
-        const API_ENDPOINT = "https://jsonplaceholder.typicode.com/posts"; // Simulação de API externa
+        // Altere para o endereço do seu backend Spring Boot (ex: http://localhost:8080)
+        const API_BASE_URL = API_BASE + "/produto/";
+         const API_BASE = "https://openfinace.onrender.com";
+       
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchProductsFromAPI();
@@ -233,37 +248,42 @@
             document.getElementById('discountInput').addEventListener('input', updateCalculation);
         });
 
-        // Função para Buscar Dados da API
+        // Obter cabeçalhos com autenticação Bearer Token
+        function getAuthHeaders() {
+            const token = document.getElementById('jwtTokenInput').value.trim();
+            return {
+                "Content-Type": "application/json",
+                ...(token ? { "Authorization": `Bearer ${token}` } : {})
+            };
+        }
+
+        // Buscar produtos do endpoint GET /produto/
         async function fetchProductsFromAPI() {
             const syncIcon = document.getElementById('syncIcon');
             syncIcon.classList.add('fa-spin');
-            showToast("A sincronizar dados com a API...", "success");
+            showToast("A sincronizar dados com o Spring Boot...", "success");
 
             try {
-                // Exemplo de requisição GET para API
-                // const response = await fetch(API_ENDPOINT);
-                // const data = await response.json();
+                const response = await fetch(`${API_BASE_URL}`, {
+                    method: 'GET',
+                    headers: getAuthHeaders()
+                });
 
-                // Simulação de resposta de API com dados de inventário estruturados
-                setTimeout(() => {
-                    const mockApiResponse = [
-                        { code: "API-101", name: "Notebook Core i5 16GB SSD", cost: 2400.00, price: 3499.90, stock: 8 },
-                        { code: "API-102", name: "Teclado Mecânico RGB Gamer", cost: 120.00, price: 299.90, stock: 25 },
-                        { code: "API-103", name: "Rato Sem Fios Ergonómico", cost: 45.00, price: 119.90, stock: 40 },
-                        { code: "API-104", name: "Monitor UltraWide 29\"", cost: 900.00, price: 1499.90, stock: 5 }
-                    ];
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
 
-                    products = mockApiResponse;
-                    renderInventory();
-                    renderShortcuts();
-                    syncIcon.classList.remove('fa-spin');
-                    showToast("Dados atualizados com sucesso via API!");
-                }, 800);
+                const data = await response.json();
+                products = data;
+                renderInventory();
+                renderShortcuts();
+                syncIcon.classList.remove('fa-spin');
+                showToast("Produtos carregados do servidor!");
 
             } catch (error) {
                 console.error("Erro ao conectar com a API:", error);
                 syncIcon.classList.remove('fa-spin');
-                showToast("Erro ao carregar dados da API.", "error");
+                showToast("Falha na conexão com o servidor.", "error");
             }
         }
 
@@ -295,18 +315,17 @@
             products.forEach((p, index) => {
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="p-3.5 font-mono font-semibold text-indigo-600">${p.code}</td>
-                        <td class="p-3.5 font-medium text-slate-800">${p.name}</td>
-                        <td class="p-3.5 text-slate-600">R$ ${p.cost.toFixed(2)}</td>
-                        <td class="p-3.5 font-semibold text-slate-800">R$ ${p.price.toFixed(2)}</td>
+                        <td class="p-3.5 font-mono font-semibold text-indigo-600">${p.sku || '--'}</td>
+                        <td class="p-3.5 font-medium text-slate-800">${p.nome}</td>
+                        <td class="p-3.5 text-slate-600">R$ ${(p.valorCusto || 0).toFixed(2)}</td>
+                        <td class="p-3.5 font-semibold text-slate-800">R$ ${(p.valorVenda || 0).toFixed(2)}</td>
                         <td class="p-3.5">
-                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${p.stock <= 5 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
-                                ${p.stock} un
+                            <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${p.quantidade <= (p.quantidadeMinima || 5) ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
+                                ${p.quantidade} un
                             </span>
                         </td>
                         <td class="p-3.5 text-center space-x-2">
-                            <button onclick="editProduct(${index})" class="text-slate-400 hover:text-indigo-600 transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button onclick="deleteProduct(${index})" class="text-slate-400 hover:text-rose-600 transition" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="showToast('Edição via API em desenvolvimento', 'success')" class="text-slate-400 hover:text-indigo-600 transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
                         </td>
                     </tr>
                 `;
@@ -319,15 +338,15 @@
             container.innerHTML = '';
             products.forEach(p => {
                 container.innerHTML += `
-                    <button onclick="selectProductByCode('${p.code}')" class="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 border border-transparent rounded-lg text-xs font-medium text-slate-600 transition">
-                        ${p.code} - ${p.name}
+                    <button onclick="selectProductByCode('${p.sku}')" class="px-3 py-1.5 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200 border border-transparent rounded-lg text-xs font-medium text-slate-600 transition">
+                        ${p.sku} - ${p.nome}
                     </button>
                 `;
             });
         }
 
-        function selectProductByCode(code) {
-            document.getElementById('searchInput').value = code;
+        function selectProductByCode(sku) {
+            document.getElementById('searchInput').value = sku;
             handleSearch();
         }
 
@@ -340,7 +359,7 @@
                 return;
             }
 
-            const foundIndex = products.findIndex(p => p.code.toLowerCase() === query || p.name.toLowerCase().includes(query));
+            const foundIndex = products.findIndex(p => (p.sku && p.sku.toLowerCase() === query) || p.nome.toLowerCase().includes(query));
             
             if (foundIndex !== -1) {
                 selectedProductIndex = foundIndex;
@@ -357,10 +376,10 @@
             document.getElementById('emptyDisplay').classList.toggle('hidden', show);
             if (show && selectedProductIndex !== -1) {
                 const p = products[selectedProductIndex];
-                document.getElementById('dispName').innerText = p.name;
-                document.getElementById('dispCode').innerText = p.code;
-                document.getElementById('dispStock').innerText = p.stock + " un";
-                document.getElementById('dispOriginalPrice').innerText = `R$ ${p.price.toFixed(2)}`;
+                document.getElementById('dispName').innerText = p.nome;
+                document.getElementById('dispCode').innerText = p.sku || 'AUTO';
+                document.getElementById('dispStock').innerText = p.quantidade + " un";
+                document.getElementById('dispOriginalPrice').innerText = `R$ ${(p.valorVenda || 0).toFixed(2)}`;
             }
         }
 
@@ -370,9 +389,10 @@
 
             const p = products[selectedProductIndex];
             const discountPercent = parseFloat(document.getElementById('discountInput').value) || 0;
+            const price = p.valorVenda || 0;
             
-            const discountValue = p.price * (discountPercent / 100);
-            const finalPrice = p.price - discountValue;
+            const discountValue = price * (discountPercent / 100);
+            const finalPrice = price - discountValue;
 
             document.getElementById('dispDiscountVal').innerText = `- R$ ${discountValue.toFixed(2)} (${discountPercent}%)`;
             document.getElementById('dispFinalPrice').innerText = `R$ ${finalPrice.toFixed(2)}`;
@@ -383,7 +403,7 @@
             updateCalculation();
         }
 
-        // Registar Venda / Saída de Estoque (Poderia enviar POST para API)
+        // Simulação de Venda
         function registerSale() {
             if (selectedProductIndex === -1) {
                 showToast("Selecione um produto primeiro!", "error");
@@ -391,35 +411,22 @@
             }
 
             let p = products[selectedProductIndex];
-            if (p.stock <= 0) {
+            if (p.quantidade <= 0) {
                 showToast("Produto sem estoque disponível!", "error");
                 return;
             }
 
-            p.stock -= 1;
+            p.quantidade -= 1;
             renderInventory();
             toggleDisplay(true);
-            document.getElementById('dispStock').innerText = p.stock + " un";
-            showToast(`Venda registada! Estoque atualizado para ${p.stock} un.`);
+            document.getElementById('dispStock').innerText = p.quantidade + " un";
+            showToast(`Venda registada! Estoque atualizado para ${p.quantidade} un.`);
         }
 
-        function openModal(index = -1) {
+        function openModal() {
             document.getElementById('productModal').classList.remove('hidden');
             document.getElementById('productModal').classList.add('flex');
-            document.getElementById('editIndex').value = index;
-
-            if (index !== -1) {
-                const p = products[index];
-                document.getElementById('modalTitle').innerText = "Editar Produto";
-                document.getElementById('modalCode').value = p.code;
-                document.getElementById('modalName').value = p.name;
-                document.getElementById('modalCost').value = p.cost;
-                document.getElementById('modalPrice').value = p.price;
-                document.getElementById('modalStock').value = p.stock;
-            } else {
-                document.getElementById('modalTitle').innerText = "Registar Novo Produto";
-                document.getElementById('productForm').reset();
-            }
+            document.getElementById('productForm').reset();
         }
 
         function closeModal() {
@@ -427,42 +434,38 @@
             document.getElementById('productModal').classList.remove('flex');
         }
 
-        function saveProduct(e) {
+        // Enviar POST para cadastrar novo produto no backend
+        async function saveProduct(e) {
             e.preventDefault();
-            const index = parseInt(document.getElementById('editIndex').value);
-            const newProduct = {
-                code: document.getElementById('modalCode').value,
-                name: document.getElementById('modalName').value,
-                cost: parseFloat(document.getElementById('modalCost').value),
-                price: parseFloat(document.getElementById('modalPrice').value),
-                stock: parseInt(document.getElementById('modalStock').value)
+            
+            const productDTO = {
+                sku: document.getElementById('modalSku').value.trim() || null,
+                nome: document.getElementById('modalName').value,
+                descricao: document.getElementById('modalDesc').value,
+                valorCusto: parseFloat(document.getElementById('modalCost').value),
+                valorVenda: parseFloat(document.getElementById('modalPrice').value),
+                quantidade: parseInt(document.getElementById('modalStock').value),
+                quantidadeMinima: parseInt(document.getElementById('modalMinStock').value)
             };
 
-            if (index === -1) {
-                products.push(newProduct);
-                showToast("Produto cadastrado via API!");
-            } else {
-                products[index] = newProduct;
-                showToast("Produto atualizado via API!");
-            }
+            try {
+                const response = await fetch(`${API_BASE_URL}`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(productDTO)
+                });
 
-            renderInventory();
-            renderShortcuts();
-            closeModal();
-        }
+                if (!response.ok) {
+                    throw new Error("Erro ao cadastrar produto no servidor.");
+                }
 
-        function editProduct(index) {
-            openModal(index);
-        }
+                showToast("Produto cadastrado com sucesso via API!");
+                closeModal();
+                fetchProductsFromAPI(); // Recarrega a lista do servidor
 
-        function deleteProduct(index) {
-            if (confirm("Deseja realmente remover este produto?")) {
-                products.splice(index, 1);
-                renderInventory();
-                renderShortcuts();
-                selectedProductIndex = -1;
-                toggleDisplay(false);
-                showToast("Produto removido com sucesso!");
+            } catch (error) {
+                console.error(error);
+                showToast("Erro ao guardar produto.", "error");
             }
         }
 
