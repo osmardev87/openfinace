@@ -4,9 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#4f46e5">
-    <meta name="description" content="Gestão e consulta de estoque offline">
-    <link rel="manifest" href="./manifest.json">
     <title>Sistema de Estoque e Consulta de Preços (API Spring Boot)</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -852,13 +849,6 @@
                     quantidadeMinima
                 };
 
-                if (!navigator.onLine) {
-                    await queueOfflineProduct(method, productDTO);
-                    showToast(isEditing ? "Alteração salva offline." : "Produto salvo offline.");
-                    closeModal();
-                    return;
-                }
-
                 try {
                     const response = await fetch(endpoint, {
                         method: method,
@@ -894,12 +884,6 @@
         async function deleteProduct(sku) {
             requireAuth(async () => {
                 if (!confirm(`Deseja realmente remover o produto SKU: ${sku}?`)) return;
-
-                if (!navigator.onLine) {
-                    await queueOfflineProduct("DELETE", {sku});
-                    showToast(`Produto ${sku} marcado para exclusão quando a internet voltar.`);
-                    return;
-                }
 
                 try {
                     const response = await fetch(`${API_BASE_URL}/produto/${sku}`, {
@@ -945,154 +929,6 @@
             }, 3000);
         }
     </script>
-
-<style>
-#offlineBanner{display:none}
-#offlineBanner.show{display:flex}
-</style>
-<div id="offlineBanner" class="fixed top-0 left-0 right-0 z-[100] bg-amber-500 text-white text-center text-xs font-semibold px-3 py-2 items-center justify-center gap-2">
-  <i class="fa-solid fa-wifi-slash"></i>
-  <span>Modo offline — os dados locais estão sendo utilizados.</span>
-</div>
-<script>
-/* ===== PWA / OFFLINE LAYER ===== */
-const OFFLINE_DB = "gestao_estoque_offline";
-const OFFLINE_STORE = "products";
-const OFFLINE_QUEUE = "sync_queue";
-
-function dbOpen() {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(OFFLINE_DB, 1);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if (!db.objectStoreNames.contains(OFFLINE_STORE))
-        db.createObjectStore(OFFLINE_STORE, {keyPath:"sku"});
-      if (!db.objectStoreNames.contains(OFFLINE_QUEUE)) {
-        const s = db.createObjectStore(OFFLINE_QUEUE, {keyPath:"id", autoIncrement:true});
-        s.createIndex("createdAt","createdAt");
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-async function dbPutProducts(list) {
-  const db = await dbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(OFFLINE_STORE,"readwrite"), s=tx.objectStore(OFFLINE_STORE);
-    s.clear();
-    list.forEach(p=>{ if(p && p.sku) s.put(p); });
-    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
-  });
-}
-async function dbGetProducts() {
-  const db=await dbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(OFFLINE_STORE,"readonly");
-    const req=tx.objectStore(OFFLINE_STORE).getAll();
-    req.onsuccess=()=>resolve(req.result||[]);
-    req.onerror=()=>reject(req.error);
-  });
-}
-async function dbQueue(op) {
-  const db=await dbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(OFFLINE_QUEUE,"readwrite");
-    tx.objectStore(OFFLINE_QUEUE).add({...op,createdAt:Date.now()});
-    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
-  });
-}
-async function dbQueueAll() {
-  const db=await dbOpen();
-  return new Promise((resolve,reject)=>{
-    const req=db.transaction(OFFLINE_QUEUE,"readonly").objectStore(OFFLINE_QUEUE).getAll();
-    req.onsuccess=()=>resolve(req.result||[]);
-    req.onerror=()=>reject(req.error);
-  });
-}
-async function dbQueueDelete(id) {
-  const db=await dbOpen();
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction(OFFLINE_QUEUE,"readwrite");
-    tx.objectStore(OFFLINE_QUEUE).delete(id);
-    tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error);
-  });
-}
-function onlineNow(){ return navigator.onLine; }
-function updateOfflineUI(){
-  const b=document.getElementById("offlineBanner");
-  if(b) b.classList.toggle("show",!navigator.onLine);
-  const el=document.getElementById("tokenStatusText");
-  if(!navigator.onLine && el && localStorage.getItem("token")) el.innerText="Autenticado • Offline";
-}
-async function loadLocalProducts(){
-  try{
-    const local=await dbGetProducts();
-    if(local.length){
-      products=local;
-      renderInventory();
-      renderShortcuts();
-      showToast("Produtos locais carregados (offline).");
-      return true;
-    }
-  }catch(e){ console.error("IndexedDB:",e); }
-  return false;
-}
-async function queueOfflineProduct(method, product) {
-  await dbQueue({method, product});
-  if(product && product.sku){
-    const current=await dbGetProducts();
-    const filtered=current.filter(p=>p.sku!==product.sku);
-    if(method!=="DELETE") filtered.push(product);
-    await dbPutProducts(filtered);
-    products=filtered;
-    renderInventory(); renderShortcuts();
-  }
-}
-async function syncOfflineQueue(){
-  if(!onlineNow()) return;
-  const token=localStorage.getItem("token");
-  if(!token) return;
-  const queue=await dbQueueAll();
-  if(!queue.length) return;
-  showToast("Sincronizando alterações offline...");
-  for(const item of queue){
-    try{
-      const sku=item.product?.sku;
-      const url=item.method==="DELETE"
-        ? `${API_BASE_URL}/produto/${encodeURIComponent(sku)}`
-        : `${API_BASE_URL}/produto/`;
-      const response=await fetch(url,{
-        method:item.method, headers:getAuthHeaders(),
-        body:item.method==="DELETE"?undefined:JSON.stringify(item.product)
-      });
-      if(response.ok) await dbQueueDelete(item.id);
-      else if(response.status===401||response.status===403) break;
-      else console.warn("Falha ao sincronizar item",item,response.status);
-    }catch(e){ console.warn("Ainda sem conexão:",e); break; }
-  }
-  await fetchProductsFromAPI();
-}
-window.addEventListener("online",()=>{updateOfflineUI();syncOfflineQueue();});
-window.addEventListener("offline",updateOfflineUI);
-updateOfflineUI();
-dbOpen().catch(console.error);
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>navigator.serviceWorker.register("./service-worker.js").catch(console.error));
-}
-
-/* Intercepta o carregamento inicial para permitir uso sem internet. */
-const _originalFetchProductsFromAPI = window.fetchProductsFromAPI;
-window.fetchProductsFromAPI = async function(){
-  if(!navigator.onLine){
-    const ok=await loadLocalProducts();
-    if(!ok) showToast("Sem internet e ainda não há produtos salvos neste dispositivo.","error");
-    return;
-  }
-  return _originalFetchProductsFromAPI();
-};
-</script>
-
 </body>
 
 </html>
