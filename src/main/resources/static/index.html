@@ -75,7 +75,7 @@
               id="btn-carrinho"
               class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600 relative"
             >
-              <i class="fa-solid fa-cart-shopping mr-2"></i>Carrinho
+              <i class="fa-solid fa-cart-shopping mr-2"></i>
               <span
                 id="cartBadge"
                 class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden"
@@ -87,14 +87,14 @@
               id="btn-pedidos"
               class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600"
             >
-              <i class="fa-solid fa-receipt mr-2"></i>Pedidos
+              <i class="fa-solid fa-receipt mr-2"></i>
             </button>
             <button
               onclick="switchTab('estoque')"
               id="btn-estoque"
               class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600"
             >
-              <i class="fa-solid fa-warehouse mr-2"></i>Estoque
+              <i class="fa-solid fa-warehouse mr-2"></i>
             </button>
             <button
               onclick="sair()"
@@ -521,7 +521,7 @@
       </section>
 
       <!-- ABA DE AUTENTICAÇÃO / LOGIN -->
-      <section id="tab-auth" class="hidden max-w-xl mx-auto space-y-6">
+      <!-- <section id="tab-auth" class="hidden max-w-xl mx-auto space-y-6">
         <div
           class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6"
         >
@@ -611,7 +611,7 @@
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
     </main>
 
     <!-- Modal para Exibir Espelho do Pedido (PDF Simulado / Impressão) -->
@@ -1456,7 +1456,7 @@
 
       function sair() {
         localStorage.clear();
-        window.location.href = "/login.html";
+        window.location.href = "/";
       }
 
       function renderCart() {
