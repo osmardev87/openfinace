@@ -250,7 +250,7 @@
 
         // Obter cabeçalhos com autenticação Bearer Token
         function getAuthHeaders() {
-            const token = document.getElementById('jwtTokenInput').value.trim();
+            const token = localStorage.getItem('token');
             return {
                 "Content-Type": "application/json",
                 ...(token ? { "Authorization": `Bearer ${token}` } : {})
