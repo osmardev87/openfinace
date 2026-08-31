@@ -176,7 +176,7 @@
 
     </main>
 
-    <!-- Modal de Cadastro -->
+    <!-- Modal de Cadastro / Edição -->
     <div id="productModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
             <div class="flex justify-between items-center border-b pb-3">
@@ -185,8 +185,9 @@
             </div>
 
             <form id="productForm" onsubmit="saveProduct(event)" class="space-y-4">
+                <input type="hidden" id="isEditing" value="false">
                 <div>
-                    <label class="block text-sm font-medium text-slate-600 mb-1">SKU (Opcional - Deixe vazio para auto-gerar)</label>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">SKU do Produto</label>
                     <input type="text" id="modalSku" class="w-full px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
                 <div>
@@ -254,8 +255,7 @@
                 ...(token ? { "Authorization": `Bearer ${token}` } : {})
             };
         }
-
-        // Buscar produtos do endpoint GET /produto/
+        
         async function fetchProductsFromAPI() {
             const syncIcon = document.getElementById('syncIcon');
             if (syncIcon) syncIcon.classList.add('fa-spin');
@@ -285,7 +285,6 @@
             }
         }
 
-        // Alternância de Abas
         function switchTab(tab) {
             const isConsulta = tab === 'consulta';
             const tabConsulta = document.getElementById('tab-consulta');
@@ -309,7 +308,6 @@
             }
         }
 
-        // Renderizar Tabela de Estoque
         function renderInventory() {
             const tbody = document.getElementById('inventoryTableBody');
             if (!tbody) return;
@@ -320,7 +318,7 @@
                 return;
             }
 
-            products.forEach((p, index) => {
+            products.forEach((p) => {
                 const sku = p.sku || '--';
                 const nome = p.nome || 'Produto sem nome';
                 const custo = Number(p.valorCusto || 0).toFixed(2);
@@ -340,14 +338,14 @@
                             </span>
                         </td>
                         <td class="p-3.5 text-center space-x-2">
-                            <button onclick="showToast('Edição via API em desenvolvimento', 'success')" class="text-slate-400 hover:text-indigo-600 transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="editProduct('${sku}')" class="text-slate-400 hover:text-indigo-600 transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteProduct('${sku}')" class="text-slate-400 hover:text-rose-600 transition" title="Excluir"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        // Renderizar Atalhos Rápidos na Consulta
         function renderShortcuts() {
             const container = document.getElementById('quickShortcuts');
             if (!container) return;
@@ -371,7 +369,6 @@
             }
         }
 
-        // Lógica de Busca no Input
         function handleSearch() {
             const searchInput = document.getElementById('searchInput');
             if (!searchInput) return;
@@ -414,7 +411,6 @@
             }
         }
 
-        // Cálculo Automático de Desconto
         function updateCalculation() {
             if (selectedProductIndex === -1) return;
 
@@ -441,7 +437,6 @@
             }
         }
 
-        // Simulação de Venda
         function registerSale() {
             if (selectedProductIndex === -1) {
                 showToast("Selecione um produto primeiro!", "error");
@@ -465,11 +460,52 @@
         function openModal() {
             const modal = document.getElementById('productModal');
             const form = document.getElementById('productForm');
+            const title = document.getElementById('modalTitle');
+            const isEditing = document.getElementById('isEditing');
+            const skuInput = document.getElementById('modalSku');
+
             if (modal) {
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
             }
             if (form) form.reset();
+            if (title) title.innerText = "Registar Novo Produto";
+            if (isEditing) isEditing.value = "false";
+            if (skuInput) skuInput.disabled = false;
+        }
+
+        function editProduct(sku) {
+            const product = products.find(p => p.sku === sku);
+            if (!product) return;
+
+            const modal = document.getElementById('productModal');
+            const title = document.getElementById('modalTitle');
+            const isEditing = document.getElementById('isEditing');
+            const skuInput = document.getElementById('modalSku');
+            const nameInput = document.getElementById('modalName');
+            const descInput = document.getElementById('modalDesc');
+            const costInput = document.getElementById('modalCost');
+            const priceInput = document.getElementById('modalPrice');
+            const stockInput = document.getElementById('modalStock');
+            const minStockInput = document.getElementById('modalMinStock');
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            if (title) title.innerText = "Atualizar Produto";
+            if (isEditing) isEditing.value = "true";
+
+            if (skuInput) {
+                skuInput.value = product.sku || '';
+                skuInput.disabled = true; // SKU não muda na edição
+            }
+            if (nameInput) nameInput.value = product.nome || '';
+            if (descInput) descInput.value = product.descricao || '';
+            if (costInput) costInput.value = product.valorCusto || 0;
+            if (priceInput) priceInput.value = product.valorVenda || 0;
+            if (stockInput) stockInput.value = product.quantidade || 0;
+            if (minStockInput) minStockInput.value = product.quantidadeMinima || 5;
         }
 
         function closeModal() {
@@ -480,46 +516,71 @@
             }
         }
 
-        // Enviar POST para cadastrar novo produto no backend
         async function saveProduct(e) {
             e.preventDefault();
             
-            const modalSku = document.getElementById('modalSku');
-            const modalName = document.getElementById('modalName');
-            const modalDesc = document.getElementById('modalDesc');
-            const modalCost = document.getElementById('modalCost');
-            const modalPrice = document.getElementById('modalPrice');
-            const modalStock = document.getElementById('modalStock');
-            const modalMinStock = document.getElementById('modalMinStock');
+            const isEditing = document.getElementById('isEditing').value === "true";
+            const sku = document.getElementById('modalSku').value.trim();
+            const nome = document.getElementById('modalName').value;
+            const descricao = document.getElementById('modalDesc').value;
+            const valorCusto = parseFloat(document.getElementById('modalCost').value) || 0;
+            const valorVenda = parseFloat(document.getElementById('modalPrice').value) || 0;
+            const quantidade = parseInt(document.getElementById('modalStock').value) || 0;
+            const quantidadeMinima = parseInt(document.getElementById('modalMinStock').value) || 5;
+
+            const endpoint = isEditing ? `${API_BASE_URL}/produto/` : `${API_BASE_URL}/produto/`;
+            const method = isEditing ? 'PUT' : 'POST';
 
             const productDTO = {
-                sku: modalSku && modalSku.value.trim() ? modalSku.value.trim() : null,
-                nome: modalName ? modalName.value : '',
-                descricao: modalDesc ? modalDesc.value : '',
-                valorCusto: modalCost ? parseFloat(modalCost.value) || 0 : 0,
-                valorVenda: modalPrice ? parseFloat(modalPrice.value) || 0 : 0,
-                quantidade: modalStock ? parseInt(modalStock.value) || 0 : 0,
-                quantidadeMinima: modalMinStock ? parseInt(modalMinStock.value) || 5 : 5
+                sku: sku || null,
+                nome,
+                descricao,
+                valorCusto,
+                valorVenda,
+                quantidade,
+                quantidadeMinima
             };
 
             try {
-                const response = await fetch(`${API_BASE_URL}/produto/`, {
-                    method: 'POST',
+                const response = await fetch(endpoint, {
+                    method: method,
                     headers: getAuthHeaders(),
                     body: JSON.stringify(productDTO)
                 });
 
                 if (!response.ok) {
-                    throw new Error("Erro ao cadastrar produto no servidor.");
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(errData.message || "Erro ao salvar produto no servidor.");
                 }
 
-                showToast("Produto cadastrado com sucesso via API!");
+                showToast(isEditing ? "Produto atualizado com sucesso!" : "Produto cadastrado com sucesso!");
                 closeModal();
-                fetchProductsFromAPI(); // Recarrega a lista do servidor
+                fetchProductsFromAPI();
 
             } catch (error) {
                 console.error(error);
-                showToast("Erro ao guardar produto.", "error");
+                showToast(error.message || "Erro ao guardar produto.", "error");
+            }
+        }
+
+        async function deleteProduct(sku) {
+            if (!confirm(`Deseja realmente remover o produto SKU: ${sku}?`)) return;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/produto/${sku}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeaders()
+                });
+
+                if (!response.ok) {
+                    throw new Error("Erro ao remover o produto.");
+                }
+
+                showToast(`Produto ${sku} removido com sucesso!`);
+                fetchProductsFromAPI();
+            } catch (error) {
+                console.error(error);
+                showToast("Erro ao excluir produto.", "error");
             }
         }
 
