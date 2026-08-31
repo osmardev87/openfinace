@@ -17,15 +17,12 @@
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-server text-3xl"></i>
                 <div>
-                    <h1 class="text-xl font-bold">Gestão & Consulta (Spring Boot API)</h1>
+                    <h1 class="text-xl font-bold">Gestão & Consulta</h1>
                     <p class="text-xs text-indigo-200">Conectado ao Backend /produto</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2 bg-indigo-700/60 px-3 py-1.5 rounded-xl">
-                    <span class="text-xs text-indigo-200">Token JWT:</span>
-                    <input type="password" id="jwtTokenInput" placeholder="Cole seu Bearer Token aqui..." class="bg-indigo-900/50 text-white text-xs px-2 py-1 rounded border border-indigo-500 focus:outline-none w-48">
-                </div>
+                
                 <button onclick="fetchProductsFromAPI()" class="bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center gap-2">
                     <i class="fa-solid fa-rotate" id="syncIcon"></i> Sincronizar API
                 </button>
