@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Virtual</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Cabeçalho -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                    <i class="fa-solid fa-store text-xl"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight text-gray-900">VirtualStore</span>
+            </div>
+            
+            <!-- Barra de Pesquisa -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+                <div class="relative w-full">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Pesquisar produtos..." class="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <!-- Carrinho de Compras -->
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleCart()" class="relative bg-indigo-50 text-indigo-600 p-2.5 rounded-full hover:bg-indigo-100 transition">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Pesquisa mobile -->
+        <div class="md:hidden mb-6">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa-solid fa-search"></i>
+                </span>
+                <input type="text" id="searchInputMobile" placeholder="Pesquisar produtos..." class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+        </div>
+
+        <!-- Banner Promocional -->
+        <div class="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-2xl text-white p-6 sm:p-10 mb-8 shadow-lg flex flex-col sm:flex-row justify-between items-center">
+            <div class="mb-6 sm:mb-0 max-w-lg">
+                <span class="bg-indigo-500 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Nova Coleção</span>
+                <h1 class="text-2xl sm:text-4xl font-bold mt-2 mb-3">Encontre o estilo perfeito para você</h1>
+                <p class="text-indigo-100 text-sm sm:text-base">Confira as últimas novidades com descontos imperdíveis por tempo limitado.</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 text-center">
+                <span class="text-xs uppercase tracking-wider text-indigo-200">Frete Grátis</span>
+                <p class="text-lg font-bold">Em compras acima de R$ 150</p>
+            </div>
+        </div>
+
+        <!-- Filtros por Categoria -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-4 mb-6 no-scrollbar" id="categoryFilters">
+            <button onclick="filterCategory('todos')" class="category-btn active px-4 py-2 rounded-full text-sm font-medium bg-indigo-600 text-white whitespace-nowrap transition">Todos</button>
+            <button onclick="filterCategory('eletronicos')" class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">Eletrônicos</button>
+            <button onclick="filterCategory('vestuario')" class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">Vestuário</button>
+            <button onclick="filterCategory('acessorios')" class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">Acessórios</button>
+            <button onclick="filterCategory('calcados')" class="category-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100 whitespace-nowrap transition">Calçados</button>
+        </div>
+
+        <!-- Grade de Produtos -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Os produtos serão injetados via JavaScript -->
+        </div>
+
+        <!-- Estado Vazio -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <i class="fa-solid fa-box-open text-4xl text-gray-400 mb-3"></i>
+            <h3 class="text-lg font-medium text-gray-700">Nenhum produto encontrado</h3>
+            <p class="text-gray-500 text-sm mt-1">Tente buscar por outro termo ou categoria.</p>
+        </div>
+    </main>
+
+    <!-- Modal de Preview com Múltiplas Fotos e Descrição Detalhada -->
+    <div id="previewModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row relative max-h-[90vh]">
+            <button onclick="closePreview()" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 w-9 h-9 rounded-full flex items-center justify-center transition z-20">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <!-- Coluna de Imagens (Galeria) -->
+            <div class="md:w-1/2 bg-gray-50 p-6 flex flex-col justify-between border-r border-gray-100">
+                <div class="w-full h-64 md:h-72 bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 mb-4 flex items-center justify-center">
+                    <img id="mainPreviewImage" src="" alt="Produto" class="w-full h-full object-cover transition duration-300">
+                </div>
+                <!-- Miniaturas -->
+                <div id="thumbnailContainer" class="flex space-x-3 overflow-x-auto pb-2">
+                    <!-- Miniaturas injetadas via JS -->
+                </div>
+            </div>
+
+            <!-- Coluna de Informações e Descrição -->
+            <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <span id="previewCategory" class="text-xs uppercase font-bold text-indigo-600 tracking-wider bg-indigo-50 px-2.5 py-1 rounded-full"></span>
+                    <h2 id="previewName" class="text-2xl font-bold text-gray-900 mt-3"></h2>
+                    <p id="previewPrice" class="text-2xl font-extrabold text-gray-900 mt-2"></p>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <h4 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Descrição Detalhada</h4>
+                        <p id="previewDescription" class="text-gray-600 text-sm leading-relaxed"></p>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100 grid grid-cols-2 gap-2 text-xs text-gray-500">
+                        <div><i class="fa-solid fa-shield-halved text-indigo-600 mr-1"></i> Garantia de 1 Ano</div>
+                        <div><i class="fa-solid fa-truck-fast text-indigo-600 mr-1"></i> Envio Imediato</div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-4">
+                    <button id="previewAddToCartBtn" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-medium hover:bg-indigo-700 transition flex items-center justify-center space-x-2 shadow-lg shadow-indigo-200">
+                        <i class="fa-solid fa-cart-plus"></i>
+                        <span>Adicionar ao Carrinho</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Carrinho -->
+    <div id="cartModal" class="fixed inset-0 bg-black/50 z-50 hidden flex justify-end transition-opacity">
+        <div class="bg-white w-full max-w-md h-full flex flex-col shadow-2xl">
+            <div class="p-4 border-b flex justify-between items-center bg-gray-50">
+                <h2 class="text-lg font-bold flex items-center space-x-2">
+                    <i class="fa-solid fa-bag-shopping text-indigo-600"></i>
+                    <span>Seu Carrinho</span>
+                </h2>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600 p-2">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div id="cartItemsList" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <!-- Itens do carrinho -->
+            </div>
+
+            <div class="p-4 border-t bg-gray-50">
+                <div class="flex justify-between mb-2 text-sm text-gray-600">
+                    <span>Subtotal</span>
+                    <span id="cartSubtotal">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between mb-4 text-base font-bold text-gray-900">
+                    <span>Total</span>
+                    <span id="cartTotal">R$ 0,00</span>
+                </div>
+                <button onclick="openCheckoutModal()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition shadow-md shadow-indigo-200">
+                    Finalizar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Dados do Cliente / Checkout -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 w-9 h-9 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <h2 class="text-xl font-bold text-gray-900 mb-1">Finalizar Pedido</h2>
+            <p class="text-gray-500 text-sm mb-6">Preencha seus dados para concluir a compra.</p>
+
+            <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 tracking-wider mb-1">Nome Completo</label>
+                    <input type="text" id="clientName" required placeholder="Ex: Maria Silva" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 tracking-wider mb-1">Telefone / WhatsApp</label>
+                    <input type="tel" id="clientPhone" required placeholder="Ex: (75) 99999-9999" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 tracking-wider mb-1">Endereço de Entrega</label>
+                    <textarea id="clientAddress" required rows="2" placeholder="Rua, Número, Bairro, Cidade - Estado" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-500 tracking-wider mb-1">Forma de Pagamento</label>
+                    <select id="clientPayment" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-medium hover:bg-emerald-700 transition flex items-center justify-center space-x-2 shadow-lg shadow-emerald-200">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Enviar Pedido via WhatsApp</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Notificação Customizada -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-green-400"></i>
+        <span id="toastMessage" class="text-sm font-medium">Produto adicionado ao carrinho!</span>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="bg-white border-t mt-12 py-6 text-center text-sm text-gray-500">
+        <p>&copy; 2026 VirtualStore. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Lógica em JavaScript -->
+    <script>
+        // Banco de dados simulado com múltiplas fotos e descrições detalhadas
+        const products = [
+            { 
+                id: 1, 
+                name: "Fone de Ouvido Bluetooth Pro", 
+                category: "eletronicos", 
+                price: 299.99, 
+                images: [
+                    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Experimente um som imersivo de alta fidelidade com cancelamento ativo de ruído. Design ergonômico feito para o máximo conforto durante horas de uso contínuo, bateria de longa duração com até 30 horas de reprodução e microfone integrado de alta definição."
+            },
+            { 
+                id: 2, 
+                name: "Smartwatch Esportivo", 
+                category: "eletronicos", 
+                price: 450.00, 
+                images: [
+                    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1510017803434-a899398421b3?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Monitore sua saúde e performance física em tempo real. Possui GPS integrado, sensor de batimentos cardíacos de alta precisão, monitoramento de sono e resistência avançada à água (IP68). Compatível com Android e iOS."
+            },
+            { 
+                id: 3, 
+                name: "Jaqueta Casual Impermeável", 
+                category: "vestuario", 
+                price: 199.90, 
+                images: [
+                    "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1544441893-675973e31985?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Estilo e proteção contra o vento e chuva leve. Tecido interno térmico respirável, bolsos frontais com fechamento seguro em zíper e acabamento externo resistente a líquidos."
+            },
+            { 
+                id: 4, 
+                name: "Tênis Running Confort", 
+                category: "calcados", 
+                price: 320.00, 
+                images: [
+                    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Desenvolvido para alta performance em corridas e treinos diários. Amortecimento inteligente em gel, solado antiderrapante de alta tração e cabedal em malha respirável que mantém os pés secos."
+            },
+            { 
+                id: 5, 
+                name: "Óculos de Sol Minimalista", 
+                category: "acessorios", 
+                price: 129.90, 
+                images: [
+                    "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Proteção UV400 completa contra raios solares nocivos. Armação leve de alta durabilidade e lentes polarizadas que eliminam reflexos incômodos, garantindo nitidez visual superior."
+            },
+            { 
+                id: 6, 
+                name: "Mochila Executiva Impermeável", 
+                category: "acessorios", 
+                price: 250.00, 
+                images: [
+                    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Espaço dedicado e acolchoado para notebooks de até 15.6 polegadas. Conta com porta USB externa para carregamento de celular, bolsos antifurto ocultos e material impermeável de alta resistência."
+            },
+            { 
+                id: 7, 
+                name: "Camiseta Básica Algodão Pima", 
+                category: "vestuario", 
+                price: 89.90, 
+                images: [
+                    "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Confeccionada 100% em Algodão Pima de fibra longa, oferecendo toque extremamente macio, durabilidade superior e caimento impecável que não deforma após as lavagens."
+            },
+            { 
+                id: 8, 
+                name: "Câmera Compacta Digital", 
+                category: "eletronicos", 
+                price: 1200.00, 
+                images: [
+                    "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=60",
+                    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&auto=format&fit=crop&q=60"
+                ],
+                description: "Capture momentos inesquecíveis em alta resolução 4K. Estabilizador óptico avançado, tela articulada ideal para vlogs e conectividade Wi-Fi integrada para compartilhamento imediato de fotos."
+            }
+        ];
+
+        let cart = [];
+        let currentCategory = 'todos';
+        let searchQuery = '';
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+            
+            // Eventos de busca
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderProducts();
+            });
+            document.getElementById('searchInputMobile').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderProducts();
+            });
+        });
+
+        // Filtrar por categoria
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Atualizar classes dos botões
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-600');
+            });
+            event.target.classList.remove('bg-white', 'text-gray-600');
+            event.target.classList.add('bg-indigo-600', 'text-white');
+
+            renderProducts();
+        }
+
+        // Renderizar produtos na tela
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            const filtered = products.filter(p => {
+                const matchesCategory = currentCategory === 'todos' || p.category === currentCategory;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(p => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                    <div class="cursor-pointer" onclick="openPreview(${p.id})">
+                        <div class="relative h-48 bg-gray-100 overflow-hidden">
+                            <img src="${p.images[0]}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                        </div>
+                        <div class="p-4">
+                            <span class="text-xs uppercase font-semibold text-indigo-600 tracking-wider">${p.category}</span>
+                            <h3 class="font-semibold text-gray-900 mt-1 line-clamp-1">${p.name}</h3>
+                            <p class="text-lg font-bold text-gray-900 mt-2">R$ ${p.price.toFixed(2).replace('.', ',')}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button onclick="addToCart(${p.id})" class="w-full bg-gray-900 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-indigo-600 transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Adicionar</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Funções de Preview com Múltiplas Fotos
+        function openPreview(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Definir imagem principal inicial
+            document.getElementById('mainPreviewImage').src = product.images[0];
+            document.getElementById('previewCategory').textContent = product.category;
+            document.getElementById('previewName').textContent = product.name;
+            document.getElementById('previewPrice').textContent = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
+            document.getElementById('previewDescription').textContent = product.description;
+            
+            // Renderizar miniaturas
+            const thumbContainer = document.getElementById('thumbnailContainer');
+            thumbContainer.innerHTML = product.images.map((img, idx) => `
+                <div onclick="changeMainImage('${img}')" class="w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-indigo-600' : 'border-transparent'} cursor-pointer hover:opacity-80 transition bg-white flex-shrink-0">
+                    <img src="${img}" alt="Miniatura" class="w-full h-full object-cover">
+                </div>
+            `).join('');
+
+            // Configurar botão de adicionar do modal de preview
+            const btn = document.getElementById('previewAddToCartBtn');
+            btn.onclick = () => {
+                addToCart(product.id);
+                closePreview();
+            };
+
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function changeMainImage(imgUrl) {
+            document.getElementById('mainPreviewImage').src = imgUrl;
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        // Funções do Carrinho
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function openCheckoutModal() {
+            if (cart.length === 0) {
+                showToast("Adicione itens ao carrinho primeiro!");
+                return;
+            }
+            toggleCart(); // Fecha o carrinho
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+            const address = document.getElementById('clientAddress').value;
+            const payment = document.getElementById('clientPayment').value;
+
+            // Montar texto do pedido
+            let orderText = `*📦 NOVO PEDIDO - VirtualStore*%0A%0A`;
+            orderText += `*Cliente:* ${name}%0A`;
+            orderText += `*Telefone:* ${phone}%0A`;
+            orderText += `*Endereço:* ${address}%0A`;
+            orderText += `*Pagamento:* ${payment}%0A%0A`;
+            orderText += `*Itens do Pedido:*%0A`;
+
+            let total = 0;
+            cart.forEach(item => {
+                const sub = item.price * item.quantity;
+                total += sub;
+                orderText += `- ${item.quantity}x ${item.name} (R$ ${sub.toFixed(2).replace('.', ',')})%0A`;
+            });
+
+            orderText += `%0A*Total Geral: R$ ${total.toFixed(2).replace('.', ',')}*`;
+
+            // Enviar para WhatsApp (Substitua o número abaixo pelo seu se desejar)
+            const whatsappNumber = "5575988477936"; 
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${orderText}`;
+
+            window.open(whatsappUrl, '_blank');
+
+            // Limpar dados e fechar
+            cart = [];
+            updateCartUI();
+            closeCheckoutModal();
+            showToast("Pedido gerado com sucesso!");
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, image: product.images[0], quantity: 1 });
+            }
+
+            updateCartUI();
+            showToast(`"${product.name}" adicionado!`);
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(i => i.id !== productId);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const countEl = document.getElementById('cartCount');
+            const listEl = document.getElementById('cartItemsList');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const totalEl = document.getElementById('cartTotal');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            countEl.textContent = totalItems;
+
+            if (cart.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-12 text-gray-400">
+                        <i class="fa-solid fa-bag-shopping text-3xl mb-2"></i>
+                        <p class="text-sm">Seu carrinho está vazio</p>
+                    </div>
+                `;
+                subtotalEl.textContent = 'R$ 0,00';
+                totalEl.textContent = 'R$ 0,00';
+                return;
+            }
+
+            let subtotal = 0;
+            listEl.innerHTML = cart.map(item => {
+                subtotal += item.price * item.quantity;
+                return `
+                    <div class="flex items-center space-x-4 border-b pb-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="text-sm font-medium text-gray-900">${item.name}</h4>
+                            <p class="text-sm font-bold text-gray-900 mt-1">R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</p>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-200">-</button>
+                                <span class="text-sm font-medium">${item.quantity}</span>
+                                <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center text-gray-600 hover:bg-gray-200">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+            totalEl.textContent = `R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+        }
+
+        // Notificação flutuante (Toast)
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toastMessage');
+            msg.textContent = message;
+            
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Simulação de finalização
+        function checkout() {
+            if (cart.length === 0) {
+                showToast("Adicione itens ao carrinho primeiro!");
+                return;
+            }
+            alert("Pedido simulado finalizado com sucesso! Obrigado pela compra.");
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        }
+    </script>
+</body>
+</html>
