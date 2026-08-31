@@ -51,7 +51,7 @@ public class SecurityConfig {
                         // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do
                         // Frontend!
                         .requestMatchers("/", "/index.html", "/login.html", "/index2.html",
-                                "/etiqueta.html", "/catalago.html", "/*.css", "/*.js")
+                                "/etiqueta.html", "/catalago.html", "/*.css", "/*.js", "/manifest.json", "/*.png", "/*.ico", "/favicon.ico", "/assets/**")
                         .permitAll().anyRequest().authenticated())
                 // O oauth2ResourceServer padrão já resolve tokens Bearer do
                 // header
