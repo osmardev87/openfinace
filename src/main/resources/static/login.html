@@ -350,8 +350,9 @@
                 tokenStatusText.innerText = hasToken ? "Autenticado (JWT)" : "Não Autenticado";
             }
             if (userInfoDisplay && hasToken) {
+                const userName = localStorage.getItem('user_name');
                 const userEmail = localStorage.getItem('user_email');
-                userInfoDisplay.innerText = userEmail ? `Sessão ativa (${userEmail})` : "Sessão ativa";
+                userInfoDisplay.innerText = userName ? `Sessão ativa: ${userName} (${userEmail})` : "Sessão ativa";
             } else if (userInfoDisplay) {
                 userInfoDisplay.innerText = "Nenhum utilizador logado.";
             }
@@ -387,7 +388,7 @@
         async function handleModalLoginSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('modalLoginEmail').value.trim();
-            const password = document.getElementById('modalLoginPassword').value;
+            const senha = document.getElementById('modalLoginPassword').value;
             const btn = document.getElementById('btnModalLoginSubmit');
 
             if (btn) {
@@ -399,7 +400,7 @@
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, senha })
                 });
 
                 if (!response.ok) {
@@ -407,11 +408,12 @@
                 }
 
                 const data = await response.json();
-                const token = data.token || data.accessToken || data;
-                const userObj = data.user || data.usuario || {};
+                const token = data.token;
+                const userObj = data.user || {};
 
-                localStorage.setItem('token', typeof token === 'string' ? token : (token.token || JSON.stringify(token)));
+                localStorage.setItem('token', token);
                 localStorage.setItem('user_email', userObj.email || email);
+                localStorage.setItem('user_name', userObj.nome || '');
 
                 checkTokenStatus();
                 closeAuthModal();
@@ -432,7 +434,7 @@
         async function handleLoginSubmit(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
+            const senha = document.getElementById('loginPassword').value;
             const btn = document.getElementById('btnLoginSubmit');
 
             if (btn) {
@@ -444,7 +446,7 @@
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
                     method: 'POST',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
+                    body: JSON.stringify({ email, senha })
                 });
 
                 if (!response.ok) {
@@ -452,11 +454,12 @@
                 }
 
                 const data = await response.json();
-                const token = data.token || data.accessToken || data;
-                const userObj = data.user || data.usuario || {};
+                const token = data.token;
+                const userObj = data.user || {};
 
-                localStorage.setItem('token', typeof token === 'string' ? token : (token.token || JSON.stringify(token)));
+                localStorage.setItem('token', token);
                 localStorage.setItem('user_email', userObj.email || email);
+                localStorage.setItem('user_name', userObj.nome || '');
 
                 checkTokenStatus();
                 showToast("Login realizado com sucesso!");
@@ -477,6 +480,7 @@
         function clearAuthToken() {
             localStorage.removeItem('token');
             localStorage.removeItem('user_email');
+            localStorage.removeItem('user_name');
             checkTokenStatus();
             showToast("Sessão terminada com sucesso.");
             openAuthModal();
@@ -501,6 +505,8 @@
 
                 if (response.status === 401 || response.status === 403) {
                     if (syncIcon) syncIcon.classList.remove('fa-spin');
+                    localStorage.removeItem('token');
+                    checkTokenStatus();
                     openAuthModal();
                     throw new Error("Sessão expirada ou não autorizada.");
                 }

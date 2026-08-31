@@ -1,12 +1,12 @@
 ### ================================
 ### 🔐 1. FAZER LOGIN — Obter Token
 ### ================================
-POST http://localhost:8089/auth/login
+POST https://openfinace.onrender.com/auth/login
 Content-Type: application/json
 
 {
-  "email": "osmar.gsilva1987@gmail.com",
-  "senha": "123456789"
+  "email": "osmar.dev87@gmail.com",
+  "senha": "Osmar4547*"
 }
 
 ### ================================
