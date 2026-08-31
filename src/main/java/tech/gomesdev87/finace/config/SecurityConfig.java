@@ -50,7 +50,7 @@ public class SecurityConfig {
                         .permitAll()
                         // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do
                         // Frontend!
-                        .requestMatchers("/", "/index.html", "/login.html","etiqueta.html", "/dashboard.html",
+                        .requestMatchers("/", "/index.html", "/login.html","/infoshop.html","/etiqueta.html", "/dashboard.html",
                                 "/*.css", "/*.js")
                         .permitAll().anyRequest().authenticated())
                 // O oauth2ResourceServer padrão já resolve tokens Bearer do
