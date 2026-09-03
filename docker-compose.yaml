@@ -1,0 +1,73 @@
+services:
+
+  # =========================
+  # POSTGRESQL
+  # =========================
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: openfinace
+      POSTGRES_USER: gomes
+      POSTGRES_PASSWORD: gomes123
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gomes -d openfinace"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    networks:
+      - app-network
+
+
+  # =========================
+  # SPRING BOOT
+  # =========================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: shippafest-api
+    restart: unless-stopped
+
+    ports:
+      - "8089:8089"
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/openfinace
+      SPRING_DATASOURCE_USERNAME: gomes
+      SPRING_DATASOURCE_PASSWORD: gomes123
+
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - app-network
+
+
+# =========================
+# VOLUMES
+# =========================
+volumes:
+  postgres_data:
+
+
+# =========================
+# NETWORK
+# =========================
+networks:
+  app-network:
+    driver: bridge

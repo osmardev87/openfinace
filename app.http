@@ -1,7 +1,7 @@
 ### ================================
 ### 🔐 1. FAZER LOGIN — Obter Token
 ### ================================
-POST https://openfinace.onrender.com/auth/login
+POST http://localhost:8089/auth/login
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 ### 👤 CRIAR USUÁRIO — Completo
 ### ROLE ( VENDEDOR, ADMIN )
 ### ================================
-POST https://openfinace.onrender.com/auth/register
+POST http://localhost:8089/auth/register
 Content-Type: application/json
 
 {
