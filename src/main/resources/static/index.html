@@ -12,7 +12,6 @@
 </head>
 
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
-  <!-- Cabeçalho -->
   <header class="bg-indigo-600 text-white shadow-md">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
@@ -50,22 +49,22 @@
           </button>
           <button onclick="switchTab('carrinho')" id="btn-carrinho"
             class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600 relative">
-            <i class="fa-solid fa-cart-shopping mr-2"></i>
+            <i class="fa-solid fa-cart-shopping mr-2"></i>Carrinho
             <span id="cartBadge"
               class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden">0</span>
           </button>
           <button onclick="switchTab('pedidos')" id="btn-pedidos"
             class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600">
-            <i class="fa-solid fa-receipt mr-2"></i>
+            <i class="fa-solid fa-receipt mr-2"></i>Pedidos
           </button>
           <button onclick="switchTab('estoque')" id="btn-estoque"
             class="px-4 py-2 rounded-lg text-sm font-medium transition text-indigo-100 hover:bg-indigo-600">
-            <i class="fa-solid fa-warehouse mr-2"></i>
+            <i class="fa-solid fa-warehouse mr-2"></i>Estoque
           </button>
           <button onclick="sair()"
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold text-red-400 hover:bg-red-500/15 hover:text-red-300 transition-all">
-            <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center text-lg"></i>
-            Sair
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-red-300 hover:bg-red-500/20 transition-all"
+            title="Sair da Sessão">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
           </button>
         </nav>
       </div>
@@ -205,14 +204,20 @@
         <!-- Tabela de Itens no Carrinho (8 colunas) -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-8 space-y-4">
           <div class="flex justify-between items-center border-b pb-3">
-            <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
+            <h2 id="cartTitleHeading" class="text-lg font-bold text-slate-700 flex items-center gap-2">
               <i class="fa-solid fa-cart-shopping text-indigo-600"></i>
               Carrinho de Vendas Atual
             </h2>
-            <button onclick="clearCart()"
-              class="text-rose-600 hover:text-rose-700 text-xs font-semibold flex items-center gap-1.5 bg-rose-50 px-3 py-1.5 rounded-lg transition">
-              <i class="fa-solid fa-trash-can"></i> Limpar Carrinho
-            </button>
+            <div class="flex gap-2">
+              <button id="cancelEditOrderBtn" onclick="cancelEditingOrder()"
+                class="hidden text-amber-700 hover:text-amber-800 text-xs font-semibold flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-lg transition">
+                <i class="fa-solid fa-xmark"></i> Cancelar Edição
+              </button>
+              <button onclick="clearCart()"
+                class="text-rose-600 hover:text-rose-700 text-xs font-semibold flex items-center gap-1.5 bg-rose-50 px-3 py-1.5 rounded-lg transition">
+                <i class="fa-solid fa-trash-can"></i> Limpar Carrinho
+              </button>
+            </div>
           </div>
 
           <div class="overflow-x-auto">
@@ -275,7 +280,7 @@
           </div>
 
           <div class="space-y-2 pt-4 border-t">
-            <button onclick="finalizeOrder()"
+            <button id="btnFinalizeOrder" onclick="finalizeOrder()"
               class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
               <i class="fa-solid fa-check-double"></i> Finalizar & Salvar
               Pedido
@@ -293,7 +298,7 @@
             <i class="fa-solid fa-receipt text-indigo-600"></i> Histórico de
             Pedidos Registrados
           </h2>
-          <span class="text-xs text-slate-400">Salvos localmente e sincronizados</span>
+          <span class="text-xs text-slate-400">Salvos localmente e editáveis</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -305,7 +310,7 @@
                 <th class="p-3">Cliente</th>
                 <th class="p-3">Pagamento</th>
                 <th class="p-3">Total</th>
-                <th class="p-3 text-center">Espelho PDF</th>
+                <th class="p-3 text-center">Ações / Espelho</th>
               </tr>
             </thead>
             <tbody id="ordersTableBody" class="divide-y divide-slate-100 text-sm">
@@ -350,99 +355,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ABA DE AUTENTICAÇÃO / LOGIN -->
-    <!-- <section id="tab-auth" class="hidden max-w-xl mx-auto space-y-6">
-        <div
-          class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6"
-        >
-          <div class="text-center space-y-2">
-            <div
-              class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner"
-            >
-              <i class="fa-solid fa-key"></i>
-            </div>
-            <h2 class="text-xl font-bold text-slate-800">
-              Autenticação Spring Security
-            </h2>
-            <p class="text-xs text-slate-500">
-              Conecte-se ao seu serviço de login
-              <code
-                class="bg-slate-100 px-1.5 py-0.5 rounded text-indigo-600 font-mono"
-                >/auth/login</code
-              >
-              para obter o Token JWT.
-            </p>
-          </div>
-
-          <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-600 mb-1"
-                >E-mail</label
-              >
-              <div class="relative">
-                <input
-                  type="email"
-                  id="loginEmail"
-                  required
-                  placeholder="seu.email@exemplo.com"
-                  class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                />
-                <i
-                  class="fa-solid fa-envelope absolute left-3.5 top-3.5 text-slate-400"
-                ></i>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-600 mb-1"
-                >Senha</label
-              >
-              <div class="relative">
-                <input
-                  type="password"
-                  id="loginPassword"
-                  required
-                  placeholder="••••••••"
-                  class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
-                />
-                <i
-                  class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400"
-                ></i>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              id="btnLoginSubmit"
-              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-2"
-            >
-              <i class="fa-solid fa-right-to-bracket"></i> Entrar / Autenticar
-            </button>
-          </form>
-
-          <div class="border-t pt-4 space-y-3">
-            <label
-              class="block text-xs font-semibold text-slate-400 uppercase tracking-wider"
-              >Estado da Sessão</label
-            >
-            <div
-              class="flex justify-between items-center text-xs bg-slate-50 p-3 rounded-xl border border-slate-200"
-            >
-              <span id="userInfoDisplay" class="text-slate-600 font-medium"
-                >Nenhum utilizador logado.</span
-              >
-              <button
-                type="button"
-                onclick="clearAuthToken()"
-                class="text-rose-600 hover:underline font-medium"
-              >
-                Terminar Sessão
-              </button>
-            </div>
-          </div>
-        </div>
-      </section> -->
   </main>
 
   <!-- Modal para Exibir Espelho do Pedido (PDF Simulado / Impressão) -->
@@ -529,7 +441,7 @@
     </div>
   </div>
 
-  <!-- Modal de Cadastro / Edição -->
+  <!-- Modal de Cadastro / Edição de Produto -->
   <div id="productModal"
     class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100 space-y-4">
@@ -663,6 +575,7 @@
     let orders = [];
     let selectedProductIndex = -1;
     let currentPdfOrder = null;
+    let editingOrderId = null; // Armazena o ID do pedido que está sendo editado no momento
 
     document.addEventListener("DOMContentLoaded", () => {
       checkTokenStatus();
@@ -699,7 +612,6 @@
         .addEventListener("input", updateCalculation);
     });
 
-    // ... existing code ... existing helper methods ...
     function checkNetworkStatus() {
       const netDot = document.getElementById("netDot");
       const netStatusText = document.getElementById("netStatusText");
@@ -727,7 +639,6 @@
       const token = localStorage.getItem("token");
       const tokenDot = document.getElementById("tokenDot");
       const tokenStatusText = document.getElementById("tokenStatusText");
-      const userInfoDisplay = document.getElementById("userInfoDisplay");
 
       const hasToken = token && token.trim().length > 0;
       if (tokenDot) {
@@ -739,14 +650,6 @@
         tokenStatusText.innerText = hasToken
           ? "Autenticado (JWT)"
           : "Não Autenticado";
-      }
-      if (userInfoDisplay && hasToken) {
-        const userEmail = localStorage.getItem("user_email");
-        userInfoDisplay.innerText = userEmail
-          ? `Sessão ativa (${userEmail})`
-          : "Sessão ativa";
-      } else if (userInfoDisplay) {
-        userInfoDisplay.innerText = "Nenhum utilizador logado.";
       }
     }
 
@@ -801,7 +704,6 @@
       renderOrders();
     }
 
-    // ... existing authentication & api methods ...
     function requireAuth(callback) {
       const token = localStorage.getItem("token");
       if (!token || !token.trim()) {
@@ -875,52 +777,6 @@
       }
     }
 
-    async function handleLoginSubmit(e) {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      const btn = document.getElementById("btnLoginSubmit");
-
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> A autenticar...`;
-      }
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, senha: password }),
-        });
-
-        if (!response.ok) throw new Error("Credenciais inválidas.");
-
-        const data = await response.json();
-        const token = data.token || data.accessToken || data;
-        const userObj = data.user || data.usuario || {};
-
-        localStorage.setItem(
-          "token",
-          typeof token === "string"
-            ? token
-            : token.token || JSON.stringify(token),
-        );
-        localStorage.setItem("user_email", userObj.email || email);
-
-        checkTokenStatus();
-        showToast("Login realizado com sucesso!");
-        switchTab("consulta");
-        fetchProductsFromAPI();
-      } catch (error) {
-        showToast(error.message || "Falha no login.", "error");
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Entrar / Autenticar`;
-        }
-      }
-    }
-
     function clearAuthToken() {
       localStorage.removeItem("token");
       localStorage.removeItem("user_email");
@@ -968,7 +824,7 @@
 
     // --- SISTEMA DE ABAS ---
     function switchTab(tab) {
-      const tabs = ["consulta", "carrinho", "pedidos", "estoque", "auth"];
+      const tabs = ["consulta", "carrinho", "pedidos", "estoque"];
       tabs.forEach((t) => {
         const el = document.getElementById(`tab-${t}`);
         const btn = document.getElementById(`btn-${t}`);
@@ -1122,7 +978,7 @@
       }
     }
 
-    // --- MÓDULO DE CARRINHO ---
+    // --- MÓDULO DE CARRINHO & EDIÇÃO DE PEDIDOS ---
     function addToCart() {
       if (selectedProductIndex === -1) return;
       const p = products[selectedProductIndex];
@@ -1133,7 +989,6 @@
       const price = p.valorVenda || 0;
       const finalPrice = price - price * (discountPercent / 100);
 
-      // Verifica se ja esta no carrinho
       const existingItem = cart.find((item) => item.sku === p.sku);
       if (existingItem) {
         existingItem.quantidade += 1;
@@ -1154,7 +1009,6 @@
       saveCartToLocalCache();
       showToast(`Produto "${p.nome}" adicionado ao carrinho!`);
 
-      // Limpa busca
       document.getElementById("searchInput").value = "";
       toggleDisplay(false);
       selectedProductIndex = -1;
@@ -1163,7 +1017,7 @@
 
     function sair() {
       localStorage.clear();
-      window.location.href = "/";
+      window.location.reload();
     }
 
     function renderCart() {
@@ -1171,9 +1025,28 @@
       const cartBadge = document.getElementById("cartBadge");
       const cartSummaryCount = document.getElementById("cartSummaryCount");
       const cartSummaryTotal = document.getElementById("cartSummaryTotal");
+      const cartTitleHeading = document.getElementById("cartTitleHeading");
+      const cancelEditBtn = document.getElementById("cancelEditOrderBtn");
+      const btnFinalize = document.getElementById("btnFinalizeOrder");
 
       if (!tbody) return;
       tbody.innerHTML = "";
+
+      if (editingOrderId) {
+        if (cartTitleHeading) cartTitleHeading.innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-600"></i> Editando Pedido <span class="text-indigo-600 font-mono">#${editingOrderId}</span>`;
+        if (cancelEditBtn) cancelEditBtn.classList.remove("hidden");
+        if (btnFinalize) {
+          btnFinalize.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Guardar Alterações do Pedido`;
+          btnFinalize.className = "w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-amber-600/20 transition flex items-center justify-center gap-2";
+        }
+      } else {
+        if (cartTitleHeading) cartTitleHeading.innerHTML = `<i class="fa-solid fa-cart-shopping text-indigo-600"></i> Carrinho de Vendas Atual`;
+        if (cancelEditBtn) cancelEditBtn.classList.add("hidden");
+        if (btnFinalize) {
+          btnFinalize.innerHTML = `<i class="fa-solid fa-check-double"></i> Finalizar & Salvar Pedido`;
+          btnFinalize.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2";
+        }
+      }
 
       if (cart.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">O carrinho está vazio.</td></tr>`;
@@ -1243,7 +1116,40 @@
       showToast("Carrinho limpo.");
     }
 
-    // --- FINALIZAR PEDIDO & GERAR PDF ---
+    // --- FUNÇÕES DE EDIÇÃO DE PEDIDO EXISTENTE ---
+    function editOrder(orderId) {
+      const order = orders.find(o => o.id === orderId);
+      if (!order) {
+        showToast("Pedido não encontrado.", "error");
+        return;
+      }
+
+      // Copia os dados do pedido para o carrinho e define o modo de edição
+      cart = JSON.parse(JSON.stringify(order.items));
+      editingOrderId = order.id;
+
+      // Preenche os campos do fechamento com os dados salvos anteriormente
+      const clientInput = document.getElementById("clientNameInput");
+      const paymentSelect = document.getElementById("paymentMethodSelect");
+      if (clientInput) clientInput.value = order.client || "";
+      if (paymentSelect) paymentSelect.value = order.paymentMethod || "Dinheiro";
+
+      saveCartToLocalCache();
+      switchTab("carrinho");
+      showToast(`Carregando pedido #${order.id} para edição...`);
+    }
+
+    function cancelEditingOrder() {
+      editingOrderId = null;
+      cart = [];
+      saveCartToLocalCache();
+      const clientInput = document.getElementById("clientNameInput");
+      if (clientInput) clientInput.value = "";
+      switchTab("pedidos");
+      showToast("Edição de pedido cancelada.");
+    }
+
+    // --- FINALIZAR PEDIDO & SALVAR OU ATUALIZAR ---
     function finalizeOrder() {
       if (cart.length === 0) {
         showToast(
@@ -1263,28 +1169,50 @@
       let total = 0;
       cart.forEach((i) => (total += i.subtotal));
 
-      const newOrder = {
-        id: `PED-${Math.floor(100000 + Math.random() * 900000)}`,
-        date: new Date().toLocaleString("pt-BR"),
-        client: clientName,
-        paymentMethod: paymentMethod,
-        items: [...cart],
-        total: total,
-      };
+      if (editingOrderId) {
+        // Atualiza o pedido existente no histórico
+        const index = orders.findIndex(o => o.id === editingOrderId);
+        if (index !== -1) {
+          orders[index].client = clientName;
+          orders[index].paymentMethod = paymentMethod;
+          orders[index].items = [...cart];
+          orders[index].total = total;
+          orders[index].date = new Date().toLocaleString("pt-BR") + " (Editado)";
+        }
+        const updatedOrder = orders[index];
 
-      orders.unshift(newOrder);
-      saveOrdersToLocalCache();
+        // Limpa estado de edição e carrinho
+        editingOrderId = null;
+        cart = [];
+        saveCartToLocalCache();
+        saveOrdersToLocalCache();
+        document.getElementById("clientNameInput").value = "";
 
-      // Limpa carrinho
-      cart = [];
-      saveCartToLocalCache();
-      document.getElementById("clientNameInput").value = "";
+        showToast("Pedido atualizado com sucesso!");
+        openPdfModal(updatedOrder);
+        switchTab("pedidos");
+      } else {
+        // Cria um novo pedido
+        const newOrder = {
+          id: `PED-${Math.floor(100000 + Math.random() * 900000)}`,
+          date: new Date().toLocaleString("pt-BR"),
+          client: clientName,
+          paymentMethod: paymentMethod,
+          items: [...cart],
+          total: total,
+        };
 
-      showToast("Pedido salvo com sucesso!");
+        orders.unshift(newOrder);
+        saveOrdersToLocalCache();
 
-      // Abre modal do espelho PDF automaticamente
-      openPdfModal(newOrder);
-      switchTab("pedidos");
+        cart = [];
+        saveCartToLocalCache();
+        document.getElementById("clientNameInput").value = "";
+
+        showToast("Pedido salvo com sucesso!");
+        openPdfModal(newOrder);
+        switchTab("pedidos");
+      }
     }
 
     function renderOrders() {
@@ -1305,9 +1233,12 @@
                         <td class="p-3 font-medium text-slate-800">${order.client}</td>
                         <td class="p-3 text-slate-600 text-xs">${order.paymentMethod}</td>
                         <td class="p-3 font-bold text-indigo-600">R$ ${order.total.toFixed(2)}</td>
-                        <td class="p-3 text-center">
-                            <button onclick='openPdfModal(${JSON.stringify(order)})' class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition inline-flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-pdf"></i> Espelho PDF
+                        <td class="p-3 text-center space-x-1">
+                            <button onclick="editOrder('${order.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-700 font-semibold px-2.5 py-1.5 rounded-lg text-xs transition inline-flex items-center gap-1" title="Editar Pedido">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button onclick='openPdfModal(${JSON.stringify(order)})' class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-2.5 py-1.5 rounded-lg text-xs transition inline-flex items-center gap-1" title="Visualizar Espelho PDF">
+                                <i class="fa-solid fa-file-pdf"></i> PDF
                             </button>
                         </td>
                     </tr>
@@ -1364,7 +1295,7 @@
             `;
       window.print();
       document.body.innerHTML = originalBody;
-      window.location.reload(); // Recarrega para restaurar eventos
+      window.location.reload();
     }
 
     function shareWhatsapp() {
@@ -1384,7 +1315,6 @@
       window.open(`https://api.whatsapp.com/send?text=${encoded}`, "_blank");
     }
 
-    // ... existing inventory modal and crud methods ...
     function openModal() {
       requireAuth(() => {
         const modal = document.getElementById("productModal");
