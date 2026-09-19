@@ -53,7 +53,7 @@ public class SecurityConfig {
                         // Frontend!
                         .requestMatchers("/", "/index.html", "/index2.html", "/etiqueta.html",
                                 "/catalago.html", "/*.css", "/*.js", "/manifest.json", "/*.png",
-                                "/*.ico", "/favicon.ico", "/assets/**")
+                                "/*.ico", "/favicon.ico", "/assets/**", "/monitor.html")
                         .permitAll().anyRequest().authenticated())
                 // O oauth2ResourceServer padrão já resolve tokens Bearer do
                 // header
