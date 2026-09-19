@@ -1,4 +1,4 @@
-package tech.gomesdev87.monitor;
+package tech.gomesdev87.finace.monitor;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
