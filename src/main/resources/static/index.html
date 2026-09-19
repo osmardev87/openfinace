@@ -569,7 +569,7 @@
   <!-- Script JavaScript com Armazenamento Local / Modo Offline -->
   <script>
     const API_BASE_URL = "https://loja.gomesdev87.tech";
-    let nomeEmpresa = getElementById("appTitle").innerText || "Minha Empresa";
+    let nomeEmpresa = document.getElementById("nomeEmpresa");
 
     let products = [];
     let cart = [];
@@ -755,7 +755,7 @@
         const data = await response.json();
         const token = data.token || data.accessToken || data;
         const userObj = data.user || data.usuario || {};
-        nameEmpresa.innerText = userObj.nomeEmpresa || "Minha Empresa";
+        nomeEmpresa.innerText = userObj.nomeEmpresa || "Sistema de Estoque & Vendas";
 
         localStorage.setItem(
           "token",
