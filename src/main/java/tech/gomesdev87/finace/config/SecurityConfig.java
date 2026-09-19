@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .permitAll() // ✅ OpenAPI/Swagger
                         .requestMatchers("/uploads/**").permitAll().requestMatchers("/error")
                         .permitAll()
+                        .requestMatchers("/monitor", "/api/monitor/**").permitAll()
                         // ⬇️ ADICIONE ESSAS LINHAS — Libera as páginas do
                         // Frontend!
                         .requestMatchers("/", "/index.html", "/index2.html", "/etiqueta.html",
