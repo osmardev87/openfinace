@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
 
   # =========================
@@ -28,6 +30,12 @@ services:
     networks:
       - app-network
 
+    # ADICIONADO: Limita o Postgres a 250MB de RAM
+    deploy:
+      resources:
+        limits:
+          memory: 250M
+
 
   # =========================
   # SPRING BOOT
@@ -47,7 +55,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/openfinace
       SPRING_DATASOURCE_USERNAME: gomes
       SPRING_DATASOURCE_PASSWORD: gomes123
-
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 5 # Evita muitas conexões simultâneas
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
 
     depends_on:
@@ -56,6 +64,12 @@ services:
 
     networks:
       - app-network
+
+    # ADICIONADO: Limita a API Java a 450MB de RAM
+    deploy:
+      resources:
+        limits:
+          memory: 450M
 
 
 # =========================

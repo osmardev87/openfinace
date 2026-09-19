@@ -16,4 +16,5 @@ COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8089
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# ADICIONADO: -Xms128m -Xmx350m para a JVM não estourar a RAM do servidor
+ENTRYPOINT ["java", "-Xms128m", "-Xmx350m", "-jar", "app.jar"]
