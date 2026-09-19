@@ -26,7 +26,12 @@ public record CreateUserRequest(
 
         @Size(max = 20, message = "Telefone deve ter no máximo 20 caracteres") String telefone,
 
-        Role role) {
+        Role role,
+
+        String empresa,
+        
+        String logo
+    ) {
 
     public User toEntity() {
         User user = new User();
@@ -36,6 +41,8 @@ public record CreateUserRequest(
         user.setCpf(cpf);
         user.setCnpj(cnpj); // Novo campo
         user.setTelefone(telefone);
+        user.setEmpresa(empresa);
+        user.setLogo(logo);
         user.setRole(role != null ? role : Role.CLIENTE);
         return user;
     }

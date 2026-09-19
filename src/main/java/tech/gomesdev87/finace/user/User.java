@@ -53,6 +53,12 @@ public class User {
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
     private Role role;
 
+    @Column(length = 100)
+    private String empresa;
+
+    @Column(length = 255)
+    private String logo;
+
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDateTime.now();

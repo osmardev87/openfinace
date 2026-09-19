@@ -12,6 +12,8 @@ public record UserResponse(
         String cpf,
         String cnpj, // Adicionado CNPJ no retorno
         String telefone,
+        String empresa,
+        String logo,
         Role role) {
     public static UserResponse fromEntity(User user) {
         return new UserResponse(
@@ -21,6 +23,8 @@ public record UserResponse(
                 user.getCpf(),
                 user.getCnpj(), // Novo campo mapeado da entidade
                 user.getTelefone(),
+                user.getEmpresa(),
+                user.getLogo(),
                 user.getRole());
     }
 }
