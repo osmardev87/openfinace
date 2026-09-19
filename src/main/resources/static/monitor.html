@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Monitoramento - VPS</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); width: 350px; }
+        h2 { text-align: center; color: #38bdf8; }
+        .metric { margin: 15px 0; }
+        .bar { background: #334155; border-radius: 8px; overflow: hidden; height: 20px; margin-top: 5px; }
+        .fill { background: #38bdf8; height: 100%; width: 0%; transition: width 0.5s ease; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Monitor VPS</h2>
+        
+        <div class="metric">
+            <strong>Memória RAM (JVM)</strong>
+            <div id="ram-text">Carregando...</div>
+            <div class="bar"><div id="ram-bar" class="fill"></div></div>
+        </div>
+
+        <div class="metric">
+            <strong>Espaço em Disco (/)</strong>
+            <div id="disk-text">Carregando...</div>
+            <div class="bar"><div id="disk-bar" class="fill" style="background: #10b981;"></div></div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/monitor');
+                const data = await response.json();
+
+                // Atualiza RAM
+                const ramPercent = Math.round((data.ram.usedMB / data.ram.limitMB) * 100);
+                document.getElementById('ram-text').innerText = `${data.ram.usedMB} MB / ${data.ram.limitMB} MB (${ramPercent}%)`;
+                document.getElementById('ram-bar').style.width = `${ramPercent}%`;
+
+                // Atualiza Disco
+                const diskPercent = Math.round((data.disk.usedGB / data.disk.totalGB) * 100);
+                document.getElementById('disk-text').innerText = `${data.disk.usedGB} GB / ${data.disk.totalGB} GB (${diskPercent}%)`;
+                document.getElementById('disk-bar').style.width = `${diskPercent}%`;
+            } catch (error) {
+                console.error('Erro ao buscar dados:', error);
+            }
+        }
+
+        // Atualiza a cada 3 segundos
+        setInterval(fetchStats, 3000);
+        fetchStats();
+    </script>
+</body>
+</html>
