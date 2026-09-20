@@ -1,7 +1,5 @@
 version: '3.8'
-
 services:
-
   # =========================
   # POSTGRESQL
   # =========================
@@ -9,79 +7,60 @@ services:
     image: postgres:17
     container_name: postgres
     restart: unless-stopped
-
     environment:
       POSTGRES_DB: openfinace
       POSTGRES_USER: gomes
       POSTGRES_PASSWORD: gomes123
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U gomes -d openfinace"]
       interval: 10s
       timeout: 5s
       retries: 5
-
     networks:
       - app-network
-
-    # ADICIONADO: Limita o Postgres a 250MB de RAM
     deploy:
       resources:
         limits:
-          memory: 250M
-
+          memory: 128M       # ✅ 250M → 128M (usa só 27MB!)
+        reservations:
+          memory: 96M         # ✅ Adicionado
 
   # =========================
-  # SPRING BOOT
+  # SPRING BOOT / LOJA
   # =========================
   app:
     build:
       context: .
       dockerfile: Dockerfile
-
     container_name: shippafest-api
     restart: unless-stopped
-
     ports:
       - "8089:8089"
-
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/openfinace
       SPRING_DATASOURCE_USERNAME: gomes
       SPRING_DATASOURCE_PASSWORD: gomes123
-      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 5 # Evita muitas conexões simultâneas
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: 5
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
-
     depends_on:
       postgres:
         condition: service_healthy
-
     networks:
       - app-network
-
-    # ADICIONADO: Limita a API Java a 450MB de RAM
     deploy:
       resources:
         limits:
-          memory: 450M
+          memory: 256M       # ✅ 450M → 256M (usa só 91MB!)
+        reservations:
+          memory: 180M        # ✅ Adicionado
 
-
-# =========================
-# VOLUMES
-# =========================
 volumes:
   postgres_data:
 
-
-# =========================
-# NETWORK
-# =========================
 networks:
   app-network:
     driver: bridge
