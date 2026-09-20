@@ -754,14 +754,19 @@
         const data = await response.json();
         const token = data.token || data.accessToken || data;
         const userObj = data.user || data.usuario || {};
-        if (nomeEmpresa) {
-          nomeEmpresa.innerText = userObj?.empresa || "Sistema de Estoque & Vendas";
-        }
 
-        if (logoEmpresa) {
-          // Só executa se o elemento realmente existir na página atual
-          logoEmpresa.src = userObj.logo || "https://img.magnific.com/vetores-premium/sacola-de-compras-logotipo-de-seta_48832-5390.jpg?semt=ais_hybrid&w=740&q=80";
-        }
+        localStorage.setItem(
+          "empresa_nome",
+          JSON.stringify(userObj?.empresa || "Sistema de Estoque & Vendas"),
+        );
+
+        localStorage.setItem(
+          "empresa_logo",
+          JSON.stringify(
+            userObj?.logo ||
+            "https://img.magnific.com/vetores-premium/sacola-de-compras-logotipo-de-seta_48832-5390.jpg?semt=ais_hybrid&w=740&q=80",
+          ),
+        );
 
         localStorage.setItem(
           "token",
@@ -785,6 +790,14 @@
       }
     }
 
+    if (nomeEmpresa) {
+      nomeEmpresa.innerText = localStorage.getItem("empresa_nome") || "Sistema de Estoque & Vendas";
+    }
+
+    if (logoEmpresa) {
+      // Só executa se o elemento realmente existir na página atual
+      logoEmpresa.src = localStorage.getItem("empresa_logo")
+    }
     function clearAuthToken() {
       localStorage.removeItem("token");
       localStorage.removeItem("user_email");
