@@ -17,9 +17,7 @@
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-cloud-sun text-3xl"></i>
         <div>
-          <h1 class="text-xl font-bold" id="appTitle">
-            Sistema de Estoque e Consulta de Preços
-          </h1>
+          <h1 class="text-xl font-bold" id="appTitle"></h1>
           <p class="text-xs text-indigo-200">
             Sincronização Automática com Servidor Spring Boot
           </p>
@@ -569,7 +567,7 @@
   <!-- Script JavaScript com Armazenamento Local / Modo Offline -->
   <script>
     const API_BASE_URL = "https://loja.gomesdev87.tech";
-    let nomeEmpresa = document.getElementById("nomeEmpresa");
+    const nomeEmpresa = document.getElementById("appTitle");
 
     let products = [];
     let cart = [];
@@ -755,7 +753,9 @@
         const data = await response.json();
         const token = data.token || data.accessToken || data;
         const userObj = data.user || data.usuario || {};
-        nomeEmpresa.innerText = userObj.nomeEmpresa || "Sistema de Estoque & Vendas";
+        if (nomeEmpresa) {
+          nomeEmpresa.innerText = userObj?.empresa || "Sistema de Estoque & Vendas";
+        }
 
         localStorage.setItem(
           "token",
