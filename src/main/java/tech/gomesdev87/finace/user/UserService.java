@@ -1,9 +1,12 @@
 package tech.gomesdev87.finace.user;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import tech.gomesdev87.finace.user.dto.CreateUserRequest;
+import tech.gomesdev87.finace.user.dto.UpdateRequest;
 import tech.gomesdev87.finace.user.dto.UserResponse;
 
 @Service
@@ -15,6 +18,22 @@ public class UserService {
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public UserResponse atualizarUsuario(UUID id, UpdateRequest user) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        // Atualiza os campos do usuário existente com os valores do objeto recebido
+        existingUser.setNome(user.nome());
+        existingUser.setEmpresa(user.empresa());
+        existingUser.setLogo(user.logo());
+        existingUser.setTelefone(user.telefone());
+        existingUser.setCnpj(user.cnpj());
+
+        // Salva as alterações no banco de dados
+        User newUser = userRepository.save(existingUser);
+        return UserResponse.fromEntity(newUser);
     }
 
     public UserResponse create(CreateUserRequest request) {
