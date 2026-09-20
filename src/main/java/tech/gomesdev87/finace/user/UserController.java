@@ -18,7 +18,7 @@ import tech.gomesdev87.finace.user.dto.UpdateRequest;
 import tech.gomesdev87.finace.user.dto.UserResponse;
 
 @RestController
-@RequestMapping("/transacoes")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final Token tokenService;
