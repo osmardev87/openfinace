@@ -577,9 +577,22 @@
     let currentPdfOrder = null;
     let editingOrderId = null; // Armazena o ID do pedido que está sendo editado no momento
 
+    if (nomeEmpresa) {
+      nomeEmpresa.innerText = localStorage.getItem("empresa_nome") || "Sistema de Estoque & Vendas";
+    }
+
+    if (logoEmpresa) {
+      // Só executa se o elemento realmente existir na página atual
+      logoEmpresa.src = loadCartFromLocalCache
+        ? JSON.parse(localStorage.getItem("empresa_logo") || '""')
+        : "https://img.magnific.com/vetores-premium/sacola-de-compras-logotipo-de-seta_48832-5390.jpg?semt=ais_hybrid&w=740&q=80";
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       checkTokenStatus();
       checkNetworkStatus();
+
+
 
       // Carrega cache local
       loadProductsFromLocalCache();
@@ -768,6 +781,17 @@
           ),
         );
 
+        if (nomeEmpresa) {
+          nomeEmpresa.innerText = localStorage.getItem("empresa_nome") || "Sistema de Estoque & Vendas";
+        }
+
+        if (logoEmpresa) {
+          // Só executa se o elemento realmente existir na página atual
+          logoEmpresa.src = loadCartFromLocalCache
+            ? JSON.parse(localStorage.getItem("empresa_logo") || '""')
+            : "https://img.magnific.com/vetores-premium/sacola-de-compras-logotipo-de-seta_48832-5390.jpg?semt=ais_hybrid&w=740&q=80";
+        }
+
         localStorage.setItem(
           "token",
           typeof token === "string"
@@ -790,16 +814,7 @@
       }
     }
 
-    if (nomeEmpresa) {
-      nomeEmpresa.innerText = localStorage.getItem("empresa_nome") || "Sistema de Estoque & Vendas";
-    }
 
-    if (logoEmpresa) {
-      // Só executa se o elemento realmente existir na página atual
-      logoEmpresa.src = loadCartFromLocalCache
-        ? JSON.parse(localStorage.getItem("empresa_logo") || '""')
-        : "https://img.magnific.com/vetores-premium/sacola-de-compras-logotipo-de-seta_48832-5390.jpg?semt=ais_hybrid&w=740&q=80";
-    }
     function clearAuthToken() {
       localStorage.removeItem("token");
       localStorage.removeItem("user_email");
